@@ -12,6 +12,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
@@ -107,6 +109,7 @@ public class CadastroAluno {
 			public void focusLost(FocusEvent e) {
 				if(textCpf.getText().isEmpty()){
 					textCpf.setForeground(Color.GRAY);
+					textCpf.setBorder(defaultBorder);
 					textCpf.setText("ex: 12345678901");
 				} else if(!u.validaCpf(textCpf.getText())){
 					textCpf.setBorder(naoValidou);
@@ -121,6 +124,23 @@ public class CadastroAluno {
 				if(textCpf.getText().equals("ex: 12345678901")){
 					textCpf.setText(null);
 				}
+				textCpf.addKeyListener(new KeyListener() {
+					
+					@Override
+					public void keyTyped(KeyEvent e) {
+						u.apenasNumeros(e);
+					}
+					
+					@Override
+					public void keyReleased(KeyEvent e) {
+						u.apenasNumeros(e);
+					}
+					
+					@Override
+					public void keyPressed(KeyEvent e) {
+						u.apenasNumeros(e);
+					}
+				});
 			}
 		});
 		textCpf.setBounds(150, 62, 250, 20);

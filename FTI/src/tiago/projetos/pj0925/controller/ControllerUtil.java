@@ -1,5 +1,6 @@
 package tiago.projetos.pj0925.controller;
 
+import java.awt.event.KeyEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -114,5 +115,12 @@ public class ControllerUtil {
 			}
 		}
 		return false;
+	}
+	
+	public void apenasNumeros(KeyEvent e) {
+		char c = e.getKeyChar();
+		if (!Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE && e.getKeyCode() != KeyEvent.VK_LEFT && e.getKeyCode() != KeyEvent.VK_RIGHT) {
+			e.consume();
+		}
 	}
 }
