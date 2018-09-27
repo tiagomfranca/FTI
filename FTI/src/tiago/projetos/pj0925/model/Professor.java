@@ -5,12 +5,7 @@ import java.util.Date;
 public class Professor extends Pessoa {
 	private String endereço, disciplina, telefone, eMail; 
 	
-	public Professor(){
-		super("Tiago", "0", new Date(), 'M');
-		this.endereço = "Rua";
-	}
-	
-	public Professor(String nome, String cpf, Date dataNascimento, char sexo, String endereço, String disciplina,
+	public Professor(String nome, String cpf, Date dataNascimento, String endereço, char sexo, String disciplina,
 			String telefone, String eMail){
 		super(nome, cpf, dataNascimento, sexo);
 		this.endereço = endereço;

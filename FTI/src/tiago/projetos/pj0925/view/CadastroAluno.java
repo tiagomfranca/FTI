@@ -22,6 +22,7 @@ import javax.swing.border.Border;
 import javax.swing.JScrollBar;
 import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
+import java.util.Date;
 
 public class CadastroAluno {
 
@@ -32,9 +33,6 @@ public class CadastroAluno {
 	private JTextField textData;
 	private JTextField textTelefone;
 	private JTextField textEMail;
-	
-	private static boolean nomeValidado, cpfValidado, matriculaValidado, dataValidado, endereçoValidado, sexoValidado, cursoValidado,
-		telefoneValidado, emailValidado;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -54,9 +52,8 @@ public class CadastroAluno {
 	}
 
 	private void iniciaJanela() {
-		Controller c = new Controller();
-		nomeValidado = false; cpfValidado = false; matriculaValidado = false; dataValidado = false; 
-		endereçoValidado = false; sexoValidado = false; cursoValidado = false; telefoneValidado = false; emailValidado = false;
+		ControllerUtil u = new ControllerUtil();
+		ControllerAluno cA = new ControllerAluno();
 		Border naoValidou = BorderFactory.createLineBorder(Color.RED);
 		Border simValidou = BorderFactory.createLineBorder(Color.GREEN);
 		frame = new JFrame();
@@ -65,6 +62,7 @@ public class CadastroAluno {
 		frame.getContentPane().setLayout(null);
 		
 		textField = new JTextField();
+		Border defaultBorder = textField.getBorder();
 		textField.setForeground(Color.gray);
 		textField.setText("ex: José");
 		textField.addFocusListener(new FocusListener() {
@@ -74,11 +72,10 @@ public class CadastroAluno {
 				if(textField.getText().isEmpty()){
 					textField.setForeground(Color.GRAY);
 					textField.setText("ex: José");
-				} else if(!c.validaTexto(textField.getText())){
+				} else if(!u.validaTexto(textField.getText())){
 					textField.setBorder(naoValidou);
 				} else {
 					textField.setBorder(simValidou);
-					nomeValidado = true;
 				}
 			}
 			
@@ -111,11 +108,10 @@ public class CadastroAluno {
 				if(textCpf.getText().isEmpty()){
 					textCpf.setForeground(Color.GRAY);
 					textCpf.setText("ex: 12345678901");
-				} else if(!c.validaCpf(textCpf.getText())){
+				} else if(!u.validaCpf(textCpf.getText())){
 					textCpf.setBorder(naoValidou);
 				} else {
 					textCpf.setBorder(simValidou);
-					cpfValidado = true;
 				}
 			}
 			
@@ -144,11 +140,10 @@ public class CadastroAluno {
 				if(textMatricula.getText().isEmpty()){
 					textMatricula.setForeground(Color.GRAY);
 					textMatricula.setText("ex: 123456789");
-				} else if(!c.validaApenasNumeros(textMatricula.getText())){
+				} else if(!u.validaApenasNumeros(textMatricula.getText())){
 					textMatricula.setBorder(naoValidou);
 				} else {
 					textMatricula.setBorder(simValidou);
-					matriculaValidado = true;
 				}
 			}
 			
@@ -180,11 +175,10 @@ public class CadastroAluno {
 				if(textData.getText().isEmpty()){
 					textData.setForeground(Color.GRAY);
 					textData.setText("dd/mm/aaaa");
-				} else if(!c.validaData(textData.getText())){
+				} else if(!u.validaData(textData.getText())){
 					textData.setBorder(naoValidou);
 				} else {
 					textData.setBorder(simValidou);
-					dataValidado = true;
 				}
 			}
 			
@@ -217,11 +211,10 @@ public class CadastroAluno {
 				if(textArea1.getText().isEmpty()){
 					textArea1.setForeground(Color.GRAY);
 					textArea1.setText("ex: R. Ayrton Senna da Silva, 500\nEdifício Torre di Pietra - 3° andar - sala - 303");
-				} else if(!c.validaTexto(textArea1.getText())){
+				} else if(!u.validaTexto(textArea1.getText())){
 					textArea1.setBorder(naoValidou);
 				} else {
 					textArea1.setBorder(simValidou);
-					endereçoValidado = true;
 				}
 			}
 			
@@ -286,11 +279,10 @@ public class CadastroAluno {
 				if(textTelefone.getText().isEmpty()){
 					textTelefone.setForeground(Color.GRAY);
 					textTelefone.setText("ex: 43999565338");
-				} else if(!c.validaApenasNumeros(textTelefone.getText())){
+				} else if(!u.validaApenasNumeros(textTelefone.getText())){
 					textTelefone.setBorder(naoValidou);
 				} else {
 					textTelefone.setBorder(simValidou);
-					telefoneValidado = true;
 				}
 			}
 			
@@ -319,11 +311,10 @@ public class CadastroAluno {
 				if(textEMail.getText().isEmpty()){
 					textEMail.setForeground(Color.GRAY);
 					textEMail.setText("ex: nome@site.com");
-				} else if(!c.validaTexto(textEMail.getText())){
+				} else if(!u.validaTexto(textEMail.getText())){
 					textEMail.setBorder(naoValidou);
 				} else {
 					textEMail.setBorder(simValidou);
-					emailValidado = true;
 				}
 			}
 			
@@ -349,64 +340,71 @@ public class CadastroAluno {
 		frame.getContentPane().add(btnClear);
 		
 		JButton btnSubmit = new JButton("Cadastrar");
-		
-		btnSubmit.setBackground(Color.BLACK);
-		btnSubmit.setForeground(Color.WHITE);
 		btnSubmit.setBounds(65, 387, 100, 23);
 		frame.getContentPane().add(btnSubmit);
 		
 		btnSubmit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-//				Controller c = new Controller();
+				Date data = new Date();
+				char sexo = '0';
 				String erros = "";
 				int numeros = 0;
 				
-				if(textField.getText().isEmpty()) {
+				if(textField.getText().isEmpty() || textField.getText().equals("ex: José")) {
 					erros = erros + "Campo Nome precisa estar preenchido;\n";
 					numeros++;
 				}
-				if(textCpf.getText().isEmpty()){
+				if(textCpf.getText().isEmpty() || textCpf.getText().equals("ex: 12345678901")){
 					erros = erros + "Campo CPF deve ser preenchido (apenas números);\n";
 					numeros++;
-				} else if(!c.validaCpf(textCpf.getText())){
+				} else if(!u.validaCpf(textCpf.getText())){
 					erros = erros + "CPF inválido;\n";
 				}
-				if(textMatricula.getText().isEmpty()){
+				if(textMatricula.getText().isEmpty() || textMatricula.getText().equals("ex: 123456789")){
 					erros = erros + "Campo matrícula deve ser preenchido (apenas números);\n";
 					numeros++;
-				} else if (!c.validaApenasNumeros(textMatricula.getText())){
+				} else if (!u.validaApenasNumeros(textMatricula.getText())){
 					erros = erros + "Matrícula deve conter apenas números;\n";
 					numeros++;
 				} else if (textMatricula.getText().length() > 9){
 					erros = erros + "Matrícula deve ter no máximo 9 dígitos;\n";
 					numeros++;
 				}
-				if(!c.validaData(textData.getText())){
-					erros = erros + "Campo Data de Nascimento deve ser preenchido corretamente (dd/mm/aaaa);\n";
+				if (textData.getText().isEmpty() || textData.getText().equals("dd/mm/aaaa")) {
+					erros = erros + "Campo Data de Nascimento deve ser preenchido;\n";
+					numeros++;
+				} else if (!u.validaData(textData.getText())){
+					erros = erros + "Data inválida, utilize o formato dd/mm/aaaa;\n";
 					numeros++;
 				} 
-				if(textArea1.getText().isEmpty()){
+				if(textArea1.getText().isEmpty() || textArea1.getText().equals("ex: R. Ayrton Senna da Silva, 500\nEdifício Torre di Pietra - 3° andar - sala - 303")){
 					erros = erros + "Campo Endereço deve ser preenchido;\n";
 					numeros++;
 				}
 				if(!radioButtonMale.isSelected() && !radioButtonFemale.isSelected()){
 					erros = erros + "É necessário informar seu gênero;\n";
 					numeros++;
+				} else {
+					if(radioButtonMale.isSelected()) {
+						sexo = 'M';
+					} else {
+						sexo = 'F';
+					}
 				}
 				if(comboBox.getSelectedItem().equals("Selecione...")){
 					erros = erros + "É necessário informar a disciplina;\n";
 					numeros++;
 				}
-				if(textTelefone.getText().isEmpty()){
+				if(textTelefone.getText().isEmpty() || textTelefone.getText().equals("ex: 43999565338")){
 					erros = erros + "Campo Telefone deve ser preenchido;\n";
 					numeros++;
 				} else {
-					if (!c.validaApenasNumeros(textTelefone.getText())){
+					if (!u.validaApenasNumeros(textTelefone.getText())){
 						erros = erros + "Campo Telefone deve ser preenchido corretamente (apenas números);\n";
 						numeros++;
 					}
 				}
-				if(textEMail.getText().isEmpty()){
+				if(textEMail.getText().isEmpty() || textEMail.getText().equals("ex: nome@site.com")){
 					erros = erros + "Campo e-Mail deve ser preenchido;\n";
 					numeros++;
 				} else {
@@ -422,8 +420,9 @@ public class CadastroAluno {
 					}
 				}
 				if (numeros == 0){
-					Aluno a = new Aluno();
-					c.cadastraAluno(a);
+					data = u.transformaData(textData.getText());
+					Aluno a = new Aluno(textField.getText(), textCpf.getText(), textMatricula.getText(), data, textArea1.getText(), sexo, comboBox.getSelectedItem().toString(), textTelefone.getText(), textEMail.getText());
+					cA.cadastraAluno(a);
 					JOptionPane.showMessageDialog(null, "Cadastro efetuado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 				} else {
 					JOptionPane.showMessageDialog(null, erros, numeros + " erros encontrados:", JOptionPane.ERROR_MESSAGE);
@@ -433,13 +432,25 @@ public class CadastroAluno {
 		
 		btnClear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				textField.setText(null);
-				textArea1.setText(null);
-				textData.setText(null);
-				textEMail.setText(null);
-				textTelefone.setText(null);
-				textCpf.setText(null);
-				textMatricula.setText(null);
+				textField.setForeground(Color.GRAY);
+				textEMail.setForeground(Color.GRAY);
+				textData.setForeground(Color.GRAY);
+				textArea1.setForeground(Color.GRAY);
+				textCpf.setForeground(Color.GRAY);
+				textTelefone.setForeground(Color.GRAY);
+				textField.setBorder(defaultBorder);
+				textEMail.setBorder(defaultBorder);
+				textTelefone.setBorder(defaultBorder);
+				textCpf.setBorder(defaultBorder);
+				textArea1.setBorder(border);
+				textData.setBorder(defaultBorder);
+				textField.setText("ex: José");
+				textArea1.setText("ex: R. Ayrton Senna da Silva, 500\nEdifício Torre di Pietra - 3° andar - sala - 303");
+				textData.setText("dd/mm/aaaa");
+				textEMail.setText("ex: nome@site.com");
+				textTelefone.setText("ex: 43999565338");
+				textCpf.setText("ex: 123445678901");
+				textMatricula.setText("ex: 123456789");
 				radioButtonFemale.setSelected(false);
 				radioButtonMale.setSelected(false);
 				comboBox.setSelectedItem("Selecionar...");
