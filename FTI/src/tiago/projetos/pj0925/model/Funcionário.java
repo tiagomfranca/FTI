@@ -3,18 +3,26 @@ package tiago.projetos.pj0925.model;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Professor extends Funcionário {
-	private String endereço, cargo, disciplina, telefone, eMail;
-	private double salario, valeAlimentação, valeTransporte, valeRefeição;
+public class Funcionário extends Pessoa {
+	private String endereço, cargo, telefone, eMail;
+	double salario, valeAlimentação, valeTransporte, valeRefeição;
 	private int filhos;
 	private ArrayList<Pessoa> cadastroFilhos;
 	
-	public Professor(String nome, String cpf, Date dataNascimento, String endereço, char sexo, String cargo, String disciplina,
-			double salario, double valeAlimentação, double valeTransporte, double valeRefeição, int filhos, 
-			ArrayList<Pessoa> cadastroFilhos, String telefone, String eMail){
-		super(nome, cpf, dataNascimento, endereço, sexo, cargo, salario, valeAlimentação, valeTransporte, valeRefeição, filhos,
-				cadastroFilhos, telefone, eMail);
-		this.disciplina = disciplina;
+	public Funcionário(String nome, String cpf, Date dataNascimento, String endereço, char sexo, String cargo, double salario,
+			double valeAlimentação, double valeTransporte, double valeRefeição, int filhos, ArrayList<Pessoa> cadastroFilhos,
+			String telefone, String eMail){
+		super(nome, cpf, dataNascimento, sexo);
+		this.endereço = endereço;
+		this.cargo = cargo;
+		this.salario = salario;
+		this.valeAlimentação = valeAlimentação;
+		this.valeTransporte = valeTransporte;
+		this.valeRefeição = valeRefeição;
+		this.filhos = filhos;
+		this.cadastroFilhos = cadastroFilhos;
+		this.telefone = telefone;
+		this.eMail = eMail;
 	}
 
 	public String getEndereço() {
@@ -23,10 +31,6 @@ public class Professor extends Funcionário {
 
 	public void setEndereço(String endereço) {
 		this.endereço = endereço;
-	}
-
-	public String getDisciplina() {
-		return disciplina;
 	}
 
 	public String getCargo() {
@@ -83,10 +87,6 @@ public class Professor extends Funcionário {
 
 	public void setCadastroFilhos(ArrayList<Pessoa> cadastroFilhos) {
 		this.cadastroFilhos = cadastroFilhos;
-	}
-
-	public void setDisciplina(String disciplina) {
-		this.disciplina = disciplina;
 	}
 
 	public String getTelefone() {

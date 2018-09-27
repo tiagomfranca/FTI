@@ -5,15 +5,16 @@ import tiago.projetos.pj0925.controller.*;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import java.awt.Color;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Date;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
@@ -24,23 +25,32 @@ import javax.swing.border.Border;
 import javax.swing.JScrollBar;
 import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
-import java.util.Date;
 
-public class CadastroAluno {
+public class CadastroFuncionário {
 
 	private JFrame frame;
+	
+	private Border naoValidou;
+	private Border simValidou;
+	
+	private JLabel lblNome;
+	
 	private JTextField textNome;
 	private JTextField textCpf;
-	private JTextField textMatricula;
 	private JTextField textData;
 	private JTextField textTelefone;
 	private JTextField textEMail;
+	private JTextField textFilhos;
+	private JTextField textSalario;
+	private JTextField textVT;
+	private JTextField textVR;
+	private JTextField textVA;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					CadastroAluno window = new CadastroAluno();
+					CadastroFuncionário window = new CadastroFuncionário();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -49,24 +59,28 @@ public class CadastroAluno {
 		});
 	}
 
-	public CadastroAluno() {
+	public CadastroFuncionário() {
 		iniciaJanela();
 	}
 
 	private void iniciaJanela() {
 		ControllerUtil u = new ControllerUtil();
-		ControllerAluno cA = new ControllerAluno();
-		Border naoValidou = BorderFactory.createLineBorder(Color.RED);
-		Border simValidou = BorderFactory.createLineBorder(Color.GREEN);
-		frame = new JFrame();
-		frame.setBounds(100, 100, 485, 489);
+		ControllerProfessor cP = new ControllerProfessor();
+		naoValidou = BorderFactory.createLineBorder(Color.RED);
+		simValidou = BorderFactory.createLineBorder(Color.GREEN);
+		JPanel container = new JPanel();
+		
+		frame = new JFrame("Cadastro");
+		
+		frame.setBounds(0, 0, 800, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
+		lblNome = new JLabel("Nome:* ");
+		lblNome.setBounds(30, 30, 100, 14);
+		frame.getContentPane().add(lblNome);
 		textNome = new JTextField();
 		Border defaultBorder = textNome.getBorder();
-		textNome.setForeground(Color.gray);
-		textNome.setText("ex: José");
 		textNome.addFocusListener(new FocusListener() {
 			
 			@Override
@@ -79,6 +93,7 @@ public class CadastroAluno {
 				} else {
 					textNome.setBorder(simValidou);
 				}
+				
 			}
 			
 			@Override
@@ -88,17 +103,33 @@ public class CadastroAluno {
 					textNome.setText(null);
 				}
 			}
-		});
-		textNome.setBounds(150, 28, 250, 20);
+		});			
+		textNome.setBounds(120, 30, 250, 20);
 		frame.getContentPane().add(textNome);
 		textNome.setColumns(10);
 		
-		JLabel lblNome = new JLabel("Nome:* ");
-		lblNome.setBounds(65, 31, 46, 14);
-		frame.getContentPane().add(lblNome);
+		JLabel lblSexo = new JLabel("Sexo:* ");
+		lblSexo.setBounds(30, 100, 46, 14);
+		frame.getContentPane().add(lblSexo);
+		
+		JLabel lblMale = new JLabel("Masculino");
+		lblMale.setBounds(168, 100, 60, 14);
+		frame.getContentPane().add(lblMale);
+		
+		JLabel lblFemale = new JLabel("Feminino");
+		lblFemale.setBounds(285, 100, 60, 14);
+		frame.getContentPane().add(lblFemale);
+		
+		JRadioButton radioButtonMale = new JRadioButton("");
+		radioButtonMale.setBounds(148, 97, 20, 23);
+		frame.getContentPane().add(radioButtonMale);
+
+		JRadioButton radioButtonFemale = new JRadioButton("");
+		radioButtonFemale.setBounds(265, 97, 20, 23);
+		frame.getContentPane().add(radioButtonFemale);
 		
 		JLabel lblCpf = new JLabel("CPF:* ");
-		lblCpf.setBounds(70, 65, 46, 14);
+		lblCpf.setBounds(30, 65, 100, 14);
 		frame.getContentPane().add(lblCpf);
 		textCpf = new JTextField();
 		textCpf.setForeground(Color.gray);
@@ -152,70 +183,18 @@ public class CadastroAluno {
 				});
 			}
 		});
-		textCpf.setBounds(150, 62, 250, 20);
+		textCpf.setBounds(120, 65, 250, 20);
 		frame.getContentPane().add(textCpf);
 		textCpf.setColumns(10);
 		
-		JLabel lblMatricula = new JLabel("Matrícula*: ");
-		lblMatricula.setBounds(55, 99, 80, 14);
-		frame.getContentPane().add(lblMatricula);
-		textMatricula = new JTextField();
-		textMatricula.setForeground(Color.gray);
-		textMatricula.setText("ex: 123456789");
-		textMatricula.addFocusListener(new FocusListener() {
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				if(textMatricula.getText().isEmpty()){
-					textMatricula.setForeground(Color.GRAY);
-					textMatricula.setText("ex: 123456789");
-				} else if(!u.validaApenasNumeros(textMatricula.getText())){
-					textMatricula.setBorder(naoValidou);
-				} else {
-					textMatricula.setBorder(simValidou);
-				}
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {
-				textMatricula.setForeground(Color.black);
-				if(textMatricula.getText().equals("ex: 123456789")){
-					textMatricula.setText(null);
-				}
-				textMatricula.addKeyListener(new KeyListener() {
-					
-					@Override
-					public void keyTyped(KeyEvent e) {
-						u.apenasNumerosLimite(e, textMatricula.getText(), 9);
-					}
-					
-					@Override
-					public void keyReleased(KeyEvent e) {
-						u.apenasNumerosLimite(e, textMatricula.getText(), 9);
-						if (textMatricula.getText().length() == 9){
-							textMatricula.setBorder(simValidou);
-						}
-					}
-					
-					@Override
-					public void keyPressed(KeyEvent e) {
-						u.apenasNumerosLimite(e, textMatricula.getText(), 9);
-					}
-				});
-			}
-		});
-		textMatricula.setBounds(150, 96, 250, 20);
-		frame.getContentPane().add(textMatricula);
-		textMatricula.setColumns(10);
-		
 		JLabel lblData = new JLabel("Data de");
-		lblData.setBounds(59, 130, 46, 14);
+		lblData.setBounds(40, 130, 100, 14);
 		frame.getContentPane().add(lblData);
 		JLabel lblData2 = new JLabel("Nascimento:* ");
-		lblData2.setBounds(45, 145, 100, 14);
+		lblData2.setBounds(30, 145, 100, 14);
 		frame.getContentPane().add(lblData2);
 		textData = new JTextField();
-		textData.setForeground(Color.GRAY);
+		textData.setForeground(Color.gray);
 		textData.setText("dd/mm/aaaa");
 		textData.addFocusListener(new FocusListener() {
 			
@@ -239,18 +218,17 @@ public class CadastroAluno {
 				}
 			}
 		});
-		textData.setBounds(150, 132, 250, 20);
+		textData.setBounds(120, 135, 250, 20);
 		frame.getContentPane().add(textData);
 		textData.setColumns(10);
 		
 		JLabel lblEndereço = new JLabel("Endereço:* ");
-		lblEndereço.setBounds(53, 179, 80, 14);
+		lblEndereço.setBounds(405, 30, 80, 14);
 		frame.getContentPane().add(lblEndereço);
 				
 		JTextArea textEndereço = new JTextArea();
-		textEndereço.setBounds(150, 176, 250, 40);
+		textEndereço.setBounds(485, 30, 250, 125);
 		Border border = BorderFactory.createLineBorder(Color.GRAY);
-	    textEndereço.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(2, 2, 2, 2)));
 		textEndereço.setForeground(Color.gray);
 		textEndereço.setText("ex: R. Ayrton Senna da Silva, 500\nEdifício Torre di Pietra - 3° andar - sala - 303");
 		textEndereço.addFocusListener(new FocusListener() {
@@ -275,48 +253,200 @@ public class CadastroAluno {
 				}
 			}
 		});
+	    textEndereço.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(2, 2, 2, 2)));
 		frame.getContentPane().add(textEndereço);	
 		
-		JLabel lblSexo = new JLabel("Sexo:* ");
-		lblSexo.setBounds(65, 232, 46, 14);
-		frame.getContentPane().add(lblSexo);
+		JLabel lblCargo = new JLabel("Cargo:* ");
+		lblCargo.setBounds(30, 170, 67, 14);
+		frame.getContentPane().add(lblCargo);
 		
-		JLabel lblMale = new JLabel("Masculino");
-		lblMale.setBounds(150, 232, 60, 14);
-		frame.getContentPane().add(lblMale);
-		
-		JLabel lblFemale = new JLabel("Feminino");
-		lblFemale.setBounds(320, 232, 60, 14);
-		frame.getContentPane().add(lblFemale);
-		
-		JRadioButton radioButtonMale = new JRadioButton("");
-		radioButtonMale.setBounds(215, 229, 20, 23);
-		frame.getContentPane().add(radioButtonMale);
-
-		JRadioButton radioButtonFemale = new JRadioButton("");
-		radioButtonFemale.setBounds(380, 229, 20, 23);
-		frame.getContentPane().add(radioButtonFemale);
-		
-		JLabel lblOccupation = new JLabel("Curso:* ");
-		lblOccupation.setBounds(53, 271, 67, 14);
-		frame.getContentPane().add(lblOccupation);
+		JLabel lblDisciplina = new JLabel("Disciplina:* ");
+		lblDisciplina.setBounds(405, 170, 67, 14);
+		frame.getContentPane().add(lblDisciplina);
+		lblDisciplina.setVisible(false);
 		
 		JComboBox<String> comboBox = new JComboBox<String>();
 		comboBox.addItem("Selecionar...");
+		comboBox.addItem("Banco de Dados");
+		comboBox.addItem("Front-end");
 		comboBox.addItem("Java WEB");
-		comboBox.addItem("Cobol");
-		comboBox.addItem(".NET");
-		comboBox.addItem("Redes");
-		comboBox.addItem("Python");
+		comboBox.addItem("Linguagem de Programação Java");
+		comboBox.addItem("Outros");
 		comboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
-		comboBox.setBounds(150, 268, 250, 20);
+		comboBox.setBounds(485, 170, 250, 20);
 		frame.getContentPane().add(comboBox);
+		comboBox.setVisible(false);
+		
+		JComboBox<String> boxCargo = new JComboBox<String>();
+		boxCargo.addItem("Selecionar...");
+		boxCargo.addItem("Professor");
+		boxCargo.addItem("Analista Mainframe");
+		boxCargo.addItem("Analista Baixa Plataforma");
+		boxCargo.addItem("Programador Mainframe");
+		boxCargo.addItem("Programador Baixa Plataforma");
+		boxCargo.addItem("Líder de Projetos");
+		boxCargo.addItem("Gerente");
+		boxCargo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(boxCargo.getSelectedItem().equals("Professor")){
+					comboBox.setVisible(true);
+					lblDisciplina.setVisible(true);
+				} else {
+				comboBox.setVisible(false);
+				lblDisciplina.setVisible(false);
+				comboBox.setSelectedItem("Selecionar...");
+				}
+			}
+		});
+		boxCargo.setBounds(120, 170, 250, 20);
+		frame.getContentPane().add(boxCargo);
+		
+		JLabel lblSalario = new JLabel("Salario:* ");
+		lblSalario.setBounds(30, 205, 67, 14);
+		frame.getContentPane().add(lblSalario);
+		
+		textSalario = new JTextField();
+		textSalario.setForeground(Color.gray);
+		textSalario.setText("ex: 400.00");
+		textSalario.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(textSalario.getText().isEmpty() || textSalario.getText().equals("ex: 400.00")){
+					textSalario.setForeground(Color.GRAY);
+					textSalario.setText("ex: 400,00");
+				} else if(!u.validaDouble(textSalario.getText())){
+					textSalario.setBorder(naoValidou);
+				} else {
+					textSalario.setBorder(simValidou);
+				}
+				
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				textSalario.setForeground(Color.black);
+				if(textSalario.getText().equals("ex: 400.00")){
+					textSalario.setText(null);
+				}
+			}
+		});			
+		textSalario.setBounds(120, 205, 250, 20);
+		frame.getContentPane().add(textSalario);
+		textSalario.setColumns(10);
+		
+		JLabel lblVA = new JLabel("Vale  ");
+		lblVA.setBounds(423, 196, 80, 14);
+		frame.getContentPane().add(lblVA);
+		JLabel lblVA2 = new JLabel("Alimentação:");
+		lblVA2.setBounds(402, 212, 80, 14);
+		frame.getContentPane().add(lblVA2);
+		textVA = new JTextField();
+		textVA.setForeground(Color.gray);
+		textVA.setText("ex: 400.00");
+		textVA.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(textVA.getText().isEmpty() || textVA.getText().equals("ex: 400.00")){
+					textVA.setForeground(Color.GRAY);
+					textVA.setText("ex: 400,00");
+				} else if(!u.validaDouble(textVA.getText())){
+					textVA.setBorder(naoValidou);
+				} else {
+					textVA.setBorder(simValidou);
+				}
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				textVA.setForeground(Color.black);
+				if(textVA.getText().equals("ex: 400.00")){
+					textVA.setText(null);
+				}
+			}
+		});			
+		textVA.setBounds(485, 205, 250, 20);
+		frame.getContentPane().add(textVA);
+		textVA.setColumns(10);
+		
+		JLabel lblVR = new JLabel("Vale ");
+		lblVR.setBounds(51, 231, 58, 14);
+		frame.getContentPane().add(lblVR);
+		JLabel lblVR2 = new JLabel("Refeição: ");
+		lblVR2.setBounds(30, 247, 58, 14);
+		frame.getContentPane().add(lblVR2);
+		
+		textVR = new JTextField();
+		textVR.setForeground(Color.gray);
+		textVR.setText("ex: 400.00");
+		textVR.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(textVR.getText().isEmpty() || textVR.getText().equals("ex: 400.00")){
+					textVR.setForeground(Color.GRAY);
+					textVR.setText("ex: 400,00");
+				} else if(!u.validaDouble(textVR.getText())){
+					textVR.setBorder(naoValidou);
+				} else {
+					textVR.setBorder(simValidou);
+				}
+				
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				textVR.setForeground(Color.black);
+				if(textVR.getText().equals("ex: 400.00")){
+					textVR.setText(null);
+				}
+			}
+		});			
+		textVR.setBounds(120, 240, 250, 20);
+		frame.getContentPane().add(textVR);
+		textVR.setColumns(10);
+		
+		JLabel lblVT = new JLabel("Vale  ");
+		lblVT.setBounds(423, 234, 80, 14);
+		frame.getContentPane().add(lblVT);
+		JLabel lblVT2 = new JLabel("Transporte:");
+		lblVT2.setBounds(402, 248, 80, 14);
+		frame.getContentPane().add(lblVT2);
+		textVT = new JTextField();
+		textVT.setForeground(Color.gray);
+		textVT.setText("ex: 400.00");
+		textVT.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(textVT.getText().isEmpty() || textVT.getText().equals("ex: 400.00")){
+					textVT.setForeground(Color.GRAY);
+					textVT.setText("ex: 400,00");
+				} else if(!u.validaDouble(textVT.getText())){
+					textVT.setBorder(naoValidou);
+				} else {
+					textVT.setBorder(simValidou);
+				}
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				textVA.setForeground(Color.black);
+				if(textVT.getText().equals("ex: 400.00")){
+					textVT.setText(null);
+				}
+			}
+		});			
+		textVT.setBounds(485, 240, 250, 20);
+		frame.getContentPane().add(textVT);
+		textVT.setColumns(10);
 		
 		JLabel lblTelefone = new JLabel("Telefone:* ");
-		lblTelefone.setBounds(55, 305, 60, 14);
+		lblTelefone.setBounds(30, 275, 60, 14);
 		frame.getContentPane().add(lblTelefone);
 		textTelefone = new JTextField();
 		textTelefone.setForeground(Color.GRAY);
@@ -360,12 +490,12 @@ public class CadastroAluno {
 				});
 			}
 		});
-		textTelefone.setBounds(150, 302, 250, 20);
+		textTelefone.setBounds(120, 275, 250, 20);
 		frame.getContentPane().add(textTelefone);
 		textTelefone.setColumns(10);
 		
 		JLabel lblEMail = new JLabel("e-mail:* ");
-		lblEMail.setBounds(65, 339, 60, 14);
+		lblEMail.setBounds(405, 275, 60, 14);
 		frame.getContentPane().add(lblEMail);
 		textEMail = new JTextField();
 		textEMail.setForeground(Color.GRAY);
@@ -392,7 +522,7 @@ public class CadastroAluno {
 				}
 			}
 		});
-		textEMail.setBounds(150, 336, 250, 20);
+		textEMail.setBounds(485, 275, 250, 20);
 		frame.getContentPane().add(textEMail);
 		textEMail.setColumns(10);
 		
@@ -424,23 +554,10 @@ public class CadastroAluno {
 					erros = erros + "Campo CPF deve ser preenchido (apenas números);\n";
 					numeros++;
 				} else if(!u.validaCpf(textCpf.getText())){
-					erros = erros + "CPF inválido;\n";
+					erros = erros + "CPF inválido\n";
 				}
-				if(textMatricula.getText().isEmpty() || textMatricula.getText().equals("ex: 123456789")){
-					erros = erros + "Campo matrícula deve ser preenchido (apenas números);\n";
-					numeros++;
-				} else if (!u.validaApenasNumeros(textMatricula.getText())){
-					erros = erros + "Matrícula deve conter apenas números;\n";
-					numeros++;
-				} else if (textMatricula.getText().length() > 9){
-					erros = erros + "Matrícula deve ter no máximo 9 dígitos;\n";
-					numeros++;
-				}
-				if (textData.getText().isEmpty() || textData.getText().equals("dd/mm/aaaa")) {
-					erros = erros + "Campo Data de Nascimento deve ser preenchido;\n";
-					numeros++;
-				} else if (!u.validaData(textData.getText())){
-					erros = erros + "Data inválida, utilize o formato dd/mm/aaaa;\n";
+				if(!u.validaData(textData.getText())){
+					erros = erros + "Campo Data de Nascimento deve ser preenchido corretamente (dd/mm/aaaa);\n";
 					numeros++;
 				} 
 				if(textEndereço.getText().isEmpty() || textEndereço.getText().equals("ex: R. Ayrton Senna da Silva, 500\nEdifício Torre di Pietra - 3° andar - sala - 303")){
@@ -473,22 +590,14 @@ public class CadastroAluno {
 				if(textEMail.getText().isEmpty() || textEMail.getText().equals("ex: nome@site.com")){
 					erros = erros + "Campo e-Mail deve ser preenchido;\n";
 					numeros++;
-				} else {
-					boolean verificaEmail = false;
-					for (int i = 0; i < textEMail.getText().length(); i++){
-						if(textEMail.getText().charAt(i) == '@') {
-							verificaEmail = true;
-						}
-					}
-					if (verificaEmail == false){
+				} else if (!u.validaEmail(textEMail.getText())){
 						erros = erros + "Campo e-mail deve ser preenchido corretamente (nome@site.com);\n";
 						numeros++;
-					}
 				}
 				if (numeros == 0){
 					data = u.transformaData(textData.getText());
-					Aluno a = new Aluno(textNome.getText(), textCpf.getText(), textMatricula.getText(), data, textEndereço.getText(), sexo, comboBox.getSelectedItem().toString(), textTelefone.getText(), textEMail.getText());
-					cA.cadastraAluno(a);
+//					Professor p = new Professor(textNome.getText(), textCpf.getText(), data, textEndereço.getText(), sexo, comboBox.getSelectedItem().toString(), textTelefone.getText(), textEMail.getText());
+//					cP.cadastraProfessor(p);
 					JOptionPane.showMessageDialog(null, "Cadastro efetuado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 				} else {
 					JOptionPane.showMessageDialog(null, erros, numeros + " erros encontrados:", JOptionPane.ERROR_MESSAGE);
@@ -515,8 +624,7 @@ public class CadastroAluno {
 				textData.setText("dd/mm/aaaa");
 				textEMail.setText("ex: nome@site.com");
 				textTelefone.setText("ex: 43999565338");
-				textCpf.setText("ex: 123445678901");
-				textMatricula.setText("ex: 123456789");
+				textCpf.setText("ex: 12345678901");
 				radioButtonFemale.setSelected(false);
 				radioButtonMale.setSelected(false);
 				comboBox.setSelectedItem("Selecionar...");

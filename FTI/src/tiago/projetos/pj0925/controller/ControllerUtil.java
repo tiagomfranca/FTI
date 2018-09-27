@@ -1,9 +1,11 @@
 package tiago.projetos.pj0925.controller;
 
 import java.awt.event.KeyEvent;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class ControllerUtil {
 	
@@ -122,5 +124,27 @@ public class ControllerUtil {
 		if (!Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE && e.getKeyCode() != KeyEvent.VK_LEFT && e.getKeyCode() != KeyEvent.VK_RIGHT) {
 			e.consume();
 		}
+	}
+	
+	public void apenasNumerosLimite(KeyEvent e, String texto, int limite){
+		char c = e.getKeyChar();
+		if (texto.length() > limite-1){
+			if(c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE && e.getKeyCode() != KeyEvent.VK_LEFT && e.getKeyCode() != KeyEvent.VK_RIGHT){
+				e.consume();
+			}
+		} else if (!Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE && e.getKeyCode() != KeyEvent.VK_LEFT && e.getKeyCode() != KeyEvent.VK_RIGHT
+				|| texto.length() > limite-1) {
+			e.consume();
+		}
+	}
+	
+	public boolean validaDouble(String input){
+		try {
+			Double teste = (Double.parseDouble(input));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}		
+		return true;
 	}
 }
