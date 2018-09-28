@@ -49,6 +49,7 @@ public class CadastroFuncionário {
 	private JTextField textVT;
 	private JTextField textVR;
 	private JTextField textVA;
+	String filhosAntes;;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -69,6 +70,7 @@ public class CadastroFuncionário {
 		arrayTextDatas = new ArrayList<JTextField>();
 		arrayLabels = new ArrayList<JLabel>();
 		arrayFilhos = new ArrayList<Pessoa>();
+		filhosAntes = "";
 	}
 
 	private void iniciaJanela() {
@@ -99,29 +101,7 @@ public class CadastroFuncionário {
 		container.add(lblNome);
 		textNome = new JTextField();
 		Border defaultBorder = textNome.getBorder();
-		textNome.addFocusListener(new FocusListener() {
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				if(textNome.getText().isEmpty()){
-					textNome.setBorder(defaultBorder);
-					textNome.setForeground(Color.GRAY);
-					textNome.setText("ex: José");
-				} else if(!u.validaTexto(textNome.getText())){
-					textNome.setBorder(naoValidou);
-				} else {
-					textNome.setBorder(simValidou);
-				}
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {
-				textNome.setForeground(Color.black);
-				if(textNome.getText().equals("ex: José")){
-					textNome.setText(null);
-				}
-			}
-		});			
+		textNome.addFocusListener(u.focusListenNome(textNome, "ex: José"));			
 		textNome.setBounds(120, 30, 250, 20);
 		container.add(textNome);
 		textNome.setColumns(10);
@@ -214,29 +194,7 @@ public class CadastroFuncionário {
 		textData = new JTextField();
 		textData.setForeground(Color.gray);
 		textData.setText("dd/mm/aaaa");
-		textData.addFocusListener(new FocusListener() {
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				if(textData.getText().isEmpty()){
-					textData.setBorder(defaultBorder);
-					textData.setForeground(Color.GRAY);
-					textData.setText("dd/mm/aaaa");
-				} else if(!u.validaData(textData.getText())){
-					textData.setBorder(naoValidou);
-				} else {
-					textData.setBorder(simValidou);
-				}
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {
-				textData.setForeground(Color.black);
-				if(textData.getText().equals("dd/mm/aaaa")){
-					textData.setText(null);
-				}
-			}
-		});
+		textData.addFocusListener(u.focusListenData(textData, "ex: dd/mm/aaaa"));
 		textData.setBounds(120, 135, 250, 20);
 		container.add(textData);
 		textData.setColumns(10);
@@ -250,29 +208,7 @@ public class CadastroFuncionário {
 		Border border = BorderFactory.createLineBorder(Color.GRAY);
 		textEndereço.setForeground(Color.gray);
 		textEndereço.setText("ex: R. Ayrton Senna da Silva, 500\nEdifício Torre di Pietra - 3° andar - sala - 303");
-		textEndereço.addFocusListener(new FocusListener() {
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				if(textEndereço.getText().isEmpty()){
-					textEndereço.setBorder(defaultBorder);
-					textEndereço.setForeground(Color.GRAY);
-					textEndereço.setText("ex: R. Ayrton Senna da Silva, 500\nEdifício Torre di Pietra - 3° andar - sala - 303");
-				} else if(!u.validaTexto(textEndereço.getText())){
-					textEndereço.setBorder(naoValidou);
-				} else {
-					textEndereço.setBorder(simValidou);
-				}
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {
-				textEndereço.setForeground(Color.black);
-				if(textEndereço.getText().equals("ex: R. Ayrton Senna da Silva, 500\nEdifício Torre di Pietra - 3° andar - sala - 303")){
-					textEndereço.setText(null);
-				}
-			}
-		});
+		textEndereço.addFocusListener(u.focusListenEndereço(textEndereço, "ex: R. Ayrton Senna da Silva, 500\nEdifício Torre di Pietra - 3° andar - sala - 303"));
 	    textEndereço.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(2, 2, 2, 2)));
 	    container.add(textEndereço);	
 		
@@ -331,46 +267,7 @@ public class CadastroFuncionário {
 		textSalario = new JTextField();
 		textSalario.setForeground(Color.gray);
 		textSalario.setText("ex: 400.00");
-		textSalario.addFocusListener(new FocusListener() {
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				if(textSalario.getText().isEmpty() || textSalario.getText().equals("ex: 400.00")){
-					textSalario.setBorder(defaultBorder);
-					textSalario.setForeground(Color.GRAY);
-					textSalario.setText("ex: 400.00");
-				} else if(!u.validaDouble(textSalario.getText())){
-					textSalario.setBorder(naoValidou);
-				} else {
-					textSalario.setBorder(simValidou);
-				}
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {
-				textSalario.setForeground(Color.black);
-				if(textSalario.getText().equals("ex: 400.00")){
-					textSalario.setText(null);
-				}
-				textSalario.addKeyListener(new KeyListener() {
-					
-					@Override
-					public void keyTyped(KeyEvent e) {
-						u.apenasDouble(e);
-					}
-					
-					@Override
-					public void keyReleased(KeyEvent e) {
-						u.apenasDouble(e);	
-					}
-					
-					@Override
-					public void keyPressed(KeyEvent e) {
-						u.apenasDouble(e);	
-					}
-				});
-			}
-		});			
+		textSalario.addFocusListener(u.focusListenDouble(textSalario, "ex: 400.00"));			
 		textSalario.setBounds(120, 205, 250, 20);
 		container.add(textSalario);
 		textSalario.setColumns(10);
@@ -384,47 +281,7 @@ public class CadastroFuncionário {
 		textVA = new JTextField();
 		textVA.setForeground(Color.gray);
 		textVA.setText("ex: 400.00");
-		textVA.addFocusListener(new FocusListener() {
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				if(textVA.getText().isEmpty() || textVA.getText().equals("ex: 400.00")){
-					textVA.setBorder(defaultBorder);
-					textVA.setForeground(Color.GRAY);
-					textVA.setText("ex: 400.00");
-				} else if(!u.validaDouble(textVA.getText())){
-					textVA.setBorder(naoValidou);
-				} else {
-					textVA.setBorder(simValidou);
-				}
-				
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {
-				textVA.setForeground(Color.black);
-				if(textVA.getText().equals("ex: 400.00")){
-					textVA.setText(null);
-				}
-				textVA.addKeyListener(new KeyListener() {
-					
-					@Override
-					public void keyTyped(KeyEvent e) {
-						u.apenasDouble(e);
-					}
-					
-					@Override
-					public void keyReleased(KeyEvent e) {
-						u.apenasDouble(e);
-					}
-					
-					@Override
-					public void keyPressed(KeyEvent e) {
-						u.apenasDouble(e);
-					}
-				});
-			}
-		});
+		textVA.addFocusListener(u.focusListenDouble(textVA, "ex: 400.00"));
 		textVA.setBounds(485, 205, 250, 20);
 		container.add(textVA);
 		textVA.setColumns(10);
@@ -439,46 +296,7 @@ public class CadastroFuncionário {
 		textVR = new JTextField();
 		textVR.setForeground(Color.gray);
 		textVR.setText("ex: 400.00");
-		textVR.addFocusListener(new FocusListener() {
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				if(textVR.getText().isEmpty() || textVR.getText().equals("ex: 400.00")){
-					textVR.setBorder(defaultBorder);
-					textVR.setForeground(Color.GRAY);
-					textVR.setText("ex: 400.00");
-				} else if(!u.validaDouble(textVR.getText())){
-					textVR.setBorder(naoValidou);
-				} else {
-					textVR.setBorder(simValidou);
-				}
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {
-				textVR.setForeground(Color.black);
-				if(textVR.getText().equals("ex: 400.00")){
-					textVR.setText(null);
-				}
-				textVR.addKeyListener(new KeyListener() {
-					
-					@Override
-					public void keyTyped(KeyEvent e) {
-						u.apenasDouble(e);
-					}
-					
-					@Override
-					public void keyReleased(KeyEvent e) {
-						u.apenasDouble(e);
-					}
-					
-					@Override
-					public void keyPressed(KeyEvent e) {
-						u.apenasDouble(e);	
-					}
-				});
-			}
-		});		
+		textVR.addFocusListener(u.focusListenDouble(textVR, "ex: 400.00"));	
 		textVR.setBounds(120, 240, 250, 20);
 		container.add(textVR);
 		textVR.setColumns(10);
@@ -492,46 +310,7 @@ public class CadastroFuncionário {
 		textVT = new JTextField();
 		textVT.setForeground(Color.gray);
 		textVT.setText("ex: 400.00");
-		textVT.addFocusListener(new FocusListener() {
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				if(textVT.getText().isEmpty() || textVT.getText().equals("ex: 400.00")){
-					textVT.setBorder(defaultBorder);
-					textVT.setForeground(Color.GRAY);
-					textVT.setText("ex: 400.00");
-				} else if(!u.validaDouble(textVT.getText())){
-					textVT.setBorder(naoValidou);
-				} else {
-					textVT.setBorder(simValidou);
-				}
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {
-				textVT.setForeground(Color.black);
-				if(textVT.getText().equals("ex: 400.00")){
-					textVT.setText(null);
-				}
-				textVT.addKeyListener(new KeyListener() {
-					
-					@Override
-					public void keyTyped(KeyEvent e) {
-						u.apenasDouble(e);
-					}
-					
-					@Override
-					public void keyReleased(KeyEvent e) {
-						u.apenasDouble(e);
-					}
-					
-					@Override
-					public void keyPressed(KeyEvent e) {
-						u.apenasDouble(e);
-					}
-				});
-			}
-		});
+		textVT.addFocusListener(u.focusListenDouble(textVT, "ex: 400.00"));
 		textVT.setBounds(485, 240, 250, 20);
 		container.add(textVT);
 		textVT.setColumns(10);
@@ -542,46 +321,7 @@ public class CadastroFuncionário {
 		textTelefone = new JTextField();
 		textTelefone.setForeground(Color.GRAY);
 		textTelefone.setText("ex: 43999565338");
-		textTelefone.addFocusListener(new FocusListener() {
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				if(textTelefone.getText().isEmpty()){
-					textTelefone.setBorder(defaultBorder);
-					textTelefone.setForeground(Color.GRAY);
-					textTelefone.setText("ex: 43999565338");
-				} else if(!u.validaApenasNumeros(textTelefone.getText())){
-					textTelefone.setBorder(naoValidou);
-				} else {
-					textTelefone.setBorder(simValidou);
-				}
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {
-				textTelefone.setForeground(Color.black);
-				if(textTelefone.getText().equals("ex: 43999565338")){
-					textTelefone.setText(null);
-				}
-				textTelefone.addKeyListener(new KeyListener() {
-					
-					@Override
-					public void keyTyped(KeyEvent e) {
-						u.apenasNumeros(e);
-					}
-					
-					@Override
-					public void keyReleased(KeyEvent e) {
-						u.apenasNumeros(e);
-					}
-					
-					@Override
-					public void keyPressed(KeyEvent e) {
-						u.apenasNumeros(e);
-					}
-				});
-			}
-		});
+		textTelefone.addFocusListener(u.focusListenInt(textTelefone, "ex: 43999565338"));
 		textTelefone.setBounds(120, 275, 250, 20);
 		container.add(textTelefone);
 		textTelefone.setColumns(10);
@@ -592,29 +332,7 @@ public class CadastroFuncionário {
 		textEMail = new JTextField();
 		textEMail.setForeground(Color.GRAY);
 		textEMail.setText("ex: nome@site.com");
-		textEMail.addFocusListener(new FocusListener() {
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				if(textEMail.getText().isEmpty()){
-					textEMail.setBorder(defaultBorder);
-					textEMail.setForeground(Color.GRAY);
-					textEMail.setText("ex: nome@site.com");
-				} else if(!u.validaTexto(textEMail.getText())){
-					textEMail.setBorder(naoValidou);
-				} else {
-					textEMail.setBorder(simValidou);
-				}
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {
-				textEMail.setForeground(Color.black);
-				if(textEMail.getText().equals("ex: nome@site.com")){
-					textEMail.setText(null);
-				}
-			}
-		});
+		textEMail.addFocusListener(u.focusListenEmail(textEMail, "ex: nome@site.com"));
 		textEMail.setBounds(485, 275, 250, 20);
 		container.add(textEMail);
 		textEMail.setColumns(10);
@@ -637,111 +355,68 @@ public class CadastroFuncionário {
 					textFilhos.setForeground(Color.GRAY);
 					textFilhos.setText("ex: 2");
 				} else {
-					textFilhos.setBorder(simValidou);
-					container.setPreferredSize(new Dimension(750, ((35*Integer.parseInt(textFilhos.getText()))+350)));
-					scroll.setPreferredSize(new Dimension(750, ((35*Integer.parseInt(textFilhos.getText()))+350)));
-					frame.pack();
-					frame.setSize(785, 416);
-					for (int i = 1; i <= Integer.parseInt(textFilhos.getText()); i++) {
-						String label = "Filho " + i + ": ";
-						
-						JLabel lbl = new JLabel(label);
-						lbl.setBounds(40, (35*i)+310, 100, 14);
-						container.add(lbl);
-						
-						JTextField texto = new JTextField();
-						texto.setBounds(120, (35*i)+310, 250, 20);
-						texto.setForeground(Color.gray);
-						texto.setText("ex: José");
-						arrayTextFilhos.add(texto);
-						container.add(texto);
-						
-						JLabel lbl1 = new JLabel("Data de");
-						lbl1.setBounds(415, (35*i)+302, 100, 14);
-						container.add(lbl1);
-						JLabel lbl2 = new JLabel("Nascimento: ");
-						lbl2.setBounds(400, (35*i)+315, 100, 14);
-						container.add(lbl2);
-						
-						JTextField texto2 = new JTextField();
-						texto2.setBounds(485, (35*i)+310, 250, 20);
-						texto2.setForeground(Color.gray);
-						texto2.setText("ex: dd/mm/aaaa");
-						arrayTextDatas.add(texto2);
-						arrayLabels.add(lbl);
-						arrayLabels.add(lbl1);
-						arrayLabels.add(lbl2);
-						container.add(texto2);
-					}
-					for(JTextField text : arrayTextFilhos) {
-						text.addFocusListener(new FocusListener() {
-							
-							@Override
-							public void focusLost(FocusEvent e) {
-								if(text.getText().isEmpty()){
-									text.setBorder(defaultBorder);
-									text.setForeground(Color.GRAY);
-									text.setText("ex: José");
-								} else if(!u.validaTexto(text.getText())){
-									text.setBorder(naoValidou);
-								} else {
-									text.setBorder(simValidou);
-								}
-							}
-							
-							@Override
-							public void focusGained(FocusEvent e) {
-								text.setForeground(Color.black);
-								if(text.getText().equals("ex: José")){
-									text.setText(null);
-								}
-							}
-						});
-					}
-					for(JTextField text : arrayTextDatas) {
-						text.addFocusListener(new FocusListener() {
-							
-							@Override
-							public void focusLost(FocusEvent e) {
-								if(text.getText().isEmpty() || text.getText().equals("ex: dd/mm/aaaa")){
-									text.setBorder(defaultBorder);
-									text.setForeground(Color.GRAY);
-									text.setText("ex: dd/mm/aaaa");
-								} else if(!u.validaData(text.getText())){
-									text.setBorder(naoValidou);
-								} else {
-									text.setBorder(simValidou);
-								}
-							}
-							
-							@Override
-							public void focusGained(FocusEvent e) {
-								text.setForeground(Color.black);
-								if(text.getText().equals("ex: dd/mm/aaaa")){
-									text.setText(null);
-								}
-							}
-						});
-					}
-					if (textFilhos.getText().equals("0")) {
-						for(JTextField texto : arrayTextFilhos) {
-							texto.setText(null);
-							container.remove(texto);
-						}
-						for(JTextField texto : arrayTextDatas) {
-							texto.setText(null);
-							container.remove(texto);
-						}
-						for(JLabel label : arrayLabels) {
-							container.remove(label);
-						}
-						arrayTextFilhos.clear();
-						arrayTextDatas.clear();
-						arrayLabels.clear();
+					if (!filhosAntes.equals(textFilhos.getText())) {
+						textFilhos.setBorder(simValidou);
+						container.setPreferredSize(new Dimension(750, ((35*Integer.parseInt(textFilhos.getText()))+350)));
+						scroll.setPreferredSize(new Dimension(750, ((35*Integer.parseInt(textFilhos.getText()))+350)));
 						frame.pack();
 						frame.setSize(785, 416);
+						for (int i = 1; i <= Integer.parseInt(textFilhos.getText()); i++) {
+							String label = "Filho " + i + ": ";
+							
+							JLabel lbl = new JLabel(label);
+							lbl.setBounds(40, (35*i)+310, 100, 14);
+							container.add(lbl);
+							
+							JTextField texto = new JTextField();
+							texto.setBounds(120, (35*i)+310, 250, 20);
+							texto.setForeground(Color.gray);
+							texto.setText("ex: José");
+							arrayTextFilhos.add(texto);
+							container.add(texto);
+							
+							JLabel lbl1 = new JLabel("Data de");
+							lbl1.setBounds(415, (35*i)+302, 100, 14);
+							container.add(lbl1);
+							JLabel lbl2 = new JLabel("Nascimento: ");
+							lbl2.setBounds(400, (35*i)+315, 100, 14);
+							container.add(lbl2);
+							
+							JTextField texto2 = new JTextField();
+							texto2.setBounds(485, (35*i)+310, 250, 20);
+							texto2.setForeground(Color.gray);
+							texto2.setText("ex: dd/mm/aaaa");
+							arrayTextDatas.add(texto2);
+							arrayLabels.add(lbl);
+							arrayLabels.add(lbl1);
+							arrayLabels.add(lbl2);
+							container.add(texto2);
+						}
+						for(JTextField text : arrayTextFilhos) {
+							text.addFocusListener(u.focusListenNome(text, "ex: José"));
+						}
+						for(JTextField text : arrayTextDatas) {
+							text.addFocusListener(u.focusListenData(text, "ex: dd/mm/aaaa"));
+						}
+						if (textFilhos.getText().equals("0")) {
+							for(JTextField texto : arrayTextFilhos) {
+								texto.setText(null);
+								container.remove(texto);
+							}
+							for(JTextField texto : arrayTextDatas) {
+								texto.setText(null);
+								container.remove(texto);
+							}
+							for(JLabel label : arrayLabels) {
+								container.remove(label);
+							}
+							arrayTextFilhos.clear();
+							arrayTextDatas.clear();
+							arrayLabels.clear();
+							frame.pack();
+							frame.setSize(785, 416);
+						}
 					}
-//					cF.reajustaJanela(Integer.parseInt(textFilhos.getText()), container);
 				}
 			}
 			
@@ -750,24 +425,10 @@ public class CadastroFuncionário {
 				textFilhos.setForeground(Color.black);
 				if(textFilhos.getText().equals("ex: 2")){
 					textFilhos.setText(null);
+				} else {
+					filhosAntes = textFilhos.getText();
 				}
-				textFilhos.addKeyListener(new KeyListener() {
-					
-					@Override
-					public void keyTyped(KeyEvent e) {
-						u.apenasNumeros(e);
-					}
-					
-					@Override
-					public void keyReleased(KeyEvent e) {
-						u.apenasNumeros(e);
-					}
-					
-					@Override
-					public void keyPressed(KeyEvent e) {
-						u.apenasNumeros(e);
-					}
-				});
+				textFilhos.addKeyListener(u.keyListenInt());
 			}
 		});
 		textFilhos.setBounds(120, 310, 250, 20);

@@ -1,16 +1,33 @@
 package tiago.projetos.pj0925.controller;
 
+import java.awt.Color;
+import java.awt.Toolkit;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.awt.event.KeyListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
-import tiago.exercicios.ex0918.LocaleUtil;
+import javax.swing.BorderFactory;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.border.Border;
+
 
 public class ControllerUtil {
+	private Border simValidou;
+	private Border naoValidou;
+	private Border defaultBorder;
+	private Toolkit tk;
+	
+	public ControllerUtil() {
+		naoValidou = BorderFactory.createLineBorder(Color.RED);
+		simValidou = BorderFactory.createLineBorder(Color.GREEN);
+		defaultBorder = new JTextField().getBorder();
+		tk = Toolkit.getDefaultToolkit();
+	}
 	
 	public boolean validaData(String date){
 		if (date == null){
@@ -127,6 +144,7 @@ public class ControllerUtil {
 		if (!Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE && e.getKeyCode() != KeyEvent.VK_LEFT && 
 				e.getKeyCode() != KeyEvent.VK_RIGHT && e.getKeyCode() != KeyEvent.VK_TAB) {
 			e.consume();
+			tk.beep();
 		}
 	}
 	
@@ -135,10 +153,12 @@ public class ControllerUtil {
 		if (texto.length() > limite-1){
 			if(c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE && e.getKeyCode() != KeyEvent.VK_LEFT && e.getKeyCode() != KeyEvent.VK_RIGHT){
 				e.consume();
+				tk.beep();
 			}
 		} else if (!Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE && e.getKeyCode() != KeyEvent.VK_LEFT && e.getKeyCode() != KeyEvent.VK_RIGHT
 				|| texto.length() > limite-1) {
 			e.consume();
+			tk.beep();
 		}
 	}
 	
@@ -147,6 +167,7 @@ public class ControllerUtil {
 		if (!Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE && c != KeyEvent.VK_PERIOD && e.getKeyCode() 
 				!= KeyEvent.VK_LEFT && e.getKeyCode() != KeyEvent.VK_RIGHT && e.getKeyCode() != KeyEvent.VK_TAB) {
 			e.consume();
+			tk.beep();
 		}
 	}
 	
@@ -160,12 +181,231 @@ public class ControllerUtil {
 		return true;
 	}
 	
-//	public String transformaDouble(String input) {
-//		NumberFormat formatter = new DecimalFormat("#.00");
-//		double val1 = Double.valueOf(input);
-//		String saida = formatter.format(val1);
-//		val1 = Double.valueOf(saida);
-//		System.out.println(val1);
-//		return formatter.format(val1);
-//	}
+	public FocusListener focusListenNome(JTextField texto, String exemplo) {
+		return new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(texto.getText().isEmpty() || texto.getText().equals(exemplo)){
+					texto.setBorder(defaultBorder);
+					texto.setForeground(Color.GRAY);
+					texto.setText("ex: José");
+				} else if(!validaTexto(texto.getText())){
+					texto.setBorder(naoValidou);
+				} else {
+					texto.setBorder(simValidou);
+				}
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				texto.setForeground(Color.black);
+				if(texto.getText().equals(exemplo)){
+					texto.setText(null);
+				}
+			}
+		};	
+	}
+	
+	public FocusListener focusListenEndereço(JTextArea texto, String exemplo) {
+		return new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(texto.getText().isEmpty() || texto.getText().equals(exemplo)){
+					texto.setBorder(defaultBorder);
+					texto.setForeground(Color.GRAY);
+					texto.setText(exemplo);
+				} else if(!validaTexto(texto.getText())){
+					texto.setBorder(naoValidou);
+				} else {
+					texto.setBorder(simValidou);
+				}
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				texto.setForeground(Color.black);
+				if(texto.getText().equals(exemplo)){
+					texto.setText(null);
+				}
+			}
+		};	
+	}
+	
+	public FocusListener focusListenDouble(JTextField texto, String exemplo) {
+		return new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(texto.getText().isEmpty() || texto.getText().equals(exemplo)){
+					texto.setBorder(defaultBorder);
+					texto.setForeground(Color.GRAY);
+					texto.setText(exemplo);
+				} else if(!validaDouble(texto.getText())){
+					texto.setBorder(naoValidou);
+				} else {
+					texto.setBorder(simValidou);
+				}
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				texto.setForeground(Color.black);
+				if(texto.getText().equals(exemplo)){
+					texto.setText(null);
+				}
+				texto.addKeyListener(keyListenDouble());
+			}
+		};	
+	}
+	
+	public KeyListener keyListenDouble() {
+		return new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent e) {
+				apenasDouble(e);
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				apenasDouble(e);	
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				apenasDouble(e);	
+			}
+		};
+	}
+	
+	public FocusListener focusListenInt(JTextField texto, String exemplo) {
+		return new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(texto.getText().isEmpty() || texto.getText().equals(exemplo)){
+					texto.setBorder(defaultBorder);
+					texto.setForeground(Color.GRAY);
+					texto.setText(exemplo);
+				} else if(!validaApenasNumeros(texto.getText())){
+					texto.setBorder(naoValidou);
+				} else {
+					texto.setBorder(simValidou);
+				}
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				texto.setForeground(Color.black);
+				if(texto.getText().equals(exemplo)){
+					texto.setText(null);
+				}
+				texto.addKeyListener(keyListenInt());
+			}
+		};
+	}
+			
+	public KeyListener keyListenInt() {
+		return new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent e) {
+				apenasNumeros(e);	
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				apenasNumeros(e);		
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				apenasNumeros(e);
+			}
+		};
+	}
+	
+	public FocusListener focusListenEmail(JTextField texto, String exemplo) {
+		return new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(texto.getText().isEmpty() || texto.getText().equals(exemplo)){
+					texto.setBorder(defaultBorder);
+					texto.setForeground(Color.GRAY);
+					texto.setText(exemplo);
+				} else if(!validaEmail(texto.getText())){
+					texto.setBorder(naoValidou);
+				} else {
+					texto.setBorder(simValidou);
+				}
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				texto.setForeground(Color.black);
+				if(texto.getText().equals(exemplo)){
+					texto.setText(null);
+				}
+			}
+		};
+	}
+	
+	public void apenasData(KeyEvent e) {
+		char c = e.getKeyChar();
+		if (!Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE && c != KeyEvent.VK_SLASH && e.getKeyCode() 
+				!= KeyEvent.VK_LEFT && e.getKeyCode() != KeyEvent.VK_RIGHT && e.getKeyCode() != KeyEvent.VK_TAB) {
+			e.consume();
+			tk.beep();
+		}
+	}
+	
+	public FocusListener focusListenData(JTextField texto, String exemplo) {
+		return new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(texto.getText().isEmpty() || texto.getText().equals(exemplo)){
+					texto.setBorder(defaultBorder);
+					texto.setForeground(Color.GRAY);
+					texto.setText(exemplo);
+				} else if(!validaData(texto.getText())){
+					texto.setBorder(naoValidou);
+				} else {
+					texto.setBorder(simValidou);
+				}
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				texto.setForeground(Color.black);
+				if(texto.getText().equals(exemplo)){
+					texto.setText(null);
+				}
+				texto.addKeyListener(keyListenData());
+			}
+		};
+	}
+	
+	public KeyListener keyListenData() {
+		return new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent e) {
+				apenasData(e);	
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				apenasData(e);		
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				apenasData(e);
+			}
+		};
+	}
 }
