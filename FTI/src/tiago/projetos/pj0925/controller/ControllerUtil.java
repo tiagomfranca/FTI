@@ -408,4 +408,53 @@ public class ControllerUtil {
 			}
 		};
 	}
+	
+	public FocusListener focusListenLimiteNumeros(JTextField texto, String exemplo, int limite) {
+		return	new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(texto.getText().isEmpty() || texto.getText().equals(exemplo)){
+					texto.setForeground(Color.GRAY);
+					texto.setText(exemplo);
+				} else if(!validaApenasNumeros(texto.getText())){
+					texto.setBorder(naoValidou);
+				} else {
+					texto.setBorder(simValidou);
+				}
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				texto.setForeground(Color.black);
+				if(texto.getText().equals(exemplo)){
+					texto.setText(null);
+				}
+				texto.addKeyListener(keyListenLimiteNumeros(texto, limite));
+			}
+		};
+	}
+	
+	public KeyListener keyListenLimiteNumeros(JTextField texto, int limite) {
+		return new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent e) {
+				apenasNumerosLimite(e, texto.getText(), 9);
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				apenasNumerosLimite(e, texto.getText(), limite);
+				if (texto.getText().length() == limite){
+					texto.setBorder(simValidou);
+				}
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				apenasNumerosLimite(e, texto.getText(), limite);
+			}
+		};
+	}
 }
