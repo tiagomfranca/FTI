@@ -1,11 +1,14 @@
 package tiago.projetos.pj0925.controller;
 
 import java.awt.event.KeyEvent;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import tiago.exercicios.ex0918.LocaleUtil;
 
 public class ControllerUtil {
 	
@@ -121,7 +124,8 @@ public class ControllerUtil {
 	
 	public void apenasNumeros(KeyEvent e) {
 		char c = e.getKeyChar();
-		if (!Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE && e.getKeyCode() != KeyEvent.VK_LEFT && e.getKeyCode() != KeyEvent.VK_RIGHT) {
+		if (!Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE && e.getKeyCode() != KeyEvent.VK_LEFT && 
+				e.getKeyCode() != KeyEvent.VK_RIGHT && e.getKeyCode() != KeyEvent.VK_TAB) {
 			e.consume();
 		}
 	}
@@ -138,6 +142,14 @@ public class ControllerUtil {
 		}
 	}
 	
+	public void apenasDouble(KeyEvent e) {
+		char c = e.getKeyChar();
+		if (!Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE && c != KeyEvent.VK_PERIOD && e.getKeyCode() 
+				!= KeyEvent.VK_LEFT && e.getKeyCode() != KeyEvent.VK_RIGHT && e.getKeyCode() != KeyEvent.VK_TAB) {
+			e.consume();
+		}
+	}
+	
 	public boolean validaDouble(String input){
 		try {
 			Double teste = (Double.parseDouble(input));
@@ -147,4 +159,13 @@ public class ControllerUtil {
 		}		
 		return true;
 	}
+	
+//	public String transformaDouble(String input) {
+//		NumberFormat formatter = new DecimalFormat("#.00");
+//		double val1 = Double.valueOf(input);
+//		String saida = formatter.format(val1);
+//		val1 = Double.valueOf(saida);
+//		System.out.println(val1);
+//		return formatter.format(val1);
+//	}
 }
