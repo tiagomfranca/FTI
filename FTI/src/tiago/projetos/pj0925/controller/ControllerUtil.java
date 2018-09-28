@@ -457,4 +457,56 @@ public class ControllerUtil {
 			}
 		};
 	}
+	
+	public FocusListener focusListenCpf(JTextField texto){
+		return new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(texto.getText().equals("") || texto.getText().equals("ex: 12345678901")){
+					texto.setForeground(Color.GRAY);
+					texto.setBorder(defaultBorder);
+					texto.setText("ex: 12345678901");
+				} else if (validaCpf(texto.getText())){
+					texto.setBorder(naoValidou);
+				} else {
+					texto.setBorder(simValidou);
+				}
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				texto.setForeground(Color.black);
+				if(texto.getText().equals("ex: 12345678901")){
+					texto.setText(null);
+				}
+				texto.addKeyListener(new KeyListener() {
+					
+					@Override
+					public void keyTyped(KeyEvent e) {
+						apenasNumerosLimite(e, texto.getText(), 11);
+					}
+					
+					@Override
+					public void keyReleased(KeyEvent e) {
+						apenasNumerosLimite(e, texto.getText(), 11);
+						if (texto.getText().length() == 11){
+							if (validaCpf(texto.getText())){
+								texto.setBorder(simValidou);
+							} else {
+								texto.setBorder(naoValidou);
+							}
+						} else {
+							texto.setBorder(naoValidou);
+						}
+					}
+					
+					@Override
+					public void keyPressed(KeyEvent e) {
+						apenasNumerosLimite(e, texto.getText(), 11);
+					}
+				});
+			}
+		};
+	}
 }
