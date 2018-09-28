@@ -32,6 +32,7 @@ public class CadastroFuncionário {
 	private ArrayList<JTextField> arrayTextFilhos;
 	private ArrayList<JTextField> arrayTextDatas;
 	private ArrayList<JLabel> arrayLabels;
+	private ArrayList<Pessoa> arrayFilhos;
 	
 	private Border naoValidou;
 	private Border simValidou;
@@ -67,6 +68,7 @@ public class CadastroFuncionário {
 		arrayTextFilhos = new ArrayList<JTextField>();
 		arrayTextDatas = new ArrayList<JTextField>();
 		arrayLabels = new ArrayList<JLabel>();
+		arrayFilhos = new ArrayList<Pessoa>();
 	}
 
 	private void iniciaJanela() {
@@ -93,7 +95,7 @@ public class CadastroFuncionário {
 		frame.getContentPane().add(scroll);
 		
 		lblNome = new JLabel("Nome:* ");
-		lblNome.setBounds(30, 30, 100, 14);
+		lblNome.setBounds(45, 30, 100, 14);
 		container.add(lblNome);
 		textNome = new JTextField();
 		Border defaultBorder = textNome.getBorder();
@@ -125,27 +127,27 @@ public class CadastroFuncionário {
 		textNome.setColumns(10);
 		
 		JLabel lblSexo = new JLabel("Sexo:* ");
-		lblSexo.setBounds(30, 100, 46, 14);
+		lblSexo.setBounds(47, 100, 46, 14);
 		container.add(lblSexo);
 		
 		JLabel lblMale = new JLabel("Masculino");
 		lblMale.setBounds(168, 100, 60, 14);
 		container.add(lblMale);
 		
-		JRadioButton radioButtonMale = new JRadioButton("");
-		radioButtonMale.setBounds(148, 97, 20, 23);
-		container.add(radioButtonMale);
+		JRadioButton botaoMale = new JRadioButton("");
+		botaoMale.setBounds(148, 97, 20, 23);
+		container.add(botaoMale);
 		
 		JLabel lblFemale = new JLabel("Feminino");
 		lblFemale.setBounds(285, 100, 60, 14);
 		container.add(lblFemale);
 		
-		JRadioButton radioButtonFemale = new JRadioButton("");
-		radioButtonFemale.setBounds(265, 97, 20, 23);
-		container.add(radioButtonFemale);
+		JRadioButton botaoFemale = new JRadioButton("");
+		botaoFemale.setBounds(265, 97, 20, 23);
+		container.add(botaoFemale);
 		
 		JLabel lblCpf = new JLabel("CPF:* ");
-		lblCpf.setBounds(30, 65, 100, 14);
+		lblCpf.setBounds(52, 65, 100, 14);
 		container.add(lblCpf);
 		textCpf = new JTextField();
 		textCpf.setForeground(Color.gray);
@@ -279,23 +281,23 @@ public class CadastroFuncionário {
 		container.add(lblDisciplina);
 		lblDisciplina.setVisible(false);
 		
-		JComboBox<String> comboBox = new JComboBox<String>();
-		comboBox.addItem("Selecionar...");
-		comboBox.addItem("Banco de Dados");
-		comboBox.addItem("Front-end");
-		comboBox.addItem("Java WEB");
-		comboBox.addItem("Linguagem de Programação Java");
-		comboBox.addItem("Outros");
-		comboBox.addActionListener(new ActionListener() {
+		JComboBox<String> boxDisciplina = new JComboBox<String>();
+		boxDisciplina.addItem("Selecionar...");
+		boxDisciplina.addItem("Banco de Dados");
+		boxDisciplina.addItem("Front-end");
+		boxDisciplina.addItem("Java WEB");
+		boxDisciplina.addItem("Linguagem de Programação Java");
+		boxDisciplina.addItem("Outros");
+		boxDisciplina.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
-		comboBox.setBounds(485, 170, 250, 20);
-		container.add(comboBox);
-		comboBox.setVisible(false);
+		boxDisciplina.setBounds(485, 170, 250, 20);
+		container.add(boxDisciplina);
+		boxDisciplina.setVisible(false);
 		
 		JLabel lblCargo = new JLabel("Cargo:* ");
-		lblCargo.setBounds(30, 170, 67, 14);
+		lblCargo.setBounds(45, 170, 67, 14);
 		container.add(lblCargo);
 		
 		JComboBox<String> boxCargo = new JComboBox<String>();
@@ -310,12 +312,12 @@ public class CadastroFuncionário {
 		boxCargo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if(boxCargo.getSelectedItem().equals("Professor")){
-					comboBox.setVisible(true);
+					boxDisciplina.setVisible(true);
 					lblDisciplina.setVisible(true);
 				} else {
-				comboBox.setVisible(false);
+				boxDisciplina.setVisible(false);
 				lblDisciplina.setVisible(false);
-				comboBox.setSelectedItem("Selecionar...");
+				boxDisciplina.setSelectedItem("Selecionar...");
 				}
 			}
 		});
@@ -323,7 +325,7 @@ public class CadastroFuncionário {
 		container.add(boxCargo);
 		
 		JLabel lblSalario = new JLabel("Salario:* ");
-		lblSalario.setBounds(30, 205, 67, 14);
+		lblSalario.setBounds(41, 205, 67, 14);
 		container.add(lblSalario);
 		
 		textSalario = new JTextField();
@@ -409,19 +411,16 @@ public class CadastroFuncionário {
 					@Override
 					public void keyTyped(KeyEvent e) {
 						u.apenasDouble(e);
-						
 					}
 					
 					@Override
 					public void keyReleased(KeyEvent e) {
 						u.apenasDouble(e);
-						
 					}
 					
 					@Override
 					public void keyPressed(KeyEvent e) {
 						u.apenasDouble(e);
-						
 					}
 				});
 			}
@@ -434,7 +433,7 @@ public class CadastroFuncionário {
 		lblVR.setBounds(51, 231, 58, 14);
 		container.add(lblVR);
 		JLabel lblVR2 = new JLabel("Refeição: ");
-		lblVR2.setBounds(30, 247, 58, 14);
+		lblVR2.setBounds(39, 247, 58, 14);
 		container.add(lblVR2);
 		
 		textVR = new JTextField();
@@ -453,7 +452,6 @@ public class CadastroFuncionário {
 				} else {
 					textVR.setBorder(simValidou);
 				}
-				
 			}
 			
 			@Override
@@ -467,19 +465,16 @@ public class CadastroFuncionário {
 					@Override
 					public void keyTyped(KeyEvent e) {
 						u.apenasDouble(e);
-						
 					}
 					
 					@Override
 					public void keyReleased(KeyEvent e) {
 						u.apenasDouble(e);
-						
 					}
 					
 					@Override
 					public void keyPressed(KeyEvent e) {
-						u.apenasDouble(e);
-						
+						u.apenasDouble(e);	
 					}
 				});
 			}
@@ -510,7 +505,6 @@ public class CadastroFuncionário {
 				} else {
 					textVT.setBorder(simValidou);
 				}
-				
 			}
 			
 			@Override
@@ -524,19 +518,16 @@ public class CadastroFuncionário {
 					@Override
 					public void keyTyped(KeyEvent e) {
 						u.apenasDouble(e);
-						
 					}
 					
 					@Override
 					public void keyReleased(KeyEvent e) {
 						u.apenasDouble(e);
-						
 					}
 					
 					@Override
 					public void keyPressed(KeyEvent e) {
 						u.apenasDouble(e);
-						
 					}
 				});
 			}
@@ -546,7 +537,7 @@ public class CadastroFuncionário {
 		textVT.setColumns(10);
 		
 		JLabel lblTelefone = new JLabel("Telefone:* ");
-		lblTelefone.setBounds(30, 275, 60, 14);
+		lblTelefone.setBounds(38, 275, 60, 14);
 		container.add(lblTelefone);
 		textTelefone = new JTextField();
 		textTelefone.setForeground(Color.GRAY);
@@ -631,7 +622,7 @@ public class CadastroFuncionário {
 		JLabel lblFilhos = new JLabel("Número de ");
 		lblFilhos.setBounds(30, 302, 100, 14);
 		container.add(lblFilhos);
-		JLabel lblFilhos2 = new JLabel("filhos*: ");
+		JLabel lblFilhos2 = new JLabel("filhos:* ");
 		lblFilhos2.setBounds(45, 315, 100, 14);
 		container.add(lblFilhos2);
 		textFilhos = new JTextField();
@@ -797,7 +788,9 @@ public class CadastroFuncionário {
 		
 		botaoCadastrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				double valorVA, valorVR, valorVT;
+				double valorVA = 1;
+				double valorVR = 1;
+				double valorVT = 1;
 				Date data = new Date();
 				char sexo = '0';
 				String erros = "";
@@ -821,11 +814,11 @@ public class CadastroFuncionário {
 					erros = erros + "Campo Endereço deve ser preenchido;\n";
 					numeros++;
 				}
-				if(!radioButtonMale.isSelected() && !radioButtonFemale.isSelected()){
+				if(!botaoMale.isSelected() && !botaoFemale.isSelected()){
 					erros = erros + "É necessário informar seu gênero;\n";
 					numeros++;
 				} else {
-					if(radioButtonMale.isSelected()) {
+					if(botaoMale.isSelected()) {
 						sexo = 'M';
 					} else {
 						sexo = 'F';
@@ -899,8 +892,30 @@ public class CadastroFuncionário {
 				}
 				if (numeros == 0){
 					data = u.transformaData(textData.getText());
-//					Professor p = new Professor(textNome.getText(), textCpf.getText(), data, textEndereço.getText(), sexo, comboBox.getSelectedItem().toString(), textTelefone.getText(), textEMail.getText());
-//					cP.cadastraProfessor(p);
+					if(valorVA != 0) {
+						valorVA = Double.parseDouble(textVA.getText());
+					}
+					if(valorVR != 0) {
+						valorVR = Double.parseDouble(textVR.getText());
+					}
+					if(valorVT != 0) {
+						valorVT = Double.parseDouble(textVT.getText());
+					}
+					if(!textFilhos.getText().equals("0")) {
+						for(JTextField text : arrayTextFilhos) {
+							Pessoa filho = new Pessoa(text.getText(), u.transformaData(arrayTextDatas.get(arrayTextFilhos.indexOf(text)).getText()));
+							arrayFilhos.add(filho);
+						}
+					}
+					if(boxCargo.getSelectedItem().equals("Professor")) {
+						Professor p = new Professor(textNome.getText(), textCpf.getText(), u.transformaData(textData.getText()), textEndereço.getText(), sexo, boxCargo.getSelectedItem().toString(), boxDisciplina.getSelectedItem().toString(),
+								Double.parseDouble(textSalario.getText()), valorVA, valorVT, valorVR, Integer.parseInt(textFilhos.getText()), arrayFilhos, textTelefone.getText(), textEMail.getText());
+						cF.cadastraProfessor(p);
+					} else {
+						Funcionário f = new Funcionário(textNome.getText(), textCpf.getText(), u.transformaData(textData.getText()), textEndereço.getText(), sexo, boxCargo.getSelectedItem().toString(),
+								Double.parseDouble(textSalario.getText()), valorVA, valorVT, valorVR, Integer.parseInt(textFilhos.getText()), arrayFilhos, textTelefone.getText(), textEMail.getText());
+						cF.cadastraFuncionário(f);
+					}
 					JOptionPane.showMessageDialog(null, "Cadastro efetuado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 				} else {
 					JOptionPane.showMessageDialog(null, erros, numeros + " erros encontrados:", JOptionPane.ERROR_MESSAGE);
@@ -942,32 +957,34 @@ public class CadastroFuncionário {
 				textTelefone.setText("ex: 43999565338");
 				textEMail.setText("ex: nome@site.com");
 				textFilhos.setText("ex: 2");
-				radioButtonFemale.setSelected(false);
-				radioButtonMale.setSelected(false);
+				botaoFemale.setSelected(false);
+				botaoMale.setSelected(false);
 				boxCargo.setSelectedItem("Selecionar...");
-				comboBox.setSelectedItem("Selecionar...");
+				boxDisciplina.setSelectedItem("Selecionar...");
 				for(JTextField text : arrayTextDatas) {
-					text.setBorder(defaultBorder);
-					text.setForeground(Color.gray);
-					text.setText("dd/mm/aaaa");
+					container.remove(text);
 				}
 				for(JTextField text : arrayTextFilhos) {
-					text.setBorder(defaultBorder);
-					text.setForeground(Color.gray);
-					text.setText("ex: José");
+					container.remove(text);
 				}
+				for(JLabel label : arrayLabels) {
+					container.remove(label);
+				}
+				container.setPreferredSize(new Dimension(750, 350));
+				frame.pack();
+				frame.setSize(785, 416);	
 			}
 		});
 		
-		radioButtonFemale.addActionListener(new ActionListener(){
+		botaoFemale.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				radioButtonMale.setSelected(false);
+				botaoMale.setSelected(false);
 			}
 		});
 		
-		radioButtonMale.addActionListener(new ActionListener(){
+		botaoMale.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				radioButtonFemale.setSelected(false);
+				botaoFemale.setSelected(false);
 			}
 		});
     }
