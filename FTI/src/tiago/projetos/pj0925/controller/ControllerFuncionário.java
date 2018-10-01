@@ -27,11 +27,9 @@ public class ControllerFuncionário {
 	
 	public ControllerFuncionário(){
 		border = BorderFactory.createLineBorder(Color.GRAY);
-		border = 
 		defaultBorder = new JTextField().getBorder();
 	}
 	public void cadastraProfessor(Professor p) {
-		// TODO Auto-generated method stub
 		
 	}
 	public void cadastraFuncionário(Funcionário f) {
@@ -91,26 +89,26 @@ public class ControllerFuncionário {
 				numeros++;
 			}
 		}
-		if(textSalario.equals("ex: 400.00")) {
+		if(textSalario.equals("ex: 400,00")) {
 			erros = erros + "É necessário informar o salário;\n";
 			numeros++;
 		} else if(!u.validaDouble(textSalario)) {
-			erros = erros + "Salário inválido (exemplo: 400.00);\n";
+			erros = erros + "Salário inválido (exemplo: 400,00);\n";
 		}
-		if(textVA.equals("ex: 400.00")) {
+		if(textVA.equals("ex: 400,00")) {
 			valorVA = 0;
 		} else if(!u.validaDouble(textVA)) {
-			erros = erros + "Valor do vale alimentação inválido (exemplo: 400.00);\n";
+			erros = erros + "Valor do vale alimentação inválido (exemplo: 400,00);\n";
 		}
-		if(textVR.equals("ex: 400.00")) {
+		if(textVR.equals("ex: 400,00")) {
 			valorVR = 0;
 		} else if(!u.validaDouble(textVR)) {
-			erros = erros + "Valor do vale refeição inválido (exemplo: 400.00);\n";
+			erros = erros + "Valor do vale refeição inválido (exemplo: 400,00);\n";
 		}
-		if(textVT.equals("ex: 400.00")) {
+		if(textVT.equals("ex: 400,00")) {
 			valorVT = 0;
 		} else if(!u.validaDouble(textVT)) {
-			erros = erros + "Valor do vale transporte inválido (exemplo: 400.00);\n";
+			erros = erros + "Valor do vale transporte inválido (exemplo: 400,00);\n";
 		}
 		if(textTelefone.equals("") || textTelefone.equals("ex: 43999565338")){
 			erros = erros + "Campo Telefone deve ser preenchido;\n";

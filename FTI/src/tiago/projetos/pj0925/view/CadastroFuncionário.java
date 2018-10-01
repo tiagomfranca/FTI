@@ -65,6 +65,10 @@ public class CadastroFuncionário {
 		arrayLabels = new ArrayList<JLabel>();
 		filhosAntes = "";
 	}
+	
+	public JFrame getFrame(){
+		return frame;
+	}
 
 	private void iniciaJanela() {
 		ControllerUtil u = new ControllerUtil();
@@ -77,13 +81,13 @@ public class CadastroFuncionário {
 		container.setLocation(0,0);
 		container.setPreferredSize(new Dimension(750, 385));
 		
-		JScrollPane scroll = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		JScrollPane scroll = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scroll.setSize(800,385);
 		scroll.setLocation(0, 100);
 		scroll.getViewport().add(container);
 		
 		frame = new JFrame("Cadastro");
-		frame.setResizable(false);
+		//frame.setResizable(false);
 		frame.setSize(785, 451);
 		frame.setLocation(200, 200);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -105,9 +109,8 @@ public class CadastroFuncionário {
 		lblNome = new JLabel("Nome:* ");
 		lblNome.setBounds(45, 65, 100, 14);
 		container.add(lblNome);
-		textNome = new JTextField();
+		textNome = new JTextField("ex: José");
 		Border defaultBorder = textNome.getBorder();
-		textNome.setText("ex: José");
 		textNome.setForeground(Color.gray);
 		textNome.addFocusListener(u.focusListenNome(textNome, "ex: José"));			
 		textNome.setBounds(120, 65, 250, 20);
@@ -117,9 +120,8 @@ public class CadastroFuncionário {
 		JLabel lblCpf = new JLabel("CPF:* ");
 		lblCpf.setBounds(52, 100, 100, 14);
 		container.add(lblCpf);
-		textCpf = new JTextField();
+		textCpf = new JTextField("ex: 12345678901");
 		textCpf.setForeground(Color.gray);
-		textCpf.setText("ex: 12345678901");
 		textCpf.addFocusListener(u.focusListenCpf(textCpf));
 		textCpf.setBounds(120, 100, 250, 20);
 		container.add(textCpf);
@@ -152,9 +154,8 @@ public class CadastroFuncionário {
 		JLabel lblData2 = new JLabel("Nascimento:* ");
 		lblData2.setBounds(30, 180, 100, 14);
 		container.add(lblData2);
-		textData = new JTextField();
+		textData = new JTextField("dd/mm/aaaa");
 		textData.setForeground(Color.gray);
-		textData.setText("dd/mm/aaaa");
 		textData.addFocusListener(u.focusListenData(textData, "dd/mm/aaaa"));
 		textData.setBounds(120, 170, 250, 20);
 		container.add(textData);
@@ -164,11 +165,10 @@ public class CadastroFuncionário {
 		lblEndereço.setBounds(405, 65, 80, 14);
 		container.add(lblEndereço);
 				
-		JTextArea textEndereço = new JTextArea();
+		JTextArea textEndereço = new JTextArea("ex: R. Ayrton Senna da Silva, 500\nEdifício Torre di Pietra - 3° andar - sala - 303");
 		textEndereço.setBounds(485, 65, 250, 125);
 		Border border = BorderFactory.createLineBorder(Color.GRAY);
 		textEndereço.setForeground(Color.gray);
-		textEndereço.setText("ex: R. Ayrton Senna da Silva, 500\nEdifício Torre di Pietra - 3° andar - sala - 303");
 		textEndereço.addFocusListener(u.focusListenEndereço(textEndereço, "ex: R. Ayrton Senna da Silva, 500\nEdifício Torre di Pietra - 3° andar - sala - 303"));
 	    textEndereço.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(2, 2, 2, 2)));
 	    container.add(textEndereço);	
@@ -221,10 +221,9 @@ public class CadastroFuncionário {
 		lblSalario.setBounds(41, 240, 67, 14);
 		container.add(lblSalario);
 		
-		textSalario = new JTextField();
+		textSalario = new JTextField("ex: 400,00");
 		textSalario.setForeground(Color.gray);
-		textSalario.setText("ex: 400.00");
-		textSalario.addFocusListener(u.focusListenDouble(textSalario, "ex: 400.00"));			
+		textSalario.addFocusListener(u.focusListenDouble(textSalario, "ex: 400,00"));			
 		textSalario.setBounds(120, 240, 250, 20);
 		container.add(textSalario);
 		textSalario.setColumns(10);
@@ -235,10 +234,9 @@ public class CadastroFuncionário {
 		JLabel lblVA2 = new JLabel("Alimentação:");
 		lblVA2.setBounds(402, 247, 80, 14);
 		container.add(lblVA2);
-		textVA = new JTextField();
+		textVA = new JTextField("ex: 400,00");
 		textVA.setForeground(Color.gray);
-		textVA.setText("ex: 400.00");
-		textVA.addFocusListener(u.focusListenDouble(textVA, "ex: 400.00"));
+		textVA.addFocusListener(u.focusListenDouble(textVA, "ex: 400,00"));
 		textVA.setBounds(485, 240, 250, 20);
 		container.add(textVA);
 		textVA.setColumns(10);
@@ -249,11 +247,9 @@ public class CadastroFuncionário {
 		JLabel lblVR2 = new JLabel("Refeição: ");
 		lblVR2.setBounds(39, 282, 58, 14);
 		container.add(lblVR2);
-		
-		textVR = new JTextField();
+		textVR = new JTextField("ex: 400,00");
 		textVR.setForeground(Color.gray);
-		textVR.setText("ex: 400.00");
-		textVR.addFocusListener(u.focusListenDouble(textVR, "ex: 400.00"));	
+		textVR.addFocusListener(u.focusListenDouble(textVR, "ex: 400,00"));	
 		textVR.setBounds(120, 275, 250, 20);
 		container.add(textVR);
 		textVR.setColumns(10);
@@ -264,10 +260,9 @@ public class CadastroFuncionário {
 		JLabel lblVT2 = new JLabel("Transporte:");
 		lblVT2.setBounds(402, 282, 80, 14);
 		container.add(lblVT2);
-		textVT = new JTextField();
+		textVT = new JTextField("ex: 400,00");
 		textVT.setForeground(Color.gray);
-		textVT.setText("ex: 400.00");
-		textVT.addFocusListener(u.focusListenDouble(textVT, "ex: 400.00"));
+		textVT.addFocusListener(u.focusListenDouble(textVT, "ex: 400,00"));
 		textVT.setBounds(485, 275, 250, 20);
 		container.add(textVT);
 		textVT.setColumns(10);
@@ -275,9 +270,8 @@ public class CadastroFuncionário {
 		JLabel lblTelefone = new JLabel("Telefone:* ");
 		lblTelefone.setBounds(38, 310, 60, 14);
 		container.add(lblTelefone);
-		textTelefone = new JTextField();
+		textTelefone = new JTextField("ex: 43999565338");
 		textTelefone.setForeground(Color.GRAY);
-		textTelefone.setText("ex: 43999565338");
 		textTelefone.addFocusListener(u.focusListenInt(textTelefone, "ex: 43999565338"));
 		textTelefone.setBounds(120, 310, 250, 20);
 		container.add(textTelefone);
@@ -286,9 +280,8 @@ public class CadastroFuncionário {
 		JLabel lblEMail = new JLabel("e-mail:* ");
 		lblEMail.setBounds(414, 310, 60, 14);
 		container.add(lblEMail);
-		textEMail = new JTextField();
+		textEMail = new JTextField("ex: nome@site.com");
 		textEMail.setForeground(Color.GRAY);
-		textEMail.setText("ex: nome@site.com");
 		textEMail.addFocusListener(u.focusListenEmail(textEMail, "ex: nome@site.com"));
 		textEMail.setBounds(485, 310, 250, 20);
 		container.add(textEMail);
@@ -300,9 +293,8 @@ public class CadastroFuncionário {
 		JLabel lblFilhos2 = new JLabel("filhos:* ");
 		lblFilhos2.setBounds(45, 350, 100, 14);
 		container.add(lblFilhos2);
-		textFilhos = new JTextField();
+		textFilhos = new JTextField("ex: 2");
 		textFilhos.setForeground(Color.GRAY);
-		textFilhos.setText("ex: 2");
 		textFilhos.addFocusListener(new FocusListener() {
 			
 			@Override
@@ -380,8 +372,8 @@ public class CadastroFuncionário {
 		botaoCadastrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				cF.botaoCadastrar(textCadastro.getText(), textNome.getText(), textCpf.getText(), botaoMale.isSelected(), botaoFemale.isSelected(), textData.getText(),
-						textEndereço.getText(), boxCargo.getSelectedItem().toString(), boxDisciplina.getSelectedItem().toString(), textSalario.getText(), textVA.getText(),
-						textVR.getText(), textVT.getText(), textTelefone.getText(), textEMail.getText(), textFilhos.getText(), arrayTextFilhos, arrayTextDatas);
+						textEndereço.getText(), boxCargo.getSelectedItem().toString(), boxDisciplina.getSelectedItem().toString(), textSalario.getText().replace(',','.'), textVA.getText().replace(',','.'),
+						textVR.getText().replace(',','.'), textVT.getText().replace(',','.'), textTelefone.getText(), textEMail.getText(), textFilhos.getText(), arrayTextFilhos, arrayTextDatas);
 			}
 		});
 		

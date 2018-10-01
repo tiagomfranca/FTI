@@ -21,6 +21,7 @@ public class ControllerUtil {
 	private Border naoValidou;
 	private Border defaultBorder;
 	private Toolkit tk;
+	private static int countNum;
 	
 	public ControllerUtil() {
 		naoValidou = BorderFactory.createLineBorder(Color.RED);
@@ -164,7 +165,50 @@ public class ControllerUtil {
 	
 	public void apenasDouble(KeyEvent e) {
 		char c = e.getKeyChar();
-		if (!Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE && c != KeyEvent.VK_PERIOD && e.getKeyCode() 
+//		System.out.println(e.getKeyCode());
+//		System.out.println();
+		//System.out.println(KeyEvent.VK_DECIMAL + "      " + KeyEvent.VK_SEPARATOR + "   " + KeyEvent.VK_SEPARATER);
+		if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE && countNum == 3){
+			countNum = 0;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_DECIMAL){
+			if (countNum == 0){
+				countNum = 1;
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_COMMA) {
+			if (countNum == 0){
+				countNum = 1;
+			} else {
+				e.consume();
+			}
+		}
+		if (countNum > 0){
+			if (countNum < 5){
+				if (Character.isDigit(c)){
+					countNum++;
+				}
+			} else {
+				if (Character.isDigit(c) || e.getKeyCode() == KeyEvent.VK_COMMA || e.getKeyCode() == KeyEvent.VK_DECIMAL || e.getKeyCode() == KeyEvent.VK_SEPARATOR){
+					e.consume();
+				}
+			}
+		}
+		if (countNum > 0){
+			switch (e.getKeyCode()){
+				case KeyEvent.VK_LEFT: countNum-=2; if(countNum==1)countNum=0; break;
+				case KeyEvent.VK_BACK_SPACE: countNum-=2; if(countNum==1)countNum=0; break;
+				case KeyEvent.VK_COMMA: e.consume(); break;
+				case KeyEvent.VK_SEPARATOR: e.consume(); break;
+				case KeyEvent.VK_DECIMAL: e.consume(); break;
+			}
+		}
+		if (countNum < 5 && countNum > 0){
+			switch (e.getKeyCode()){
+			case KeyEvent.VK_RIGHT: countNum+=2; System.out.println(countNum); break;
+			}
+		}
+		if (!Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE && c != KeyEvent.VK_COMMA && e.getKeyCode() 
 				!= KeyEvent.VK_LEFT && e.getKeyCode() != KeyEvent.VK_RIGHT && e.getKeyCode() != KeyEvent.VK_TAB) {
 			e.consume();
 			tk.beep();
@@ -242,7 +286,7 @@ public class ControllerUtil {
 					texto.setBorder(defaultBorder);
 					texto.setForeground(Color.GRAY);
 					texto.setText(exemplo);
-				} else if(!validaDouble(texto.getText())){
+				} else if(!validaDouble(texto.getText().replace(',','.'))){
 					texto.setBorder(naoValidou);
 				} else {
 					texto.setBorder(simValidou);
@@ -251,9 +295,14 @@ public class ControllerUtil {
 			
 			@Override
 			public void focusGained(FocusEvent e) {
+				countNum = 0;
 				texto.setForeground(Color.black);
 				if(texto.getText().equals(exemplo)){
 					texto.setText(null);
+				} else {
+					countNum = 0;
+					String[] substitui = texto.getText().split(",");
+					texto.setText(substitui[0]);
 				}
 				texto.addKeyListener(keyListenDouble());
 			}
@@ -270,12 +319,12 @@ public class ControllerUtil {
 			
 			@Override
 			public void keyReleased(KeyEvent e) {
-				apenasDouble(e);	
+				e.consume();
 			}
 			
 			@Override
 			public void keyPressed(KeyEvent e) {
-				apenasDouble(e);	
+				apenasDouble(e);
 			}
 		};
 	}
