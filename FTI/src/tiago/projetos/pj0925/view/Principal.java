@@ -1,35 +1,23 @@
 package tiago.projetos.pj0925.view;
 
 import java.awt.EventQueue;
-import java.awt.FontMetrics;
-import java.awt.Insets;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
-
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-
-import tiago.projetos.pj0925.controller.ControllerMenu;
-
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
-import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EtchedBorder;
 import javax.swing.JButton;
 import java.awt.SystemColor;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 
-public class Menu {
+public class Principal {
 
 	private JFrame frame;
 	private JTable table;
@@ -43,7 +31,7 @@ public class Menu {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Menu window = new Menu();
+					Principal window = new Principal();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -55,20 +43,15 @@ public class Menu {
 	/**
 	 * Create the application.
 	 */
-	
-	public Menu() {
+	public Principal() {
 		initialize();
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	
 	private void initialize() {
-		CadastroAluno cA = new CadastroAluno();
-		ControllerMenu cM = new ControllerMenu();
-		cA.getFrame().setVisible(false);
-		frame = new JFrame("Cadastro FTI");
+		frame = new JFrame();
 		frame.setBounds(100, 100, 800, 525);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
@@ -85,26 +68,39 @@ public class Menu {
 		scrollTabelaAluno.setBounds(10, 11, 445, 437);
 		abaAluno.add(scrollTabelaAluno);
 		
-		DefaultTableModel model = new DefaultTableModel(new Object[][] {}, new String[] {"Matrícula", "CPF", "Nome", "Curso"});
-		cM.geraListaAluno(model);
 		table = new JTable();
-		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-		table.setDefaultRenderer(Object.class, centerRenderer);
-		table.setModel(model);
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+			},
+			new String[] {
+				"Matr\u00EDcula", "CPF", "Nome", "Curso"
+			}
+		) {
+			Class[] columnTypes = new Class[] {
+				String.class, String.class, String.class, String.class
+			};
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+			boolean[] columnEditables = new boolean[] {
+				false, false, false, false
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
 		table.getColumnModel().getColumn(0).setResizable(false);
-		table.getColumnModel().getColumn(0).setPreferredWidth(109);
+		table.getColumnModel().getColumn(0).setPreferredWidth(91);
 		table.getColumnModel().getColumn(1).setResizable(false);
-		table.getColumnModel().getColumn(1).setPreferredWidth(135);
+		table.getColumnModel().getColumn(1).setPreferredWidth(128);
 		table.getColumnModel().getColumn(2).setResizable(false);
-		table.getColumnModel().getColumn(2).setPreferredWidth(258);
+		table.getColumnModel().getColumn(2).setPreferredWidth(284);
 		table.getColumnModel().getColumn(3).setResizable(false);
 		table.getColumnModel().getColumn(3).setPreferredWidth(121);
 		scrollTabelaAluno.setViewportView(table);
-		table.setCellSelectionEnabled(false);
-		table.setRowSelectionAllowed(true);
+		table.setRowSelectionAllowed(false);
 		table.setFillsViewportHeight(true);
-		table.setEnabled(true);
+		table.setEnabled(false);
 		table.setBorder(new LineBorder(new Color(0, 0, 0)));
 		
 		JPanel containerTextAluno = new JPanel();
@@ -114,106 +110,29 @@ public class Menu {
 		containerTextAluno.setLayout(null);
 		
 		JTextPane textPaneAluno = new JTextPane();
-		textPaneAluno.setForeground(Color.black);
+		textPaneAluno.setForeground(UIManager.getColor("TextPane.inactiveBackground"));
 		textPaneAluno.setBackground(UIManager.getColor("TextPane.disabledBackground"));
-		textPaneAluno.setEnabled(true);
-		textPaneAluno.setMargin(new Insets(15, 15, 15, 15));
+		textPaneAluno.setEnabled(false);
+		textPaneAluno.setText("TESTESTE\\nTESTE");
 		textPaneAluno.setEditable(false);
-		textPaneAluno.setBounds(10, 11, 284, 381);		
-		textPaneAluno.setBorder(new LineBorder(Color.lightGray));
+		textPaneAluno.setBounds(10, 11, 284, 381);
 		containerTextAluno.add(textPaneAluno);
-		
-		table.addMouseListener(new MouseListener() {
-			
-			@Override
-			public void mouseReleased(MouseEvent e) {
-			}
-			
-			@Override
-			public void mousePressed(MouseEvent e) {
-			}
-			
-			@Override
-			public void mouseExited(MouseEvent e) {
-				try {
-					textPaneAluno.setText(cM.setTextTabela(table.getSelectedRow()));
-				} catch(Exception xcp){
-				}
-			}
-			
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				
-				int linha = table.rowAtPoint(e.getPoint());
-				table.addMouseMotionListener(new MouseMotionListener() {
-					
-					@Override
-					public void mouseMoved(MouseEvent evt) {
-						int linha2 = table.rowAtPoint(evt.getPoint());
-						if (linha2 != linha) {
-							textPaneAluno.setText(cM.setTextTabela(linha2));
-						}
-					}
-					
-					@Override
-					public void mouseDragged(MouseEvent e) {
-					}
-				});
-				textPaneAluno.setText(cM.setTextTabela(linha));
-			}
-			
-			@Override
-			public void mouseClicked(MouseEvent e) {	
-			}
-		});
 		
 		JButton botaoAdicionarAluno = new JButton("Adicionar");
 		botaoAdicionarAluno.setBounds(10, 403, 89, 23);
-		botaoAdicionarAluno.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				cA.getFrame().setVisible(true);
-				cA.getBtnClear().doClick();
-			}
-		});
 		containerTextAluno.add(botaoAdicionarAluno);
 		
 		JButton botaoRemoverAluno = new JButton("Remover");
 		botaoRemoverAluno.setBounds(205, 403, 89, 23);
-		botaoRemoverAluno.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					Object[] escolhas = {"Sim", "Não"};
-					JOptionPane.showOptionDialog(null, "Deseja remover " + ControllerMenu.getArrayAluno().get(table.getSelectedRow()).getNome() + "?", "Confirmar remoção", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, escolhas, escolhas[1]);
-				} catch (Exception xcp) {
-					JOptionPane.showMessageDialog(null, "Nenhum aluno selecionado", "Erro", JOptionPane.ERROR_MESSAGE);
-				}
-			}
-		});
 		containerTextAluno.add(botaoRemoverAluno);
 		
 		JButton botaoEditarAluno = new JButton("Editar");
 		botaoEditarAluno.setBounds(107, 403, 89, 23);
-		botaoEditarAluno.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				cA.getFrame().setVisible(true);
-				try {
-					ControllerMenu.getArrayAluno().get(table.getSelectedRow());
-				} catch (Exception xcp) {
-					JOptionPane.showMessageDialog(null, "Nenhum aluno selecionado", "Erro", JOptionPane.ERROR_MESSAGE);
-				}
-			}
-		});
 		containerTextAluno.add(botaoEditarAluno);
 		
 		JPanel abaFuncionario = new JPanel();
 		abaFuncionario.setLayout(null);
-		tabbedPane.addTab("Lista de Funcionários", null, abaFuncionario, null);
+		tabbedPane.addTab("New tab", null, abaFuncionario, null);
 		
 		JPanel containerTextFuncionario = new JPanel();
 		containerTextFuncionario.setLayout(null);

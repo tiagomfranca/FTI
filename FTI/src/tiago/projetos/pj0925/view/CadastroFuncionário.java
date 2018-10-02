@@ -90,7 +90,7 @@ public class CadastroFuncionário {
 		//frame.setResizable(false);
 		frame.setSize(785, 451);
 		frame.setLocation(200, 200);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		frame.getContentPane().add(scroll);
 		
 		JLabel lblCadastro = new JLabel("Código do");

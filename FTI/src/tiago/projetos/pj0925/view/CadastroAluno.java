@@ -29,12 +29,12 @@ import java.util.Date;
 public class CadastroAluno {
 
 	private JFrame frame;
-	private JTextField textNome;
-	private JTextField textCpf;
-	private JTextField textMatricula;
-	private JTextField textData;
-	private JTextField textTelefone;
-	private JTextField textEMail;
+	private JTextArea textEndereço;
+	private JTextField textNome, textCpf, textMatricula, textData, textTelefone, textEMail;
+	private JRadioButton botaoMale, botaoFemale;
+	private Border defaultBorder, simValidou;
+	private JButton btnClear;
+	private JComboBox<String> boxCurso;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -57,38 +57,16 @@ public class CadastroAluno {
 		ControllerUtil u = new ControllerUtil();
 		ControllerAluno cA = new ControllerAluno();
 		Border naoValidou = BorderFactory.createLineBorder(Color.RED);
-		Border simValidou = BorderFactory.createLineBorder(Color.GREEN);
+		simValidou = BorderFactory.createLineBorder(Color.GREEN);
 		frame = new JFrame();
 		frame.setBounds(100, 100, 485, 489);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		textNome = new JTextField();
-		Border defaultBorder = textNome.getBorder();
+		textNome = new JTextField("ex: José");
+		defaultBorder = textNome.getBorder();
 		textNome.setForeground(Color.gray);
-		textNome.setText("ex: José");
-		textNome.addFocusListener(new FocusListener() {
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				if(textNome.getText().isEmpty()){
-					textNome.setForeground(Color.GRAY);
-					textNome.setText("ex: José");
-				} else if(!u.validaTexto(textNome.getText())){
-					textNome.setBorder(naoValidou);
-				} else {
-					textNome.setBorder(simValidou);
-				}
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {
-				textNome.setForeground(Color.black);
-				if(textNome.getText().equals("ex: José")){
-					textNome.setText(null);
-				}
-			}
-		});
+		textNome.addFocusListener(u.focusListenNome(textNome, "ex: José"));
 		textNome.setBounds(150, 28, 250, 20);
 		frame.getContentPane().add(textNome);
 		textNome.setColumns(10);
@@ -100,58 +78,9 @@ public class CadastroAluno {
 		JLabel lblCpf = new JLabel("CPF:* ");
 		lblCpf.setBounds(70, 65, 46, 14);
 		frame.getContentPane().add(lblCpf);
-		textCpf = new JTextField();
+		textCpf = new JTextField("ex: 123456789");
 		textCpf.setForeground(Color.gray);
-		textCpf.setText("ex: 12345678901");
-		textCpf.addFocusListener(new FocusListener() {
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				if(textCpf.getText().isEmpty()){
-					textCpf.setForeground(Color.GRAY);
-					textCpf.setBorder(defaultBorder);
-					textCpf.setText("ex: 12345678901");
-				} else if(!u.validaCpf(textCpf.getText())){
-					textCpf.setBorder(naoValidou);
-				} else {
-					textCpf.setBorder(simValidou);
-				}
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {
-				textCpf.setForeground(Color.black);
-				if(textCpf.getText().equals("ex: 12345678901")){
-					textCpf.setText(null);
-				}
-				textCpf.addKeyListener(new KeyListener() {
-					
-					@Override
-					public void keyTyped(KeyEvent e) {
-						u.apenasNumerosLimite(e, textCpf.getText(), 11);
-					}
-					
-					@Override
-					public void keyReleased(KeyEvent e) {
-						u.apenasNumerosLimite(e, textCpf.getText(), 11);
-						if (textCpf.getText().length() == 11){
-							if (u.validaCpf(textCpf.getText())){
-								textCpf.setBorder(simValidou);
-							} else {
-								textCpf.setBorder(naoValidou);
-							}
-						} else {
-							textCpf.setBorder(naoValidou);
-						}
-					}
-					
-					@Override
-					public void keyPressed(KeyEvent e) {
-						u.apenasNumerosLimite(e, textCpf.getText(), 11);
-					}
-				});
-			}
-		});
+		textCpf.addFocusListener(u.focusListenCpf(textCpf));
 		textCpf.setBounds(150, 62, 250, 20);
 		frame.getContentPane().add(textCpf);
 		textCpf.setColumns(10);
@@ -159,51 +88,9 @@ public class CadastroAluno {
 		JLabel lblMatricula = new JLabel("Matrícula*: ");
 		lblMatricula.setBounds(55, 99, 80, 14);
 		frame.getContentPane().add(lblMatricula);
-		textMatricula = new JTextField();
+		textMatricula = new JTextField("ex: 123456789");
 		textMatricula.setForeground(Color.gray);
-		textMatricula.setText("ex: 123456789");
-		textMatricula.addFocusListener(new FocusListener() {
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				if(textMatricula.getText().isEmpty()){
-					textMatricula.setForeground(Color.GRAY);
-					textMatricula.setText("ex: 123456789");
-				} else if(!u.validaApenasNumeros(textMatricula.getText())){
-					textMatricula.setBorder(naoValidou);
-				} else {
-					textMatricula.setBorder(simValidou);
-				}
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {
-				textMatricula.setForeground(Color.black);
-				if(textMatricula.getText().equals("ex: 123456789")){
-					textMatricula.setText(null);
-				}
-				textMatricula.addKeyListener(new KeyListener() {
-					
-					@Override
-					public void keyTyped(KeyEvent e) {
-						u.apenasNumerosLimite(e, textMatricula.getText(), 9);
-					}
-					
-					@Override
-					public void keyReleased(KeyEvent e) {
-						u.apenasNumerosLimite(e, textMatricula.getText(), 9);
-						if (textMatricula.getText().length() == 9){
-							textMatricula.setBorder(simValidou);
-						}
-					}
-					
-					@Override
-					public void keyPressed(KeyEvent e) {
-						u.apenasNumerosLimite(e, textMatricula.getText(), 9);
-					}
-				});
-			}
-		});
+		textMatricula.addFocusListener(u.focusListenLimiteNumeros(textMatricula, "ex: 123456789", 9));
 		textMatricula.setBounds(150, 96, 250, 20);
 		frame.getContentPane().add(textMatricula);
 		textMatricula.setColumns(10);
@@ -214,31 +101,9 @@ public class CadastroAluno {
 		JLabel lblData2 = new JLabel("Nascimento:* ");
 		lblData2.setBounds(45, 145, 100, 14);
 		frame.getContentPane().add(lblData2);
-		textData = new JTextField();
+		textData = new JTextField("dd/mm/aaaa");
 		textData.setForeground(Color.GRAY);
-		textData.setText("dd/mm/aaaa");
-		textData.addFocusListener(new FocusListener() {
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				if(textData.getText().isEmpty()){
-					textData.setForeground(Color.GRAY);
-					textData.setText("dd/mm/aaaa");
-				} else if(!u.validaData(textData.getText())){
-					textData.setBorder(naoValidou);
-				} else {
-					textData.setBorder(simValidou);
-				}
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {
-				textData.setForeground(Color.black);
-				if(textData.getText().equals("dd/mm/aaaa")){
-					textData.setText(null);
-				}
-			}
-		});
+		textData.addFocusListener(u.focusListenData(textData, "dd/mm/aaaa"));
 		textData.setBounds(150, 132, 250, 20);
 		frame.getContentPane().add(textData);
 		textData.setColumns(10);
@@ -247,34 +112,11 @@ public class CadastroAluno {
 		lblEndereço.setBounds(53, 179, 80, 14);
 		frame.getContentPane().add(lblEndereço);
 				
-		JTextArea textEndereço = new JTextArea();
+		textEndereço = new JTextArea("ex: R. Ayrton Senna da Silva, 500\nEdifício Torre di Pietra - 3° andar - sala - 303");
 		textEndereço.setBounds(150, 176, 250, 40);
-		Border border = BorderFactory.createLineBorder(Color.GRAY);
-	    textEndereço.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(2, 2, 2, 2)));
+	    textEndereço.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.gray), BorderFactory.createEmptyBorder(2, 2, 2, 2)));
 		textEndereço.setForeground(Color.gray);
-		textEndereço.setText("ex: R. Ayrton Senna da Silva, 500\nEdifício Torre di Pietra - 3° andar - sala - 303");
-		textEndereço.addFocusListener(new FocusListener() {
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				if(textEndereço.getText().isEmpty()){
-					textEndereço.setForeground(Color.GRAY);
-					textEndereço.setText("ex: R. Ayrton Senna da Silva, 500\nEdifício Torre di Pietra - 3° andar - sala - 303");
-				} else if(!u.validaTexto(textEndereço.getText())){
-					textEndereço.setBorder(naoValidou);
-				} else {
-					textEndereço.setBorder(simValidou);
-				}
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {
-				textEndereço.setForeground(Color.black);
-				if(textEndereço.getText().equals("ex: R. Ayrton Senna da Silva, 500\nEdifício Torre di Pietra - 3° andar - sala - 303")){
-					textEndereço.setText(null);
-				}
-			}
-		});
+		textEndereço.addFocusListener(u.focusListenEndereço(textEndereço, "ex: R. Ayrton Senna da Silva, 500\nEdifício Torre di Pietra - 3° andar - sala - 303"));
 		frame.getContentPane().add(textEndereço);	
 		
 		JLabel lblSexo = new JLabel("Sexo:* ");
@@ -289,77 +131,38 @@ public class CadastroAluno {
 		lblFemale.setBounds(320, 232, 60, 14);
 		frame.getContentPane().add(lblFemale);
 		
-		JRadioButton radioButtonMale = new JRadioButton("");
-		radioButtonMale.setBounds(215, 229, 20, 23);
-		frame.getContentPane().add(radioButtonMale);
+		botaoMale = new JRadioButton("");
+		botaoMale.setBounds(215, 229, 20, 23);
+		frame.getContentPane().add(botaoMale);
 
-		JRadioButton radioButtonFemale = new JRadioButton("");
-		radioButtonFemale.setBounds(380, 229, 20, 23);
-		frame.getContentPane().add(radioButtonFemale);
+		botaoFemale = new JRadioButton("");
+		botaoFemale.setBounds(380, 229, 20, 23);
+		frame.getContentPane().add(botaoFemale);
 		
 		JLabel lblOccupation = new JLabel("Curso:* ");
 		lblOccupation.setBounds(53, 271, 67, 14);
 		frame.getContentPane().add(lblOccupation);
 		
-		JComboBox<String> comboBox = new JComboBox<String>();
-		comboBox.addItem("Selecionar...");
-		comboBox.addItem("Java WEB");
-		comboBox.addItem("Cobol");
-		comboBox.addItem(".NET");
-		comboBox.addItem("Redes");
-		comboBox.addItem("Python");
-		comboBox.addActionListener(new ActionListener() {
+		boxCurso = new JComboBox<String>();
+		boxCurso.addItem("Selecionar...");
+		boxCurso.addItem("Java WEB");
+		boxCurso.addItem("Cobol");
+		boxCurso.addItem(".NET");
+		boxCurso.addItem("Redes");
+		boxCurso.addItem("Python");
+		boxCurso.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 			}
 		});
-		comboBox.setBounds(150, 268, 250, 20);
-		frame.getContentPane().add(comboBox);
+		boxCurso.setBounds(150, 268, 250, 20);
+		frame.getContentPane().add(boxCurso);
 		
 		JLabel lblTelefone = new JLabel("Telefone:* ");
 		lblTelefone.setBounds(55, 305, 60, 14);
 		frame.getContentPane().add(lblTelefone);
-		textTelefone = new JTextField();
+		textTelefone = new JTextField("ex: 43999565338");
 		textTelefone.setForeground(Color.GRAY);
-		textTelefone.setText("ex: 43999565338");
-		textTelefone.addFocusListener(new FocusListener() {
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				if(textTelefone.getText().isEmpty()){
-					textTelefone.setForeground(Color.GRAY);
-					textTelefone.setText("ex: 43999565338");
-				} else if(!u.validaApenasNumeros(textTelefone.getText())){
-					textTelefone.setBorder(naoValidou);
-				} else {
-					textTelefone.setBorder(simValidou);
-				}
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {
-				textTelefone.setForeground(Color.black);
-				if(textTelefone.getText().equals("ex: 43999565338")){
-					textTelefone.setText(null);
-				}
-				textTelefone.addKeyListener(new KeyListener() {
-					
-					@Override
-					public void keyTyped(KeyEvent e) {
-						u.apenasNumeros(e);
-					}
-					
-					@Override
-					public void keyReleased(KeyEvent e) {
-						u.apenasNumeros(e);
-					}
-					
-					@Override
-					public void keyPressed(KeyEvent e) {
-						u.apenasNumeros(e);
-					}
-				});
-			}
-		});
+		textTelefone.addFocusListener(u.focusListenInt(textTelefone, "ex: 43999565338"));
 		textTelefone.setBounds(150, 302, 250, 20);
 		frame.getContentPane().add(textTelefone);
 		textTelefone.setColumns(10);
@@ -367,31 +170,9 @@ public class CadastroAluno {
 		JLabel lblEMail = new JLabel("e-mail:* ");
 		lblEMail.setBounds(65, 339, 60, 14);
 		frame.getContentPane().add(lblEMail);
-		textEMail = new JTextField();
+		textEMail = new JTextField("ex: nome@site.com");
 		textEMail.setForeground(Color.GRAY);
-		textEMail.setText("ex: nome@site.com");
-		textEMail.addFocusListener(new FocusListener() {
-			
-			@Override
-			public void focusLost(FocusEvent e) {
-				if(textEMail.getText().isEmpty()){
-					textEMail.setForeground(Color.GRAY);
-					textEMail.setText("ex: nome@site.com");
-				} else if(!u.validaTexto(textEMail.getText())){
-					textEMail.setBorder(naoValidou);
-				} else {
-					textEMail.setBorder(simValidou);
-				}
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {
-				textEMail.setForeground(Color.black);
-				if(textEMail.getText().equals("ex: nome@site.com")){
-					textEMail.setText(null);
-				}
-			}
-		});
+		textEMail.addFocusListener(u.focusListenEmail(textEMail, "ex: nome@site.com"));
 		textEMail.setBounds(150, 336, 250, 20);
 		frame.getContentPane().add(textEMail);
 		textEMail.setColumns(10);
@@ -400,7 +181,7 @@ public class CadastroAluno {
 		lblObrigatorio.setBounds(180, 420, 200, 14);
 		frame.getContentPane().add(lblObrigatorio);
 		
-		JButton btnClear = new JButton("Limpar");
+		btnClear = new JButton("Limpar");
 		
 		btnClear.setBounds(312, 387, 89, 23);
 		frame.getContentPane().add(btnClear);
@@ -447,17 +228,17 @@ public class CadastroAluno {
 					erros = erros + "Campo Endereço deve ser preenchido;\n";
 					numeros++;
 				}
-				if(!radioButtonMale.isSelected() && !radioButtonFemale.isSelected()){
+				if(!botaoMale.isSelected() && !botaoFemale.isSelected()){
 					erros = erros + "É necessário informar seu gênero;\n";
 					numeros++;
 				} else {
-					if(radioButtonMale.isSelected()) {
+					if(botaoMale.isSelected()) {
 						sexo = 'M';
 					} else {
 						sexo = 'F';
 					}
 				}
-				if(comboBox.getSelectedItem().equals("Selecione...")){
+				if(boxCurso.getSelectedItem().equals("Selecione...")){
 					erros = erros + "É necessário informar a disciplina;\n";
 					numeros++;
 				}
@@ -487,7 +268,7 @@ public class CadastroAluno {
 				}
 				if (numeros == 0){
 					data = u.transformaData(textData.getText());
-					Aluno a = new Aluno(textNome.getText(), textCpf.getText(), textMatricula.getText(), data, textEndereço.getText(), sexo, comboBox.getSelectedItem().toString(), textTelefone.getText(), textEMail.getText());
+					Aluno a = new Aluno(textNome.getText(), textCpf.getText(), textMatricula.getText(), data, textEndereço.getText(), sexo, boxCurso.getSelectedItem().toString(), textTelefone.getText(), textEMail.getText());
 					cA.cadastraAluno(a);
 					JOptionPane.showMessageDialog(null, "Cadastro efetuado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 				} else {
@@ -508,7 +289,7 @@ public class CadastroAluno {
 				textEMail.setBorder(defaultBorder);
 				textTelefone.setBorder(defaultBorder);
 				textCpf.setBorder(defaultBorder);
-				textEndereço.setBorder(border);
+				textEndereço.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.gray), BorderFactory.createEmptyBorder(2, 2, 2, 2)));
 				textData.setBorder(defaultBorder);
 				textNome.setText("ex: José");
 				textEndereço.setText("ex: R. Ayrton Senna da Silva, 500\nEdifício Torre di Pietra - 3° andar - sala - 303");
@@ -517,22 +298,60 @@ public class CadastroAluno {
 				textTelefone.setText("ex: 43999565338");
 				textCpf.setText("ex: 123445678901");
 				textMatricula.setText("ex: 123456789");
-				radioButtonFemale.setSelected(false);
-				radioButtonMale.setSelected(false);
-				comboBox.setSelectedItem("Selecionar...");
+				botaoFemale.setSelected(false);
+				botaoMale.setSelected(false);
+				boxCurso.setSelectedItem("Selecionar...");
 			}
 		});
 		
-		radioButtonFemale.addActionListener(new ActionListener(){
+		botaoFemale.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				radioButtonMale.setSelected(false);
+				botaoMale.setSelected(false);
 			}
 		});
 		
-		radioButtonMale.addActionListener(new ActionListener(){
+		botaoMale.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-				radioButtonFemale.setSelected(false);
+				botaoFemale.setSelected(false);
 			}
 		});
     }
+	
+	public JFrame getFrame(){
+		return frame;
+	}
+	
+	public JButton getBtnClear() {
+		return btnClear;
+	}
+	
+	public void preencheCampo(String nome, String cpf, String matrícula, String data, String endereço, String email, String telefone, char sexo, String curso) {
+		textNome.setForeground(Color.black);
+		textEMail.setForeground(Color.black);
+		textData.setForeground(Color.black);
+		textEndereço.setForeground(Color.black);
+		textCpf.setForeground(Color.black);
+		textTelefone.setForeground(Color.black);
+		textNome.setBorder(simValidou);
+		textEMail.setBorder(simValidou);
+		textTelefone.setBorder(simValidou);
+		textCpf.setBorder(simValidou);
+		textEndereço.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.gray), BorderFactory.createEmptyBorder(2, 2, 2, 2)));
+		textData.setBorder(simValidou);
+		textNome.setText(nome);
+		textEndereço.setText(endereço);
+		textData.setText(data);
+		textEMail.setText(email);
+		textTelefone.setText(telefone);
+		textCpf.setText(cpf);
+		textMatricula.setText(matrícula);
+		if (sexo == 'M') {
+			botaoFemale.setSelected(false);
+			botaoMale.setSelected(true);
+		} else {
+			botaoFemale.setSelected(true);
+			botaoMale.setSelected(false);
+		}
+		boxCurso.setSelectedItem(curso);
+	}
 }
