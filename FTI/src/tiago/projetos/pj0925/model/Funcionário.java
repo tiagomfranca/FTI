@@ -4,15 +4,16 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Funcionário extends Pessoa {
-	private String endereço, cargo, telefone, eMail;
+	private String codCadastro, endereço, cargo, telefone, eMail;
 	double salario, valeAlimentação, valeTransporte, valeRefeição;
 	private int filhos;
 	private ArrayList<Pessoa> cadastroFilhos;
 	
-	public Funcionário(String nome, String cpf, Date dataNascimento, String endereço, char sexo, String cargo, double salario,
+	public Funcionário(String codCadastro, String nome, String cpf, Date dataNascimento, String endereço, char sexo, String cargo, double salario,
 			double valeAlimentação, double valeTransporte, double valeRefeição, int filhos, ArrayList<Pessoa> cadastroFilhos,
 			String telefone, String eMail){
 		super(nome, cpf, dataNascimento, sexo);
+		this.codCadastro = codCadastro;
 		this.endereço = endereço;
 		this.cargo = cargo;
 		this.salario = salario;
@@ -23,6 +24,14 @@ public class Funcionário extends Pessoa {
 		this.cadastroFilhos = cadastroFilhos;
 		this.telefone = telefone;
 		this.eMail = eMail;
+	}
+
+	public String getCodCadastro() {
+		return codCadastro;
+	}
+
+	public void setCodCadastro(String codCadastro) {
+		this.codCadastro = codCadastro;
 	}
 
 	public String getEndereço() {

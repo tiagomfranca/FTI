@@ -24,6 +24,7 @@ import javax.swing.JComboBox;
 public class CadastroFuncionário {
 
 	private JFrame frame;
+	private ControllerFuncionário cF;
 	private ArrayList<JTextField> arrayTextFilhos;
 	private ArrayList<JTextField> arrayTextDatas;
 	private ArrayList<JLabel> arrayLabels;
@@ -72,7 +73,7 @@ public class CadastroFuncionário {
 
 	private void iniciaJanela() {
 		ControllerUtil u = new ControllerUtil();
-		ControllerFuncionário cF = new ControllerFuncionário();
+		cF = new ControllerFuncionário();
 		naoValidou = BorderFactory.createLineBorder(Color.RED);
 		simValidou = BorderFactory.createLineBorder(Color.GREEN);
 		
@@ -397,4 +398,8 @@ public class CadastroFuncionário {
 			}
 		});
     }
+	
+	public ControllerFuncionário getCF(){
+		return this.cF;
+	}
 }

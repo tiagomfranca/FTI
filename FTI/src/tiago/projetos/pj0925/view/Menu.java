@@ -1,7 +1,6 @@
 package tiago.projetos.pj0925.view;
 
 import java.awt.EventQueue;
-import java.awt.FontMetrics;
 import java.awt.Insets;
 
 import javax.swing.JFrame;
@@ -9,6 +8,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
 
@@ -28,9 +29,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.text.SimpleDateFormat;
 
 public class Menu {
-
+	public static boolean editando;
+	public static int pessoaEditada;
 	private JFrame frame;
 	private JTable table;
 	private JTable tabelaFuncionario;
@@ -65,10 +68,14 @@ public class Menu {
 	 */
 	
 	private void initialize() {
-		CadastroAluno cA = new CadastroAluno();
+		pessoaEditada = -1;
+		editando = false;
 		ControllerMenu cM = new ControllerMenu();
+		CadastroAluno cA = new CadastroAluno();
+		CadastroFuncionário cF = new CadastroFuncionário();
 		cA.getFrame().setVisible(false);
 		frame = new JFrame("Cadastro FTI");
+		frame.setResizable(false);
 		frame.setBounds(100, 100, 800, 525);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
@@ -84,14 +91,12 @@ public class Menu {
 		JScrollPane scrollTabelaAluno = new JScrollPane();
 		scrollTabelaAluno.setBounds(10, 11, 445, 437);
 		abaAluno.add(scrollTabelaAluno);
-		
-		DefaultTableModel model = new DefaultTableModel(new Object[][] {}, new String[] {"Matrícula", "CPF", "Nome", "Curso"});
-		cM.geraListaAluno(model);
+
 		table = new JTable();
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 		table.setDefaultRenderer(Object.class, centerRenderer);
-		table.setModel(model);
+		table.setModel(cA.getCA().modelAluno());
 		table.getColumnModel().getColumn(0).setResizable(false);
 		table.getColumnModel().getColumn(0).setPreferredWidth(109);
 		table.getColumnModel().getColumn(1).setResizable(false);
@@ -114,15 +119,15 @@ public class Menu {
 		containerTextAluno.setLayout(null);
 		
 		JTextPane textPaneAluno = new JTextPane();
+		textPaneAluno.setText("Selecione um aluno para ver mais informações");
 		textPaneAluno.setForeground(Color.black);
 		textPaneAluno.setBackground(UIManager.getColor("TextPane.disabledBackground"));
 		textPaneAluno.setEnabled(true);
 		textPaneAluno.setMargin(new Insets(15, 15, 15, 15));
 		textPaneAluno.setEditable(false);
 		textPaneAluno.setBounds(10, 11, 284, 381);		
-		textPaneAluno.setBorder(new LineBorder(Color.lightGray));
+		textPaneAluno.setBorder(new CompoundBorder(new LineBorder(Color.lightGray), new EmptyBorder(5, 5, 5, 5)));
 		containerTextAluno.add(textPaneAluno);
-		
 		table.addMouseListener(new MouseListener() {
 			
 			@Override
@@ -138,6 +143,7 @@ public class Menu {
 				try {
 					textPaneAluno.setText(cM.setTextTabela(table.getSelectedRow()));
 				} catch(Exception xcp){
+					textPaneAluno.setText("Selecione um aluno para ver mais informações");
 				}
 			}
 			
@@ -187,7 +193,10 @@ public class Menu {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Object[] escolhas = {"Sim", "Não"};
-					JOptionPane.showOptionDialog(null, "Deseja remover " + ControllerMenu.getArrayAluno().get(table.getSelectedRow()).getNome() + "?", "Confirmar remoção", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, escolhas, escolhas[1]);
+					int i = JOptionPane.showOptionDialog(null, "Deseja remover " + ControllerMenu.getArrayAluno().get(table.getSelectedRow()).getNome() + "?", "Confirmar remoção", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, escolhas, escolhas[1]);
+					if (i == 0){
+						cA.getCA().removeAluno(table.getSelectedRow());
+					}
 				} catch (Exception xcp) {
 					JOptionPane.showMessageDialog(null, "Nenhum aluno selecionado", "Erro", JOptionPane.ERROR_MESSAGE);
 				}
@@ -203,14 +212,27 @@ public class Menu {
 			public void actionPerformed(ActionEvent e) {
 				cA.getFrame().setVisible(true);
 				try {
-					ControllerMenu.getArrayAluno().get(table.getSelectedRow());
+					SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy");
+					String nome = ControllerMenu.getArrayAluno().get(table.getSelectedRow()).getNome();
+					String cpf = ControllerMenu.getArrayAluno().get(table.getSelectedRow()).getCpf();
+					String matricula = ControllerMenu.getArrayAluno().get(table.getSelectedRow()).getMatricula();
+					String data = sdf.format(ControllerMenu.getArrayAluno().get(table.getSelectedRow()).getDataNascimento());
+					String endereço = ControllerMenu.getArrayAluno().get(table.getSelectedRow()).getEndereço();
+					String email = ControllerMenu.getArrayAluno().get(table.getSelectedRow()).geteMail();
+					String telefone = ControllerMenu.getArrayAluno().get(table.getSelectedRow()).getTelefone();
+					char sexo = ControllerMenu.getArrayAluno().get(table.getSelectedRow()).getSexo();
+					String curso = ControllerMenu.getArrayAluno().get(table.getSelectedRow()).getCurso();
+					editando = true;
+					pessoaEditada = table.getSelectedRow();
+					cA.preencheCampo(nome, cpf, matricula, data, endereço, email, telefone, sexo, curso);
 				} catch (Exception xcp) {
+					cA.getFrame().setVisible(false);
+					xcp.printStackTrace();
 					JOptionPane.showMessageDialog(null, "Nenhum aluno selecionado", "Erro", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
 		containerTextAluno.add(botaoEditarAluno);
-		
 		JPanel abaFuncionario = new JPanel();
 		abaFuncionario.setLayout(null);
 		tabbedPane.addTab("Lista de Funcionários", null, abaFuncionario, null);
@@ -247,38 +269,17 @@ public class Menu {
 		abaFuncionario.add(scrollTabelaFuncionario);
 		
 		tabelaFuncionario = new JTable();
+		tabelaFuncionario.setDefaultRenderer(Object.class, centerRenderer);
 		scrollTabelaFuncionario.setViewportView(tabelaFuncionario);
-		tabelaFuncionario.setModel(new DefaultTableModel(
-			new Object[][] {
-				{null, null, null, null, null},
-			},
-			new String[] {
-				"C\u00F3digo do cadastro", "CPF", "Nome", "Cargo", "Salario"
-			}
-		) {
-			Class[] columnTypes = new Class[] {
-				String.class, String.class, String.class, String.class, String.class
-			};
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
-			}
-			boolean[] columnEditables = new boolean[] {
-				false, false, false, false, false
-			};
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
-			}
-		});
+		tabelaFuncionario.setModel(cF.getCF().modelFuncionário());
 		tabelaFuncionario.getColumnModel().getColumn(0).setResizable(false);
-		tabelaFuncionario.getColumnModel().getColumn(0).setPreferredWidth(108);
+		tabelaFuncionario.getColumnModel().getColumn(0).setPreferredWidth(109);
 		tabelaFuncionario.getColumnModel().getColumn(1).setResizable(false);
-		tabelaFuncionario.getColumnModel().getColumn(1).setPreferredWidth(120);
+		tabelaFuncionario.getColumnModel().getColumn(1).setPreferredWidth(135);
 		tabelaFuncionario.getColumnModel().getColumn(2).setResizable(false);
-		tabelaFuncionario.getColumnModel().getColumn(2).setPreferredWidth(207);
+		tabelaFuncionario.getColumnModel().getColumn(2).setPreferredWidth(258);
 		tabelaFuncionario.getColumnModel().getColumn(3).setResizable(false);
-		tabelaFuncionario.getColumnModel().getColumn(3).setPreferredWidth(111);
-		tabelaFuncionario.getColumnModel().getColumn(4).setResizable(false);
-		tabelaFuncionario.getColumnModel().getColumn(4).setPreferredWidth(78);
+		tabelaFuncionario.getColumnModel().getColumn(3).setPreferredWidth(121);
 		tabelaFuncionario.setToolTipText("Lista de Funcionarios cadastrados");
 		tabelaFuncionario.setBorder(new LineBorder(new Color(0, 0, 0)));
 		tabelaFuncionario.setRowSelectionAllowed(false);
@@ -321,26 +322,7 @@ public class Menu {
 		
 		tabelaProfessor = new JTable();
 		scrollTabelaProfessor.setViewportView(tabelaProfessor);
-		tabelaProfessor.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"C\u00F3digo do cadastro", "CPF", "Nome", "Disciplina", "Salario"
-			}
-		) {
-			Class[] columnTypes = new Class[] {
-				String.class, String.class, String.class, String.class, String.class
-			};
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
-			}
-			boolean[] columnEditables = new boolean[] {
-				false, false, false, false, false
-			};
-			public boolean isCellEditable(int row, int column) {
-				return columnEditables[column];
-			}
-		});
+		tabelaProfessor.setModel(new DefaultTableModel(new Object[][] {}, new String[] {"Código do cadastro", "CPF", "Nome", "Disciplina", "Salário"}));
 		tabelaProfessor.getColumnModel().getColumn(0).setResizable(false);
 		tabelaProfessor.getColumnModel().getColumn(0).setPreferredWidth(113);
 		tabelaProfessor.getColumnModel().getColumn(1).setResizable(false);

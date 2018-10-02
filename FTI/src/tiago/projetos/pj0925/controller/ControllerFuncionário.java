@@ -15,20 +15,43 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
+import javax.swing.table.DefaultTableModel;
 
+import tiago.projetos.pj0925.model.Aluno;
 import tiago.projetos.pj0925.model.Funcionário;
 import tiago.projetos.pj0925.model.Pessoa;
 import tiago.projetos.pj0925.model.Professor;
 
 public class ControllerFuncionário {
 	
-	Border defaultBorder;
-	Border border;
+	private Border defaultBorder;
+	private Border border;
+	private DefaultTableModel modelTabelaFuncionário;
 	
 	public ControllerFuncionário(){
 		border = BorderFactory.createLineBorder(Color.GRAY);
 		defaultBorder = new JTextField().getBorder();
+		modelTabelaFuncionário = new DefaultTableModel(new Object[][] {}, new String[] {"Cadastro", "CPF", "Nome", "Cargo"});
+		geraListaFuncionário(modelTabelaFuncionário);
 	}
+	
+	public void geraListaFuncionário(DefaultTableModel model){
+		String nome2 = "Tiago de Morais França";
+		for (int i = 0; i < 40; i++) {
+			ControllerMenu.getArrayFuncionário().add(new Funcionário("123456789", nome2 + i, "07378278904", new Date(), "Rua M",
+					'M', "Analista Mainframe", 4000.00, 800.00, 900.00, 80.00, 0, new ArrayList<Pessoa>(), "43999565338", "tiagomfr@gmail.com"));
+		}
+		
+		for (Funcionário func : ControllerMenu.getArrayFuncionário()) {
+			String codCadastro = func.getCodCadastro();
+			String cpf = func.getCpf();
+			String nome = func.getNome();
+			String cargo = func.getCargo();
+			Object[] linha = {codCadastro, cpf, nome, cargo};
+			model.addRow(linha);
+		}
+	}
+	
 	public void cadastraProfessor(Professor p) {
 		
 	}
@@ -165,11 +188,11 @@ public class ControllerFuncionário {
 				}
 			}
 			if(boxCargo.equals("Professor")) {
-				Professor p = new Professor(textNome, textCpf, u.transformaData(textData), textEndereço, sexo, boxCargo, boxDisciplina,
+				Professor p = new Professor(textCadastro, textNome, textCpf, u.transformaData(textData), textEndereço, sexo, boxCargo, boxDisciplina,
 						Double.parseDouble(textSalario), valorVA, valorVT, valorVR, Integer.parseInt(textFilhos), arrayFilhos, textTelefone, textEMail);
 				cadastraProfessor(p);
 			} else {
-				Funcionário f = new Funcionário(textNome, textCpf, u.transformaData(textData), textEndereço, sexo, boxCargo,
+				Funcionário f = new Funcionário(textCadastro, textNome, textCpf, u.transformaData(textData), textEndereço, sexo, boxCargo,
 						Double.parseDouble(textSalario), valorVA, valorVT, valorVR, Integer.parseInt(textFilhos), arrayFilhos, textTelefone, textEMail);
 				cadastraFuncionário(f);
 			}
@@ -285,5 +308,9 @@ public class ControllerFuncionário {
 		arrayLabels.clear();
 		frame.pack();
 		frame.setSize(785, 451);
+	}
+	
+	public DefaultTableModel modelFuncionário(){
+		return this.modelTabelaFuncionário;
 	}
 }
