@@ -16,7 +16,7 @@ public class ControllerAluno {
 	
 	public ControllerAluno() {
 		modelTabelaAluno = new DefaultTableModel(new Object[][] {}, new String[] {"Matrícula", "CPF", "Nome", "Curso"});
-		geraListaAluno(modelTabelaAluno);
+		//geraListaAluno(modelTabelaAluno);
 	}
 	
 	public void cadastraAluno(Aluno aluno){
@@ -62,7 +62,6 @@ public class ControllerAluno {
 		char sexo = '0';
 		String erros = "";
 		int numeros = 0;
-		
 		
 		if (textNome.equals("") || textNome.equals("ex: José")) {
 			erros = erros + "Campo Nome precisa estar preenchido;\n";
@@ -216,13 +215,16 @@ public class ControllerAluno {
 		}
 		if (numeros == 0){
 			editaAluno(textNome, textCpf, textData, textEndereço, sexo, boxCurso, textTelefone, textEMail);
-		} else {
-			JOptionPane.showMessageDialog(null, erros, numeros + " erros encontrados:", JOptionPane.ERROR_MESSAGE);
 			Menu.editando = false;
+			JOptionPane.showMessageDialog(null, "Informações do aluno foram atualizadas com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+			Menu.pessoaEditada = -1;
+		} else {
+			Menu.editando = true;
+			JOptionPane.showMessageDialog(null, erros, numeros + " erros encontrados:", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
-	public String editaAluno(String nome, String cpf, String data, String endereço, char sexo, String boxCurso, String textTelefone, String textEMail) {
+	public void editaAluno(String nome, String cpf, String data, String endereço, char sexo, String boxCurso, String textTelefone, String textEMail) {
 		ControllerUtil u = new ControllerUtil();
 		Date date = new Date();
 		date = u.transformaData(data);
@@ -236,7 +238,6 @@ public class ControllerAluno {
 		ControllerMenu.getArrayAluno().get(Menu.pessoaEditada).seteMail(textEMail);
 		refazTabela();
 		Menu.pessoaEditada = -1;
-		return "Cadastrar";
 	}
 	
 	public void refazTabela(){

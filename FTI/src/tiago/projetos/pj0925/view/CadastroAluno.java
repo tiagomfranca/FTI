@@ -45,7 +45,6 @@ public class CadastroAluno {
 					CadastroAluno window = new CadastroAluno();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
-					e.printStackTrace();
 				}
 			}
 		});
@@ -58,7 +57,6 @@ public class CadastroAluno {
 	private void iniciaJanela() {
 		ControllerUtil u = new ControllerUtil();
 		cA = new ControllerAluno();
-		Border naoValidou = BorderFactory.createLineBorder(Color.RED);
 		simValidou = BorderFactory.createLineBorder(Color.GREEN);
 		frame = new JFrame();
 		frame.addWindowListener(new WindowListener() {
@@ -79,7 +77,10 @@ public class CadastroAluno {
 			
 			@Override
 			public void windowDeactivated(WindowEvent e) {
-				frame.setVisible(false);
+				if(!Menu.editando){
+					frame.setVisible(false);
+					botaoCadastrar.setText("Cadastrar");
+				}
 			}
 			
 			@Override
@@ -235,10 +236,9 @@ public class CadastroAluno {
 					cA.botaoEditar(textNome.getText(), textCpf.getText(), textMatricula.getText(), botaoMale.isSelected(), botaoFemale.isSelected(), 
 							textData.getText(), textEndereço.getText(), boxCurso.getSelectedItem().toString(), textTelefone.getText(), textEMail.getText());
 				}
-				if(Menu.editando) {
+				if(!Menu.editando) {
 					frame.setVisible(false);
 					botaoCadastrar.setText("Cadastrar");
-					Menu.editando = false;
 				}
 			}
 		});

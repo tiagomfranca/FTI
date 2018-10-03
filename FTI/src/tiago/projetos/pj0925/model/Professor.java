@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Professor extends Funcionário {
-	private String endereço, cargo, disciplina, telefone, eMail;
-	private double salario, valeAlimentação, valeTransporte, valeRefeição;
-	private int filhos;
-	private ArrayList<Pessoa> cadastroFilhos;
+	private String disciplina;
 	
 	public Professor(String codCadastro, String nome, String cpf, Date dataNascimento, String endereço, char sexo, String cargo, String disciplina,
 			double salario, double valeAlimentação, double valeTransporte, double valeRefeição, int filhos, 
@@ -17,92 +14,11 @@ public class Professor extends Funcionário {
 		this.disciplina = disciplina;
 	}
 
-	public String getEndereço() {
-		return endereço;
-	}
-
-	public void setEndereço(String endereço) {
-		this.endereço = endereço;
-	}
-
 	public String getDisciplina() {
 		return disciplina;
 	}
-
-	public String getCargo() {
-		return cargo;
-	}
-
-	public void setCargo(String cargo) {
-		this.cargo = cargo;
-	}
-
-	public double getSalario() {
-		return salario;
-	}
-
-	public void setSalario(double salario) {
-		this.salario = salario;
-	}
-
-	public double getValeAlimentação() {
-		return valeAlimentação;
-	}
-
-	public void setValeAlimentação(double valeAlimentação) {
-		this.valeAlimentação = valeAlimentação;
-	}
-
-	public double getValeTransporte() {
-		return valeTransporte;
-	}
-
-	public void setValeTransporte(double valeTransporte) {
-		this.valeTransporte = valeTransporte;
-	}
-
-	public double getValeRefeição() {
-		return valeRefeição;
-	}
-
-	public void setValeRefeição(double valeRefeição) {
-		this.valeRefeição = valeRefeição;
-	}
-
-	public int getFilhos() {
-		return filhos;
-	}
-
-	public void setFilhos(int filhos) {
-		this.filhos = filhos;
-	}
-
-	public ArrayList<Pessoa> getCadastroFilhos() {
-		return cadastroFilhos;
-	}
-
-	public void setCadastroFilhos(ArrayList<Pessoa> cadastroFilhos) {
-		this.cadastroFilhos = cadastroFilhos;
-	}
-
+	
 	public void setDisciplina(String disciplina) {
 		this.disciplina = disciplina;
 	}
-
-	public String getTelefone() {
-		return telefone;
-	}
-
-	public void setTelefone(String telefone) {
-		this.telefone = telefone;
-	}
-
-	public String geteMail() {
-		return eMail;
-	}
-
-	public void seteMail(String eMail) {
-		this.eMail = eMail;
-	}
-
 }

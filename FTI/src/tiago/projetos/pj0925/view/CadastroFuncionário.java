@@ -11,6 +11,8 @@ import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
@@ -27,6 +29,7 @@ public class CadastroFuncionário {
 	private JPanel container;
 	private JScrollPane scroll;
 	private ControllerFuncionário cF;
+	private ControllerProfessor cP;
 	private ArrayList<JTextField> arrayTextFilhos;
 	private ArrayList<JTextField> arrayTextDatas;
 	private ArrayList<JLabel> arrayLabels;
@@ -48,7 +51,6 @@ public class CadastroFuncionário {
 					CadastroFuncionário window = new CadastroFuncionário();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
-					e.printStackTrace();
 				}
 			}
 		});
@@ -69,6 +71,7 @@ public class CadastroFuncionário {
 	private void iniciaJanela() {
 		ControllerUtil u = new ControllerUtil();
 		cF = new ControllerFuncionário();
+		cP = new ControllerProfessor();
 		simValidou = BorderFactory.createLineBorder(Color.GREEN);
 		
 		container = new JPanel();
@@ -82,6 +85,42 @@ public class CadastroFuncionário {
 		scroll.getViewport().add(container);
 		
 		frame = new JFrame("Cadastro");
+		frame.addWindowListener(new WindowListener() {
+			
+			@Override
+			public void windowOpened(WindowEvent e) {
+			}
+			
+			@Override
+			public void windowIconified(WindowEvent e) {
+				frame.setVisible(false);
+			}
+			
+			@Override
+			public void windowDeiconified(WindowEvent e) {
+				frame.setVisible(false);
+			}
+			
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+				if(!Menu.editando){
+					frame.setVisible(false);
+					botaoCadastrar.setText("Cadastrar");
+				}
+			}
+			
+			@Override
+			public void windowClosing(WindowEvent e) {
+			}
+			
+			@Override
+			public void windowClosed(WindowEvent e) {
+			}
+			
+			@Override
+			public void windowActivated(WindowEvent e) {
+			}
+		});
 		frame.setResizable(false);
 		frame.setSize(785, 451);
 		frame.setLocation(200, 200);
@@ -366,9 +405,29 @@ public class CadastroFuncionário {
 		
 		botaoCadastrar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				cF.botaoCadastrar(textCadastro.getText(), textNome.getText(), textCpf.getText(), botaoMale.isSelected(), botaoFemale.isSelected(), textData.getText(),
-						textEndereço.getText(), boxCargo.getSelectedItem().toString(), boxDisciplina.getSelectedItem().toString(), textSalario.getText().replace(',','.'), textVA.getText().replace(',','.'),
-						textVR.getText().replace(',','.'), textVT.getText().replace(',','.'), textTelefone.getText(), textEMail.getText(), textFilhos.getText(), arrayTextFilhos, arrayTextDatas);
+				if(!Menu.editando){
+					if (boxCargo.getSelectedItem().toString().equals("Professor")){
+						cP.botaoCadastrar(textCadastro.getText(), textNome.getText(), textCpf.getText(), botaoMale.isSelected(), botaoFemale.isSelected(), textData.getText(),
+								textEndereço.getText(), boxCargo.getSelectedItem().toString(), boxDisciplina.getSelectedItem().toString(), textSalario.getText().replace(',','.'), textVA.getText().replace(',','.'),
+								textVR.getText().replace(',','.'), textVT.getText().replace(',','.'), textTelefone.getText(), textEMail.getText(), textFilhos.getText(), arrayTextFilhos, arrayTextDatas);
+					} else {
+						cF.botaoCadastrar(textCadastro.getText(), textNome.getText(), textCpf.getText(), botaoMale.isSelected(), botaoFemale.isSelected(), textData.getText(),
+							textEndereço.getText(), boxCargo.getSelectedItem().toString(), boxDisciplina.getSelectedItem().toString(), textSalario.getText().replace(',','.'), textVA.getText().replace(',','.'),
+							textVR.getText().replace(',','.'), textVT.getText().replace(',','.'), textTelefone.getText(), textEMail.getText(), textFilhos.getText(), arrayTextFilhos, arrayTextDatas);
+					}
+				} else {
+					botaoCadastrar.setText("Salvar");
+					if (boxCargo.getSelectedItem().equals("Professor")){
+						//botao editar professor
+					} else {
+						//botao editar funcionário
+					}
+				}
+				if(Menu.editando){
+					frame.setVisible(false);
+					botaoCadastrar.setText("Cadastrar");
+					Menu.editando = false;
+				}
 			}
 		});
 		
@@ -399,6 +458,10 @@ public class CadastroFuncionário {
 	
 	public ControllerFuncionário getCF(){
 		return this.cF;
+	}
+	
+	public ControllerProfessor getCP(){
+		return this.cP;
 	}
 	
 	public void preencheCampoFuncionário(String cadastro, String nome, String cpf, String data, String endereço, String salario, String vA, String vR, String vT, String telefone, String email, int filhos, char sexo, String cargo) {
@@ -451,6 +514,84 @@ public class CadastroFuncionário {
 		}
 		boxCargo.setSelectedItem(cargo);
 		boxDisciplina.setSelectedItem("Selecionar...");
+		
+		for (int i = arrayTextFilhos.size()+1; i <= filhos; i++) {
+			cF.geraFilhosEditar(ControllerMenu.getArrayFuncionário().get(i).getCadastroFilhos(), i, container, arrayTextFilhos, arrayTextDatas, arrayLabels);
+		}
+		for(JTextField text : arrayTextFilhos) {
+			text.addFocusListener(u.focusListenNome(text, "ex: José"));
+		}
+		for(JTextField text : arrayTextDatas) {
+			text.addFocusListener(u.focusListenData(text, "dd/mm/aaaa"));
+		}
+		
+		for(JTextField text : arrayTextDatas) {
+			container.add(text);
+		}
+		for(JTextField text : arrayTextFilhos) {
+			container.add(text);
+		}
+		for(JLabel label : arrayLabels) {
+			container.add(label);
+		}
+		container.setPreferredSize(new Dimension(750, (filhos*35)+385));
+		scroll.setPreferredSize(new Dimension(750, (filhos*35)+385));
+		frame.pack();
+		frame.setSize(785, 451);
+	}
+
+	public void preencheCampoProfessor(String cadastro, String nome, String cpf, String data, String endereço,
+			String salario, String vA, String vR, String vT, String telefone, String email, int filhos, char sexo,
+			String cargo, String disciplina) {
+		ControllerUtil u = new ControllerUtil();
+		if (Menu.editando) {
+			botaoCadastrar.setText("Salvar");
+		}
+		textCadastro.setForeground(Color.black);
+		textNome.setForeground(Color.black);
+		textCpf.setForeground(Color.black);
+		textData.setForeground(Color.black);
+		textEndereço.setForeground(Color.black);
+		textSalario.setForeground(Color.black);
+		textVA.setForeground(Color.black);
+		textVR.setForeground(Color.black);
+		textVT.setForeground(Color.black);
+		textTelefone.setForeground(Color.black);
+		textEMail.setForeground(Color.black);
+		textFilhos.setForeground(Color.black);
+		textCadastro.setBorder(simValidou);
+		textNome.setBorder(simValidou);
+		textCpf.setBorder(simValidou);
+		textData.setBorder(simValidou);
+		textEndereço.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.green), BorderFactory.createEmptyBorder(2, 2, 2, 2)));
+		textSalario.setBorder(simValidou);
+		textVA.setBorder(simValidou);
+		textVR.setBorder(simValidou);
+		textVT.setBorder(simValidou);
+		textTelefone.setBorder(simValidou);
+		textEMail.setBorder(simValidou);
+		textFilhos.setBorder(simValidou);
+		textCadastro.setText(cadastro);
+		textNome.setText(nome);
+		textCpf.setText(cpf);
+		textData.setText(data);
+		textEndereço.setText(endereço);
+		textSalario.setText(salario);
+		textVA.setText(vA);
+		textVR.setText(vR);
+		textVT.setText(vT);
+		textTelefone.setText(telefone);
+		textEMail.setText(email);
+		textFilhos.setText("" + filhos);
+		if (sexo == 'M') {
+			botaoFemale.setSelected(false);
+			botaoMale.setSelected(true);
+		} else {
+			botaoFemale.setSelected(true);
+			botaoMale.setSelected(false);
+		}
+		boxCargo.setSelectedItem(cargo);
+		boxDisciplina.setSelectedItem(disciplina);
 		
 		for (int i = arrayTextFilhos.size()+1; i <= filhos; i++) {
 			cF.geraFilhos(i, container, arrayTextFilhos, arrayTextDatas, arrayLabels);
