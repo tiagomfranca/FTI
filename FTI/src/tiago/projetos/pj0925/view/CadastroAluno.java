@@ -14,6 +14,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
@@ -59,6 +61,39 @@ public class CadastroAluno {
 		Border naoValidou = BorderFactory.createLineBorder(Color.RED);
 		simValidou = BorderFactory.createLineBorder(Color.GREEN);
 		frame = new JFrame();
+		frame.addWindowListener(new WindowListener() {
+			
+			@Override
+			public void windowOpened(WindowEvent e) {
+			}
+			
+			@Override
+			public void windowIconified(WindowEvent e) {
+				frame.setVisible(false);
+			}
+			
+			@Override
+			public void windowDeiconified(WindowEvent e) {
+				frame.setVisible(false);
+			}
+			
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+				frame.setVisible(false);
+			}
+			
+			@Override
+			public void windowClosing(WindowEvent e) {
+			}
+			
+			@Override
+			public void windowClosed(WindowEvent e) {
+			}
+			
+			@Override
+			public void windowActivated(WindowEvent e) {
+			}
+		});
 		frame.setBounds(100, 100, 485, 489);
 		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
@@ -196,15 +231,23 @@ public class CadastroAluno {
 				cA.botaoCadastrar(textNome.getText(), textCpf.getText(), textMatricula.getText(), botaoMale.isSelected(), botaoFemale.isSelected(), 
 						textData.getText(), textEndereço.getText(), boxCurso.getSelectedItem().toString(), textTelefone.getText(), textEMail.getText());
 				} else {
-					botaoCadastrar.setText(cA.botaoEditar(textNome.getText(), textCpf.getText(), textMatricula.getText(), botaoMale.isSelected(), botaoFemale.isSelected(), 
-							textData.getText(), textEndereço.getText(), boxCurso.getSelectedItem().toString(), textTelefone.getText(), textEMail.getText()));
+					botaoCadastrar.setText("Salvar");
+					cA.botaoEditar(textNome.getText(), textCpf.getText(), textMatricula.getText(), botaoMale.isSelected(), botaoFemale.isSelected(), 
+							textData.getText(), textEndereço.getText(), boxCurso.getSelectedItem().toString(), textTelefone.getText(), textEMail.getText());
 				}
-				frame.setVisible(false);
+				if(Menu.editando) {
+					frame.setVisible(false);
+					botaoCadastrar.setText("Cadastrar");
+					Menu.editando = false;
+				}
 			}
 		});
 		
 		botaoClear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(!Menu.editando) {
+					botaoCadastrar.setText("Cadastrar");
+				}
 				textNome.setForeground(Color.GRAY);
 				textEMail.setForeground(Color.GRAY);
 				textData.setForeground(Color.GRAY);
@@ -258,7 +301,9 @@ public class CadastroAluno {
 	}
 	
 	public void preencheCampo(String nome, String cpf, String matricula, String data, String endereço, String email, String telefone, char sexo, String curso) {
-		botaoCadastrar.setText("Salvar");
+		if (Menu.editando) {
+			botaoCadastrar.setText("Salvar");
+		}
 		textNome.setForeground(Color.black);
 		textEMail.setForeground(Color.black);
 		textData.setForeground(Color.black);

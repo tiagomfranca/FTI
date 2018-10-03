@@ -17,7 +17,6 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 
-import tiago.projetos.pj0925.model.Aluno;
 import tiago.projetos.pj0925.model.Funcionário;
 import tiago.projetos.pj0925.model.Pessoa;
 import tiago.projetos.pj0925.model.Professor;
@@ -39,7 +38,7 @@ public class ControllerFuncionário {
 		String nome2 = "Tiago de Morais França";
 		for (int i = 0; i < 40; i++) {
 			ControllerMenu.getArrayFuncionário().add(new Funcionário("123456789", nome2 + i, "07378278904", new Date(), "Rua M",
-					'M', "Analista Mainframe", 4000.00, 800.00, 900.00, 80.00, 0, new ArrayList<Pessoa>(), "43999565338", "tiagomfr@gmail.com"));
+					'M', "Analista Mainframe", 4000.00, 800.00, 900.00, 80.00, 5, new ArrayList<Pessoa>(), "43999565338", "tiagomfr@gmail.com"));
 		}
 		
 		for (Funcionário func : ControllerMenu.getArrayFuncionário()) {

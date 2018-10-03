@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class Funcionário extends Pessoa {
 	private String codCadastro, endereço, cargo, telefone, eMail;
-	double salario, valeAlimentação, valeTransporte, valeRefeição;
+	private double salario, valeAlimentação, valeTransporte, valeRefeição;
 	private int filhos;
 	private ArrayList<Pessoa> cadastroFilhos;
 	

@@ -74,6 +74,7 @@ public class Menu {
 		CadastroAluno cA = new CadastroAluno();
 		CadastroFuncionário cF = new CadastroFuncionário();
 		cA.getFrame().setVisible(false);
+		cF.getFrame().setVisible(false);
 		frame = new JFrame("Cadastro FTI");
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 800, 525);
@@ -210,10 +211,11 @@ public class Menu {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				cA.getFrame().setVisible(true);
 				try {
 					SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy");
 					String nome = ControllerMenu.getArrayAluno().get(table.getSelectedRow()).getNome();
+					editando = true;
+					cA.getFrame().setVisible(true);
 					String cpf = ControllerMenu.getArrayAluno().get(table.getSelectedRow()).getCpf();
 					String matricula = ControllerMenu.getArrayAluno().get(table.getSelectedRow()).getMatricula();
 					String data = sdf.format(ControllerMenu.getArrayAluno().get(table.getSelectedRow()).getDataNascimento());
@@ -222,12 +224,9 @@ public class Menu {
 					String telefone = ControllerMenu.getArrayAluno().get(table.getSelectedRow()).getTelefone();
 					char sexo = ControllerMenu.getArrayAluno().get(table.getSelectedRow()).getSexo();
 					String curso = ControllerMenu.getArrayAluno().get(table.getSelectedRow()).getCurso();
-					editando = true;
 					pessoaEditada = table.getSelectedRow();
 					cA.preencheCampo(nome, cpf, matricula, data, endereço, email, telefone, sexo, curso);
 				} catch (Exception xcp) {
-					cA.getFrame().setVisible(false);
-					xcp.printStackTrace();
 					JOptionPane.showMessageDialog(null, "Nenhum aluno selecionado", "Erro", JOptionPane.ERROR_MESSAGE);
 				}
 			}
@@ -262,6 +261,36 @@ public class Menu {
 		
 		JButton botaoEditarFuncionario = new JButton("Editar");
 		botaoEditarFuncionario.setBounds(107, 403, 89, 23);
+		botaoEditarFuncionario.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					cF.getBotaoLimpar().doClick();
+					SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy");
+					String cadastro = ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getCodCadastro();
+					editando = true;
+					cF.getFrame().setVisible(true);
+					String nome = ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getNome();
+					String cpf = ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getCpf();
+					String data = sdf.format(ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getDataNascimento());
+					String endereço = ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getEndereço();
+					String salario = "" + ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getSalario();
+					String vA = "" + ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getValeAlimentação();
+					String vR = "" + ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getValeRefeição();
+					String vT = "" + ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getValeTransporte();
+					String telefone = ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getTelefone();
+					String email = ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).geteMail();
+					int filhos = ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getFilhos();
+					char sexo = ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getSexo();
+					String cargo = ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getCargo();
+					pessoaEditada = table.getSelectedRow();
+					cF.preencheCampoFuncionário(cadastro, nome, cpf, data, endereço, salario, vA, vR, vT, telefone, email, filhos, sexo, cargo);
+				} catch (Exception xcp) {
+					JOptionPane.showMessageDialog(null, "Nenhum funcionário selecionado", "Erro", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
 		containerTextFuncionario.add(botaoEditarFuncionario);
 		
 		JScrollPane scrollTabelaFuncionario = new JScrollPane();
@@ -282,8 +311,7 @@ public class Menu {
 		tabelaFuncionario.getColumnModel().getColumn(3).setPreferredWidth(121);
 		tabelaFuncionario.setToolTipText("Lista de Funcionarios cadastrados");
 		tabelaFuncionario.setBorder(new LineBorder(new Color(0, 0, 0)));
-		tabelaFuncionario.setRowSelectionAllowed(false);
-		tabelaFuncionario.setEnabled(false);
+		tabelaFuncionario.setRowSelectionAllowed(true);
 		
 		JPanel abaProfessor = new JPanel();
 		abaProfessor.setLayout(null);

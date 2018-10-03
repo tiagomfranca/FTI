@@ -1,5 +1,6 @@
 package tiago.projetos.pj0925.controller;
 
+import java.awt.Frame;
 import java.util.Date;
 
 import javax.swing.JOptionPane;
@@ -61,6 +62,7 @@ public class ControllerAluno {
 		char sexo = '0';
 		String erros = "";
 		int numeros = 0;
+		
 		
 		if (textNome.equals("") || textNome.equals("ex: José")) {
 			erros = erros + "Campo Nome precisa estar preenchido;\n";
@@ -133,12 +135,13 @@ public class ControllerAluno {
 			Aluno a = new Aluno(textNome, textCpf, textMatricula, data, textEndereço, sexo, boxCurso, textTelefone, textEMail);
 			cadastraAluno(a);
 			JOptionPane.showMessageDialog(null, "Cadastro efetuado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+			Menu.editando = false;
 		} else {
 			JOptionPane.showMessageDialog(null, erros, numeros + " erros encontrados:", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
-	public String botaoEditar(String textNome, String textCpf, String textMatricula, boolean botaoMale, boolean botaoFemale, String textData, String textEndereço,
+	public void botaoEditar(String textNome, String textCpf, String textMatricula, boolean botaoMale, boolean botaoFemale, String textData, String textEndereço,
 			String boxCurso, String textTelefone, String textEMail){
 		ControllerUtil u = new ControllerUtil();
 		char sexo = '0';
@@ -215,8 +218,8 @@ public class ControllerAluno {
 			editaAluno(textNome, textCpf, textData, textEndereço, sexo, boxCurso, textTelefone, textEMail);
 		} else {
 			JOptionPane.showMessageDialog(null, erros, numeros + " erros encontrados:", JOptionPane.ERROR_MESSAGE);
+			Menu.editando = false;
 		}
-		return "Cadastrar";
 	}
 	
 	public String editaAluno(String nome, String cpf, String data, String endereço, char sexo, String boxCurso, String textTelefone, String textEMail) {

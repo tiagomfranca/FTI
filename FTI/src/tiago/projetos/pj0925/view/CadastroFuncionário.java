@@ -24,26 +24,21 @@ import javax.swing.JComboBox;
 public class CadastroFuncionário {
 
 	private JFrame frame;
+	private JPanel container;
+	private JScrollPane scroll;
 	private ControllerFuncionário cF;
 	private ArrayList<JTextField> arrayTextFilhos;
 	private ArrayList<JTextField> arrayTextDatas;
 	private ArrayList<JLabel> arrayLabels;
 	
-	private Border naoValidou;
 	private Border simValidou;
 	
-	private JLabel lblNome;
 	
-	private JTextField textNome;
-	private JTextField textCpf;
-	private JTextField textData;
-	private JTextField textTelefone;
-	private JTextField textEMail;
-	private JTextField textFilhos;
-	private JTextField textSalario;
-	private JTextField textVT;
-	private JTextField textVR;
-	private JTextField textVA;
+	private JTextArea textEndereço;
+	private JTextField textCadastro, textNome, textCpf, textData, textTelefone, textEMail, textFilhos, textSalario, textVT, textVR, textVA;
+	private JComboBox<String> boxCargo, boxDisciplina;
+	private JButton botaoCadastrar, botaoLimpar;
+	private JRadioButton botaoMale, botaoFemale;
 	String filhosAntes;
 
 	public static void main(String[] args) {
@@ -74,21 +69,20 @@ public class CadastroFuncionário {
 	private void iniciaJanela() {
 		ControllerUtil u = new ControllerUtil();
 		cF = new ControllerFuncionário();
-		naoValidou = BorderFactory.createLineBorder(Color.RED);
 		simValidou = BorderFactory.createLineBorder(Color.GREEN);
 		
-		JPanel container = new JPanel();
+		container = new JPanel();
 		container.setLayout(null);
 		container.setLocation(0,0);
 		container.setPreferredSize(new Dimension(750, 385));
 		
-		JScrollPane scroll = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scroll = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scroll.setSize(800,385);
 		scroll.setLocation(0, 100);
 		scroll.getViewport().add(container);
 		
 		frame = new JFrame("Cadastro");
-		//frame.setResizable(false);
+		frame.setResizable(false);
 		frame.setSize(785, 451);
 		frame.setLocation(200, 200);
 		frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
@@ -101,13 +95,13 @@ public class CadastroFuncionário {
 		container.add(lblCadastro);
 		container.add(lblCadastro2);
 		
-		JTextField textCadastro = new JTextField();
+		textCadastro = new JTextField();
 		textCadastro.addFocusListener(u.focusListenLimiteNumeros(textCadastro, "ex: 123456789", 9));
 		textCadastro.setBounds(120, 30, 250, 20);
 		container.add(textCadastro);
 		textCadastro.setColumns(10);
 		
-		lblNome = new JLabel("Nome:* ");
+		JLabel lblNome = new JLabel("Nome:* ");
 		lblNome.setBounds(45, 65, 100, 14);
 		container.add(lblNome);
 		textNome = new JTextField("ex: José");
@@ -136,7 +130,7 @@ public class CadastroFuncionário {
 		lblMale.setBounds(168, 135, 60, 14);
 		container.add(lblMale);
 		
-		JRadioButton botaoMale = new JRadioButton("");
+		botaoMale = new JRadioButton("");
 		botaoMale.setBounds(148, 132, 20, 23);
 		container.add(botaoMale);
 		
@@ -144,7 +138,7 @@ public class CadastroFuncionário {
 		lblFemale.setBounds(285, 135, 60, 14);
 		container.add(lblFemale);
 		
-		JRadioButton botaoFemale = new JRadioButton("");
+		botaoFemale = new JRadioButton("");
 		botaoFemale.setBounds(265, 132, 20, 23);
 		container.add(botaoFemale);
 		
@@ -166,7 +160,7 @@ public class CadastroFuncionário {
 		lblEndereço.setBounds(405, 65, 80, 14);
 		container.add(lblEndereço);
 				
-		JTextArea textEndereço = new JTextArea("ex: R. Ayrton Senna da Silva, 500\nEdifício Torre di Pietra - 3° andar - sala - 303");
+		textEndereço = new JTextArea("ex: R. Ayrton Senna da Silva, 500\nEdifício Torre di Pietra - 3° andar - sala - 303");
 		textEndereço.setBounds(485, 65, 250, 125);
 		Border border = BorderFactory.createLineBorder(Color.GRAY);
 		textEndereço.setForeground(Color.gray);
@@ -179,7 +173,7 @@ public class CadastroFuncionário {
 		container.add(lblDisciplina);
 		lblDisciplina.setVisible(false);
 		
-		JComboBox<String> boxDisciplina = new JComboBox<String>();
+		boxDisciplina = new JComboBox<String>();
 		boxDisciplina.addItem("Selecionar...");
 		boxDisciplina.addItem("Banco de Dados");
 		boxDisciplina.addItem("Front-end");
@@ -194,7 +188,7 @@ public class CadastroFuncionário {
 		lblCargo.setBounds(45, 205, 67, 14);
 		container.add(lblCargo);
 		
-		JComboBox<String> boxCargo = new JComboBox<String>();
+		boxCargo = new JComboBox<String>();
 		boxCargo.addItem("Selecionar...");
 		boxCargo.addItem("Professor");
 		boxCargo.addItem("Analista Mainframe");
@@ -362,11 +356,11 @@ public class CadastroFuncionário {
 		lblObrigatorio.setBounds(550, 30, 200, 14);
 		container.add(lblObrigatorio);
 		
-		JButton botaoCadastrar = new JButton("Cadastrar");
+		botaoCadastrar = new JButton("Cadastrar");
 		botaoCadastrar.setBounds(440, 342, 100, 23);
 		container.add(botaoCadastrar);
 		
-		JButton botaoLimpar = new JButton("Limpar");
+		botaoLimpar = new JButton("Limpar");
 		botaoLimpar.setBounds(620, 342, 100, 23);
 		container.add(botaoLimpar);
 		
@@ -399,7 +393,87 @@ public class CadastroFuncionário {
 		});
     }
 	
+	public JButton getBotaoLimpar() {
+		return this.botaoLimpar;
+	}
+	
 	public ControllerFuncionário getCF(){
 		return this.cF;
+	}
+	
+	public void preencheCampoFuncionário(String cadastro, String nome, String cpf, String data, String endereço, String salario, String vA, String vR, String vT, String telefone, String email, int filhos, char sexo, String cargo) {
+		ControllerUtil u = new ControllerUtil();
+		if (Menu.editando) {
+			botaoCadastrar.setText("Salvar");
+		}
+		textCadastro.setForeground(Color.black);
+		textNome.setForeground(Color.black);
+		textCpf.setForeground(Color.black);
+		textData.setForeground(Color.black);
+		textEndereço.setForeground(Color.black);
+		textSalario.setForeground(Color.black);
+		textVA.setForeground(Color.black);
+		textVR.setForeground(Color.black);
+		textVT.setForeground(Color.black);
+		textTelefone.setForeground(Color.black);
+		textEMail.setForeground(Color.black);
+		textFilhos.setForeground(Color.black);
+		textCadastro.setBorder(simValidou);
+		textNome.setBorder(simValidou);
+		textCpf.setBorder(simValidou);
+		textData.setBorder(simValidou);
+		textEndereço.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.green), BorderFactory.createEmptyBorder(2, 2, 2, 2)));
+		textSalario.setBorder(simValidou);
+		textVA.setBorder(simValidou);
+		textVR.setBorder(simValidou);
+		textVT.setBorder(simValidou);
+		textTelefone.setBorder(simValidou);
+		textEMail.setBorder(simValidou);
+		textFilhos.setBorder(simValidou);
+		textCadastro.setText(cadastro);
+		textNome.setText(nome);
+		textCpf.setText(cpf);
+		textData.setText(data);
+		textEndereço.setText(endereço);
+		textSalario.setText(salario);
+		textVA.setText(vA);
+		textVR.setText(vR);
+		textVT.setText(vT);
+		textTelefone.setText(telefone);
+		textEMail.setText(email);
+		textFilhos.setText("" + filhos);
+		if (sexo == 'M') {
+			botaoFemale.setSelected(false);
+			botaoMale.setSelected(true);
+		} else {
+			botaoFemale.setSelected(true);
+			botaoMale.setSelected(false);
+		}
+		boxCargo.setSelectedItem(cargo);
+		boxDisciplina.setSelectedItem("Selecionar...");
+		
+		for (int i = arrayTextFilhos.size()+1; i <= filhos; i++) {
+			cF.geraFilhos(i, container, arrayTextFilhos, arrayTextDatas, arrayLabels);
+		}
+		for(JTextField text : arrayTextFilhos) {
+			text.addFocusListener(u.focusListenNome(text, "ex: José"));
+		}
+		for(JTextField text : arrayTextDatas) {
+			text.addFocusListener(u.focusListenData(text, "dd/mm/aaaa"));
+		}
+		
+		for(JTextField text : arrayTextDatas) {
+			container.add(text);
+		}
+		for(JTextField text : arrayTextFilhos) {
+			container.add(text);
+		}
+		for(JLabel label : arrayLabels) {
+			container.add(label);
+		}
+		container.setPreferredSize(new Dimension(750, (filhos*35)+385));
+		scroll.setPreferredSize(new Dimension(750, (filhos*35)+385));
+		frame.pack();
+		frame.setSize(785, 451);
 	}
 }
