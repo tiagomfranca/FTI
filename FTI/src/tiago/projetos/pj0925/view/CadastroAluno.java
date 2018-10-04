@@ -1,19 +1,12 @@
 package tiago.projetos.pj0925.view;
 
-import tiago.projetos.pj0925.model.*;
 import tiago.projetos.pj0925.controller.*;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import java.awt.Color;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.event.ActionEvent;
@@ -21,12 +14,8 @@ import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.JRadioButton;
-import javax.swing.JToggleButton;
 import javax.swing.border.Border;
-import javax.swing.JScrollBar;
 import javax.swing.JComboBox;
-import javax.swing.JCheckBox;
-import java.util.Date;
 
 public class CadastroAluno {
 
@@ -58,7 +47,7 @@ public class CadastroAluno {
 		ControllerUtil u = new ControllerUtil();
 		cA = new ControllerAluno();
 		simValidou = BorderFactory.createLineBorder(Color.GREEN);
-		frame = new JFrame();
+		frame = new JFrame("Cadastro de Aluno");
 		frame.addWindowListener(new WindowListener() {
 			
 			@Override

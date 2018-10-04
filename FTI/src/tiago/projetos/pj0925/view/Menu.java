@@ -272,7 +272,7 @@ public class Menu {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Object[] escolhas = {"Sim", "Não"};
-					if (JOptionPane.showOptionDialog(null, "Deseja remover " + ControllerMenu.getArrayAluno().get(tabelaFuncionario.getSelectedRow()).getNome() + "?", 
+					if (JOptionPane.showOptionDialog(null, "Deseja remover " + ControllerMenu.getArrayProfessor().get(tabelaFuncionario.getSelectedRow()).getNome() + "?", 
 							"Confirmar remoção", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, escolhas, escolhas[1]) == 0){
 						cF.getCF().removeFuncionario(tabelaFuncionario.getSelectedRow());
 					}
@@ -429,12 +429,12 @@ public class Menu {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Object[] escolhas = {"Sim", "Não"};
-					if (JOptionPane.showOptionDialog(null, "Deseja remover " + ControllerMenu.getArrayAluno().get(tabelaProfessor.getSelectedRow()).getNome() + "?", 
+					if (JOptionPane.showOptionDialog(null, "Deseja remover " + ControllerMenu.getArrayProfessor().get(tabelaProfessor.getSelectedRow()).getNome() + "?", 
 							"Confirmar remoção", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, escolhas, escolhas[1]) == 0){
-						cF.getCP().removeProfessor(tabelaFuncionario.getSelectedRow());
+						cF.getCP().removeProfessor(tabelaProfessor.getSelectedRow());
 					}
 				} catch (Exception xcp) {
-					JOptionPane.showMessageDialog(null, "Nenhum funcionário selecionado.", "Erro", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Nenhum professor selecionado.", "Erro", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});

@@ -17,10 +17,8 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 
-import tiago.projetos.pj0925.model.Aluno;
 import tiago.projetos.pj0925.model.Funcionário;
 import tiago.projetos.pj0925.model.Pessoa;
-import tiago.projetos.pj0925.model.Professor;
 import tiago.projetos.pj0925.view.Menu;
 
 public class ControllerFuncionário {
@@ -40,7 +38,7 @@ public class ControllerFuncionário {
 		String nome2 = "Tiago de Morais França";
 		for (int i = 0; i < 17; i++) {
 			ControllerMenu.getArrayFuncionário().add(new Funcionário("123456789", nome2 + i, "07378278904", new Date(), "Rua M",
-					'M', "Analista Mainframe", 4000.00, 800.00, 900.00, 80.00, 0, new ArrayList<Pessoa>(), "43999565338", "tiagomfr@gmail.com"));
+					'M', "Analista Mainframe", 4000.21, 800.34, 900.98, 80.22, 0, new ArrayList<Pessoa>(), "43999565338", "tiagomfr@gmail.com"));
 		}
 		
 		for (Funcionário func : ControllerMenu.getArrayFuncionário()) {
@@ -53,9 +51,6 @@ public class ControllerFuncionário {
 		}
 	}
 	
-	public void cadastraProfessor(Professor p) {
-		
-	}
 	public void cadastraFuncionário(Funcionário f) {
 		String cadastro = f.getCodCadastro();
 		String cpf = f.getCpf();
@@ -336,7 +331,9 @@ public class ControllerFuncionário {
 						Double.parseDouble(textSalario), valorVA, valorVR, valorVT, arrayFilhos);
 			JOptionPane.showMessageDialog(null, "Cadastro de funcionário efetuado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 			Menu.editando = false;
+			Menu.pessoaEditada = -1;
 		} else {
+			Menu.editando = true;
 			JOptionPane.showMessageDialog(null, erros, numeros + " erros encontrados:", JOptionPane.ERROR_MESSAGE);
 		}
 	}

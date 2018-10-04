@@ -15,7 +15,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
-
 public class ControllerUtil {
 	private Border simValidou;
 	private Border naoValidou;
@@ -29,21 +28,17 @@ public class ControllerUtil {
 		simValidou = BorderFactory.createLineBorder(Color.GREEN);
 		defaultBorder = new JTextField().getBorder();
 		tk = Toolkit.getDefaultToolkit();
-		Border simValidouArea = BorderFactory.createCompoundBorder(simValidou, BorderFactory.createEmptyBorder(2, 2, 2, 2));
-		Border borderArea = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.GRAY), BorderFactory.createEmptyBorder(2, 2, 2, 2));
+		//Border simValidouArea = BorderFactory.createCompoundBorder(simValidou, BorderFactory.createEmptyBorder(2, 2, 2, 2));
+		//Border borderArea = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.GRAY), BorderFactory.createEmptyBorder(2, 2, 2, 2));
 	}
 	
 	public boolean validaData(String date){
 		if (date == null){
 			return false;
 		}		
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy");
-		sdf.setLenient(false);
-		
 		try {
-			Date data = sdf.parse(date);
+			ControllerMenu.sdf.parse(date);
 		} catch(ParseException e) {
-			e.printStackTrace();
 			return false; 
 		}
 		return true;
@@ -166,11 +161,57 @@ public class ControllerUtil {
 		}
 	}
 	
+	public void apenasDoublePressed(KeyEvent e) {
+		char c = e.getKeyChar();
+		if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE && countNum == 3){
+			countNum = 0;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_DECIMAL){
+			if (countNum == 0){
+				countNum = 1;
+			}
+		}
+		if (e.getKeyCode() == KeyEvent.VK_COMMA) {
+			if (countNum == 0){
+				countNum = 1;
+			} else {
+				e.consume();
+			}
+		}
+		if (countNum > 0){
+			if (countNum < 5){
+				if (Character.isDigit(c)){
+					countNum++;
+				}
+			} else {
+				if (Character.isDigit(c) || e.getKeyCode() == KeyEvent.VK_COMMA || e.getKeyCode() == KeyEvent.VK_DECIMAL || e.getKeyCode() == KeyEvent.VK_SEPARATOR){
+					e.consume();
+					tk.beep();
+				}
+			}
+		}
+		if (countNum > 0){
+			switch (e.getKeyCode()){
+				case KeyEvent.VK_LEFT: countNum-=2; if(countNum==1)countNum=0; break;
+				case KeyEvent.VK_BACK_SPACE: countNum-=2; if(countNum==1)countNum=0; break;
+				case KeyEvent.VK_COMMA: e.consume(); break;
+				case KeyEvent.VK_SEPARATOR: e.consume(); break;
+				case KeyEvent.VK_DECIMAL: e.consume(); break;
+			}
+		}
+		if (countNum < 5 && countNum > 0){
+			switch (e.getKeyCode()){
+			case KeyEvent.VK_RIGHT: countNum+=2; break;
+			}
+		}
+		if (!Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE && c != KeyEvent.VK_COMMA && e.getKeyCode() 
+				!= KeyEvent.VK_LEFT && e.getKeyCode() != KeyEvent.VK_RIGHT && e.getKeyCode() != KeyEvent.VK_TAB) {
+			e.consume();
+		}
+	}
+	
 	public void apenasDouble(KeyEvent e) {
 		char c = e.getKeyChar();
-//		System.out.println(e.getKeyCode());
-//		System.out.println();
-		//System.out.println(KeyEvent.VK_DECIMAL + "      " + KeyEvent.VK_SEPARATOR + "   " + KeyEvent.VK_SEPARATER);
 		if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE && countNum == 3){
 			countNum = 0;
 		}
@@ -220,9 +261,8 @@ public class ControllerUtil {
 	
 	public boolean validaDouble(String input){
 		try {
-			Double teste = (Double.parseDouble(input));
+			Double.parseDouble(input);
 		} catch (Exception e) {
-			e.printStackTrace();
 			return false;
 		}		
 		return true;
@@ -327,7 +367,7 @@ public class ControllerUtil {
 			
 			@Override
 			public void keyPressed(KeyEvent e) {
-				apenasDouble(e);
+				apenasDoublePressed(e);
 			}
 		};
 	}
@@ -519,7 +559,7 @@ public class ControllerUtil {
 					texto.setForeground(Color.GRAY);
 					texto.setBorder(defaultBorder);
 					texto.setText("ex: 12345678901");
-				} else if (validaCpf(texto.getText())){
+				} else if (!validaCpf(texto.getText())){
 					texto.setBorder(naoValidou);
 				} else {
 					texto.setBorder(simValidou);
