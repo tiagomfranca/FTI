@@ -114,23 +114,23 @@ public class ControllerFuncionário {
 				numeros++;
 			}
 		}
-		if(textSalario.equals("ex: 400,00")) {
+		if(textSalario.equals("ex: 400.00")) {
 			erros = erros + "É necessário informar o salário;\n";
 			numeros++;
 		} else if(!u.validaDouble(textSalario)) {
 			erros = erros + "Salário inválido (exemplo: 400,00);\n";
 		}
-		if(textVA.equals("ex: 400,00")) {
+		if(textVA.equals("ex: 400.00")) {
 			valorVA = 0;
 		} else if(!u.validaDouble(textVA)) {
 			erros = erros + "Valor do vale alimentação inválido (exemplo: 400,00);\n";
 		}
-		if(textVR.equals("ex: 400,00")) {
+		if(textVR.equals("ex: 400.00")) {
 			valorVR = 0;
 		} else if(!u.validaDouble(textVR)) {
 			erros = erros + "Valor do vale refeição inválido (exemplo: 400,00);\n";
 		}
-		if(textVT.equals("ex: 400,00")) {
+		if(textVT.equals("ex: 400.00")) {
 			valorVT = 0;
 		} else if(!u.validaDouble(textVT)) {
 			erros = erros + "Valor do vale transporte inválido (exemplo: 400,00);\n";
@@ -329,8 +329,8 @@ public class ControllerFuncionário {
 			}
 			editaFuncionário(textCadastro, textNome, textCpf, textData, textEndereço, sexo, boxCargo, textTelefone, textEMail, Integer.parseInt(textFilhos), 
 						Double.parseDouble(textSalario), valorVA, valorVR, valorVT, arrayFilhos);
-			JOptionPane.showMessageDialog(null, "Cadastro de funcionário efetuado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 			Menu.editando = false;
+			JOptionPane.showMessageDialog(null, "Cadastro de funcionário efetuado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 			Menu.pessoaEditada = -1;
 		} else {
 			Menu.editando = true;

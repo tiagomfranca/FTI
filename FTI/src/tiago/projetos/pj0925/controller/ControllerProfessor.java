@@ -323,8 +323,8 @@ public class ControllerProfessor {
 			}
 			editaProfessor(textCadastro, textNome, textCpf, textData, textEndereço, sexo, boxCargo, boxDisciplina, textTelefone, textEMail, Integer.parseInt(textFilhos), 
 						Double.parseDouble(textSalario), valorVA, valorVR, valorVT, arrayFilhos);
-			JOptionPane.showMessageDialog(null, "Cadastro de professor efetuado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 			Menu.editando = false;
+			JOptionPane.showMessageDialog(null, "Cadastro de professor efetuado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 			Menu.pessoaEditada = -1;
 		} else {
 			Menu.editando = true;

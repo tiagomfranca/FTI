@@ -121,6 +121,9 @@ public class Menu {
 		
 		JTextPane textPaneAluno = new JTextPane();
 		textPaneAluno.setText("Selecione um aluno para ver mais informações");
+		if (ControllerMenu.getArrayAluno().size() == 0){
+			textPaneAluno.setText("Para cadastrar um aluno, clique em Adicionar.");
+		}
 		textPaneAluno.setForeground(Color.black);
 		textPaneAluno.setBackground(UIManager.getColor("TextPane.disabledBackground"));
 		textPaneAluno.setEnabled(true);
@@ -140,10 +143,14 @@ public class Menu {
 			
 			@Override
 			public void mouseExited(MouseEvent e) {
-				try {
+				if (tabelaAluno.getSelectedRow() >= 0){
 					textPaneAluno.setText(cM.setTextPaneAluno(tabelaAluno.getSelectedRow()));
-				} catch(Exception xcp){
-					textPaneAluno.setText("Selecione um aluno para ver mais informações");
+				} else {
+					if (ControllerMenu.getArrayAluno().size() == 0){
+						textPaneAluno.setText("Para cadastrar um aluno, clique em Adicionar.");
+					} else {
+						textPaneAluno.setText("Selecione um aluno para ver mais informações");
+					}
 				}
 			}
 			
@@ -156,8 +163,11 @@ public class Menu {
 						@Override
 						public void mouseMoved(MouseEvent evt) {
 							int linha2 = tabelaAluno.rowAtPoint(evt.getPoint());
-							if (linha2 != linha) {
+							if (linha2 != linha && linha2 > 0) {
+								System.out.println(linha2);
 								textPaneAluno.setText(cM.setTextPaneAluno(linha2));
+							} else {
+								
 							}
 						}
 						
@@ -165,8 +175,15 @@ public class Menu {
 						public void mouseDragged(MouseEvent e) {
 						}
 					});
-					textPaneAluno.setText(cM.setTextPaneAluno(linha));
+					if (tabelaAluno.getSelectedRow() >= 0){
+						if (linha != tabelaAluno.getSelectedRow()){
+							textPaneAluno.setText(cM.setTextPaneAluno(linha));
+						}
+					} else {
+						textPaneAluno.setText("Para cadastrar um aluno, clique em Adicionar.");
+					}
 				} catch(Exception xcp){
+					textPaneAluno.setText("Selecione um aluno para ver mais informações");
 				}
 			}
 			
@@ -243,7 +260,9 @@ public class Menu {
 		abaFuncionario.add(containerTextFuncionario);
 		
 		JTextPane textPaneFuncionario = new JTextPane();
-		textPaneFuncionario.setText("Selecione um funcionário para ver mais informações");
+		if (ControllerMenu.getArrayAluno().size() == 0){
+			textPaneFuncionario.setText("Para cadastrar um funcionário, clique em Adicionar.");
+		}
 		textPaneFuncionario.setForeground(Color.black);
 		textPaneFuncionario.setEnabled(true);
 		textPaneFuncionario.setEditable(false);
@@ -272,7 +291,7 @@ public class Menu {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Object[] escolhas = {"Sim", "Não"};
-					if (JOptionPane.showOptionDialog(null, "Deseja remover " + ControllerMenu.getArrayProfessor().get(tabelaFuncionario.getSelectedRow()).getNome() + "?", 
+					if (JOptionPane.showOptionDialog(null, "Deseja remover " + ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getNome() + "?", 
 							"Confirmar remoção", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, escolhas, escolhas[1]) == 0){
 						cF.getCF().removeFuncionario(tabelaFuncionario.getSelectedRow());
 					}
@@ -353,10 +372,14 @@ public class Menu {
 			
 			@Override
 			public void mouseExited(MouseEvent e) {
-				try {
+				if (tabelaFuncionario.getSelectedRow() > 0){
 					textPaneFuncionario.setText(cM.setTextPaneFuncionario(tabelaFuncionario.getSelectedRow()));
-				} catch(Exception xcp){
-					textPaneFuncionario.setText("Selecione um funcionário para ver mais informações");
+				} else {
+					if (ControllerMenu.getArrayFuncionário().size() == 0){
+						textPaneFuncionario.setText("Para cadastrar um funcionário, clique em Adicionar.");
+					} else {
+						textPaneFuncionario.setText("Selecione um funcionário para ver mais informações");
+					}
 				}
 			}
 			
@@ -378,8 +401,9 @@ public class Menu {
 						public void mouseDragged(MouseEvent e) {
 						}
 					});
-					textPaneAluno.setText(cM.setTextPaneAluno(linha));
+					textPaneFuncionario.setText(cM.setTextPaneFuncionario(linha));
 				} catch (Exception xcp){
+					textPaneFuncionario.setText("Selecione um funcionário para ver mais informações");
 				}
 			}
 			
@@ -511,10 +535,14 @@ public class Menu {
 			
 			@Override
 			public void mouseExited(MouseEvent e) {
-				try {
+				if (tabelaProfessor.getSelectedRow() > 0){
 					textPaneProfessor.setText(cM.setTextPaneProfessor(tabelaProfessor.getSelectedRow()));
-				} catch(Exception xcp){
-					textPaneProfessor.setText("Selecione um professor para ver mais informações");
+				} else {
+					if (ControllerMenu.getArrayFuncionário().size() == 0){
+						textPaneProfessor.setText("Para cadastrar um professor, clique em Adicionar.");
+					} else {
+						textPaneProfessor.setText("Selecione um professor para ver mais informações");
+					}
 				}
 			}
 			
@@ -536,8 +564,9 @@ public class Menu {
 						public void mouseDragged(MouseEvent e) {
 						}
 					});
-					textPaneAluno.setText(cM.setTextPaneProfessor(linha));
+					textPaneProfessor.setText(cM.setTextPaneProfessor(linha));
 				} catch (Exception xcp){
+					textPaneProfessor.setText("Selecione um professor para ver mais informações");
 				}
 			}
 			
