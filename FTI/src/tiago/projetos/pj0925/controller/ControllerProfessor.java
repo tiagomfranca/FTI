@@ -90,7 +90,7 @@ public class ControllerProfessor {
 			erros = erros + "Campo Endereço deve ser preenchido;\n";
 			numeros++;
 		}
-		if (boxCargo.equals("Selecione...")) {
+		if (boxCargo.equals("Selecionar...")) {
 			erros = erros + "É necessário informar o cargo;\n";
 			numeros++;
 		} else if (boxCargo.equals("Professor")) {
@@ -177,9 +177,10 @@ public class ControllerProfessor {
 			Professor p = new Professor(textCadastro, textNome, textCpf, u.transformaData(textData), textEndereço, sexo, boxCargo, boxDisciplina,
 					Double.parseDouble(textSalario), valorVA, valorVT, valorVR, Integer.parseInt(textFilhos), arrayFilhos, textTelefone, textEMail);
 			cadastraProfessor(p);
+			Menu.adicionando = false;
 			JOptionPane.showMessageDialog(null, "Cadastro de professor efetuado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-			Menu.editando = false;
 		} else {
+			Menu.adicionando = false;
 			JOptionPane.showMessageDialog(null, erros, numeros + " erros encontrados:", JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -324,7 +325,7 @@ public class ControllerProfessor {
 			editaProfessor(textCadastro, textNome, textCpf, textData, textEndereço, sexo, boxCargo, boxDisciplina, textTelefone, textEMail, Integer.parseInt(textFilhos), 
 						Double.parseDouble(textSalario), valorVA, valorVR, valorVT, arrayFilhos);
 			Menu.editando = false;
-			JOptionPane.showMessageDialog(null, "Cadastro de professor efetuado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Informações do professor foram atualizadas com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 			Menu.pessoaEditada = -1;
 		} else {
 			Menu.editando = true;
@@ -354,7 +355,7 @@ public class ControllerProfessor {
 		ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).setValeRefeição(vR);
 		ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).setValeTransporte(vT);
 		ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).setCadastroFilhos(arrayFilhos);
-		
+		Menu.setTextProfessor();
 		refazTabela();
 		Menu.pessoaEditada = -1;
 	}

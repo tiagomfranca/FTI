@@ -28,8 +28,8 @@ public class ControllerUtil {
 		simValidou = BorderFactory.createLineBorder(Color.GREEN);
 		defaultBorder = new JTextField().getBorder();
 		tk = Toolkit.getDefaultToolkit();
-		//Border simValidouArea = BorderFactory.createCompoundBorder(simValidou, BorderFactory.createEmptyBorder(2, 2, 2, 2));
-		//Border borderArea = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.GRAY), BorderFactory.createEmptyBorder(2, 2, 2, 2));
+		borderArea = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.gray), BorderFactory.createEmptyBorder(2, 2, 2, 2));
+		simValidouArea = BorderFactory.createCompoundBorder(simValidou, BorderFactory.createEmptyBorder(2, 2, 2, 2));
 	}
 	
 	public boolean validaData(String date){

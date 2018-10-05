@@ -56,19 +56,19 @@ public class CadastroAluno {
 			
 			@Override
 			public void windowIconified(WindowEvent e) {
-				frame.setVisible(false);
 			}
 			
 			@Override
 			public void windowDeiconified(WindowEvent e) {
-				frame.setVisible(false);
 			}
 			
 			@Override
 			public void windowDeactivated(WindowEvent e) {
 				if(!Menu.editando){
-					frame.setVisible(false);
-					botaoCadastrar.setText("Cadastrar");
+					if(!Menu.adicionando){
+						frame.setVisible(false);
+						resetaBotao();
+					}
 				}
 			}
 			
@@ -305,6 +305,7 @@ public class CadastroAluno {
 		textTelefone.setBorder(simValidou);
 		textCpf.setBorder(simValidou);
 		textMatricula.setBorder(simValidou);
+		textMatricula.setEditable(false);
 		textEndereço.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.green), BorderFactory.createEmptyBorder(2, 2, 2, 2)));
 		textData.setBorder(simValidou);
 		textNome.setText(nome);
@@ -329,6 +330,7 @@ public class CadastroAluno {
 	}
 	
 	public void resetaBotao(){
+		textMatricula.setEditable(true);
 		botaoCadastrar.setText("Cadastrar");
 	}
 }

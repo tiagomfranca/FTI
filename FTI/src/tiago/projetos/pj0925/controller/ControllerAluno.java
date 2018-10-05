@@ -133,8 +133,9 @@ public class ControllerAluno {
 			Aluno a = new Aluno(textNome, textCpf, textMatricula, data, textEndereço, sexo, boxCurso, textTelefone, textEMail);
 			cadastraAluno(a);
 			JOptionPane.showMessageDialog(null, "Cadastro efetuado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-			Menu.editando = false;
+			Menu.adicionando = false;
 		} else {
+			Menu.adicionando = true;
 			JOptionPane.showMessageDialog(null, erros, numeros + " erros encontrados:", JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -236,6 +237,7 @@ public class ControllerAluno {
 		ControllerMenu.getArrayAluno().get(Menu.pessoaEditada).setTelefone(textTelefone);
 		ControllerMenu.getArrayAluno().get(Menu.pessoaEditada).seteMail(textEMail);
 		refazTabela();
+		Menu.setTextAluno();
 		Menu.pessoaEditada = -1;
 	}
 	

@@ -2,9 +2,12 @@ package tiago.projetos.pj0925.view;
 
 import tiago.projetos.pj0925.controller.*;
 import java.awt.EventQueue;
+import java.awt.Graphics;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -36,7 +39,6 @@ public class CadastroFuncionário {
 	
 	private Border simValidou;
 	
-	
 	private JTextArea textEndereço;
 	private JTextField textCadastro, textNome, textCpf, textData, textTelefone, textEMail, textFilhos, textSalario, textVT, textVR, textVA;
 	private JComboBox<String> boxCargo, boxDisciplina;
@@ -57,10 +59,19 @@ public class CadastroFuncionário {
 	}
 
 	public CadastroFuncionário() {
-		iniciaJanela();
+		
 		arrayTextFilhos = new ArrayList<JTextField>();
 		arrayTextDatas = new ArrayList<JTextField>();
 		arrayLabels = new ArrayList<JLabel>();
+		boxCargo = new JComboBox<String>();
+		boxCargo.setRenderer(new DefaultListCellRenderer() {
+	        @Override
+	        public void paint(Graphics g) {
+	            setForeground(Color.BLACK);
+	            super.paint(g);
+	        }
+	    });
+		iniciaJanela();
 		filhosAntes = "";
 	}
 	
@@ -93,19 +104,19 @@ public class CadastroFuncionário {
 			
 			@Override
 			public void windowIconified(WindowEvent e) {
-				frame.setVisible(false);
 			}
 			
 			@Override
 			public void windowDeiconified(WindowEvent e) {
-				frame.setVisible(false);
 			}
 			
 			@Override
 			public void windowDeactivated(WindowEvent e) {
 				if(!Menu.editando){
-					frame.setVisible(false);
-					botaoCadastrar.setText("Cadastrar");
+					if(!Menu.adicionando){
+						frame.setVisible(false);
+						resetaBotao();
+					}
 				}
 			}
 			
@@ -227,7 +238,6 @@ public class CadastroFuncionário {
 		lblCargo.setBounds(45, 205, 67, 14);
 		container.add(lblCargo);
 		
-		boxCargo = new JComboBox<String>();
 		boxCargo.addItem("Selecionar...");
 		boxCargo.addItem("Professor");
 		boxCargo.addItem("Analista Mainframe");
@@ -427,11 +437,11 @@ public class CadastroFuncionário {
 							textVR.getText().replace(',','.'), textVT.getText().replace(',','.'), textTelefone.getText(), textEMail.getText(), textFilhos.getText(), arrayTextFilhos, arrayTextDatas);
 					}
 				}
-				if(Menu.editando){
-					frame.setVisible(false);
-					botaoCadastrar.setText("Cadastrar");
-					Menu.editando = false;
-				}
+//				if(Menu.editando){
+//					frame.setVisible(false);
+//					botaoCadastrar.setText("Cadastrar");
+//					Menu.editando = false;
+//				}
 			}
 		});
 		
@@ -473,6 +483,7 @@ public class CadastroFuncionário {
 		if (Menu.editando) {
 			botaoCadastrar.setText("Salvar");
 		}
+		textCadastro.setEditable(false);
 		textCadastro.setForeground(Color.black);
 		textNome.setForeground(Color.black);
 		textCpf.setForeground(Color.black);
@@ -551,6 +562,7 @@ public class CadastroFuncionário {
 		if (Menu.editando) {
 			botaoCadastrar.setText("Salvar");
 		}
+		textCadastro.setEditable(false);
 		textCadastro.setForeground(Color.black);
 		textNome.setForeground(Color.black);
 		textCpf.setForeground(Color.black);
@@ -620,5 +632,17 @@ public class CadastroFuncionário {
 		scroll.setPreferredSize(new Dimension(750, (filhos*35)+385));
 		frame.pack();
 		frame.setSize(785, 451);
+	}
+	
+	public void resetaBotao(){
+		textCadastro.setEditable(true);
+		boxCargo.setEnabled(true);
+		botaoCadastrar.setText("Cadastrar");
+	}
+	
+	public void setBoxCargo(){
+		boxCargo.setSelectedItem("Professor");
+		boxCargo.setEnabled(false);
+		boxCargo.setForeground(Color.BLACK);
 	}
 }

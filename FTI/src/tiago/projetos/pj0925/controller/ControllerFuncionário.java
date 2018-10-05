@@ -114,23 +114,23 @@ public class ControllerFuncionário {
 				numeros++;
 			}
 		}
-		if(textSalario.equals("ex: 400.00")) {
+		if(textSalario.equals("ex: 400,00")) {
 			erros = erros + "É necessário informar o salário;\n";
 			numeros++;
 		} else if(!u.validaDouble(textSalario)) {
 			erros = erros + "Salário inválido (exemplo: 400,00);\n";
 		}
-		if(textVA.equals("ex: 400.00")) {
+		if(textVA.equals("ex: 400,00")) {
 			valorVA = 0;
 		} else if(!u.validaDouble(textVA)) {
 			erros = erros + "Valor do vale alimentação inválido (exemplo: 400,00);\n";
 		}
-		if(textVR.equals("ex: 400.00")) {
+		if(textVR.equals("ex: 400,00")) {
 			valorVR = 0;
 		} else if(!u.validaDouble(textVR)) {
 			erros = erros + "Valor do vale refeição inválido (exemplo: 400,00);\n";
 		}
-		if(textVT.equals("ex: 400.00")) {
+		if(textVT.equals("ex: 400,00")) {
 			valorVT = 0;
 		} else if(!u.validaDouble(textVT)) {
 			erros = erros + "Valor do vale transporte inválido (exemplo: 400,00);\n";
@@ -192,9 +192,10 @@ public class ControllerFuncionário {
 				Funcionário f = new Funcionário(textCadastro, textNome, textCpf, u.transformaData(textData), textEndereço, sexo, boxCargo,
 						Double.parseDouble(textSalario), valorVA, valorVT, valorVR, Integer.parseInt(textFilhos), arrayFilhos, textTelefone, textEMail);
 				cadastraFuncionário(f);
+				Menu.adicionando = false;
 			JOptionPane.showMessageDialog(null, "Cadastro de funcionário efetuado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-			Menu.editando = false;
 		} else {
+			Menu.adicionando = true;
 			JOptionPane.showMessageDialog(null, erros, numeros + " erros encontrados:", JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -243,7 +244,7 @@ public class ControllerFuncionário {
 			erros = erros + "Campo Endereço deve ser preenchido;\n";
 			numeros++;
 		}
-		if (boxCargo.equals("Selecione...")) {
+		if (boxCargo.equals("Selecionar...")) {
 			erros = erros + "É necessário informar o cargo;\n";
 			numeros++;
 		} else if (boxCargo.equals("Professor")) {
@@ -330,7 +331,7 @@ public class ControllerFuncionário {
 			editaFuncionário(textCadastro, textNome, textCpf, textData, textEndereço, sexo, boxCargo, textTelefone, textEMail, Integer.parseInt(textFilhos), 
 						Double.parseDouble(textSalario), valorVA, valorVR, valorVT, arrayFilhos);
 			Menu.editando = false;
-			JOptionPane.showMessageDialog(null, "Cadastro de funcionário efetuado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Informações do funcionário foram atualizadas com sucesso..", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 			Menu.pessoaEditada = -1;
 		} else {
 			Menu.editando = true;
@@ -492,7 +493,7 @@ public class ControllerFuncionário {
 		Date date = new Date();
 		date = u.transformaData(data);
 		
-		ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).setCodCadastro(cadastro);
+		//ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).setCodCadastro(cadastro);
 		ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).setNome(nome);
 		ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).setCpf(cpf);
 		ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).setDataNascimento(date);
@@ -507,7 +508,7 @@ public class ControllerFuncionário {
 		ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).setValeRefeição(vR);
 		ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).setValeTransporte(vT);
 		ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).setCadastroFilhos(arrayFilhos);
-		
+		Menu.setTextFuncionário();
 		refazTabela();
 		Menu.pessoaEditada = -1;
 	}
