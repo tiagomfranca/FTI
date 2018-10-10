@@ -45,7 +45,7 @@ public class ControllerUtil {
 	}
 	
 	public Date transformaData(String date){
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy");
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		sdf.setLenient(false);
 		Date data = new Date();
 		try {

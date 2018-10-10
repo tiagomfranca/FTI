@@ -111,14 +111,14 @@ public class CadastroAluno {
 		textCpf.setColumns(10);
 		
 		JLabel lblMatricula = new JLabel("Matrícula*: ");
-		lblMatricula.setBounds(55, 99, 80, 14);
-		frame.getContentPane().add(lblMatricula);
+//		lblMatricula.setBounds(55, 99, 80, 14);
+//		frame.getContentPane().add(lblMatricula);
 		textMatricula = new JTextField("ex: 123456789");
-		textMatricula.setForeground(Color.gray);
-		textMatricula.addFocusListener(u.focusListenLimiteNumeros(textMatricula, "ex: 123456789", 9));
-		textMatricula.setBounds(150, 96, 250, 20);
-		frame.getContentPane().add(textMatricula);
-		textMatricula.setColumns(10);
+//		textMatricula.setForeground(Color.gray);
+//		textMatricula.addFocusListener(u.focusListenLimiteNumeros(textMatricula, "ex: 123456789", 9));
+//		textMatricula.setBounds(150, 96, 250, 20);
+//		frame.getContentPane().add(textMatricula);
+//		textMatricula.setColumns(10);
 		
 		JLabel lblData = new JLabel("Data de");
 		lblData.setBounds(59, 130, 46, 14);

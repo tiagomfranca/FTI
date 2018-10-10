@@ -39,6 +39,7 @@ public class Menu {
 	private JTable tabelaProfessor;
 	private DefaultTableCellRenderer centerRenderer;
 	private ControllerMenu cM;
+	private static CadastroAluno cA;
 	private static JTextPane textPaneAluno, textPaneFuncionario, textPaneProfessor;
 
 	/**
@@ -76,7 +77,7 @@ public class Menu {
 	private void initialize() {
 		pessoaEditada = -1;
 		editando = false;
-		CadastroAluno cA = new CadastroAluno();
+		cA = new CadastroAluno();
 		CadastroFuncionário cF = new CadastroFuncionário();
 		cA.getFrame().setVisible(false);
 		cF.getFrame().setVisible(false);
@@ -128,7 +129,7 @@ public class Menu {
 		containerTextAluno.setLayout(null);
 		
 		textPaneAluno.setText("Selecione um aluno para ver mais informações");
-		if (ControllerMenu.getArrayAluno().size() == 0){
+		if (cA.getCA().getArrayDisplay().size() == 0){
 			textPaneAluno.setText("Para cadastrar um aluno, clique em Adicionar.");
 		}
 		textPaneAluno.setForeground(Color.black);
@@ -151,9 +152,9 @@ public class Menu {
 			@Override
 			public void mouseExited(MouseEvent e) {
 				if (tabelaAluno.getSelectedRow() >= 0){
-					textPaneAluno.setText(cM.setTextPaneAluno(tabelaAluno.getSelectedRow()));
+					textPaneAluno.setText(cM.setTextPaneAluno(tabelaAluno.getSelectedRow(), cA));
 				} else {
-					if (ControllerMenu.getArrayAluno().size() == 0){
+					if (cA.getCA().getArrayDisplay().size() == 0){
 						textPaneAluno.setText("Para cadastrar um aluno, clique em Adicionar.");
 					} else {
 						textPaneAluno.setText("Selecione um aluno para ver mais informações");
@@ -171,7 +172,7 @@ public class Menu {
 						public void mouseMoved(MouseEvent evt) {
 							int linha2 = tabelaAluno.rowAtPoint(evt.getPoint());
 							if (linha2 != linha && linha2 >= 0) {
-								textPaneAluno.setText(cM.setTextPaneAluno(linha2));
+								textPaneAluno.setText(cM.setTextPaneAluno(linha2, cA));
 							}
 						}
 						
@@ -181,7 +182,7 @@ public class Menu {
 					});
 					if (tabelaAluno.getSelectedRow() >= 0){
 						if (linha != tabelaAluno.getSelectedRow() && linha >= 0){
-							textPaneAluno.setText(cM.setTextPaneAluno(linha));
+							textPaneAluno.setText(cM.setTextPaneAluno(linha, cA));
 						}
 					} else {
 //						if (ControllerMenu.getArrayAluno().size() == 0){
@@ -220,7 +221,7 @@ public class Menu {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Object[] escolhas = {"Sim", "Não"};
-					int i = JOptionPane.showOptionDialog(null, "Deseja remover " + ControllerMenu.getArrayAluno().get(tabelaAluno.getSelectedRow()).getNome() + "?", "Confirmar remoção", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, escolhas, escolhas[1]);
+					int i = JOptionPane.showOptionDialog(null, "Deseja remover " + cA.getCA().getArrayDisplay().get(tabelaAluno.getSelectedRow()).getNome() + "?", "Confirmar remoção", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, escolhas, escolhas[1]);
 					if (i == 0){
 						cA.getCA().removeAluno(tabelaAluno.getSelectedRow());
 						if (ControllerMenu.getArrayAluno().size() == 0){
@@ -241,17 +242,19 @@ public class Menu {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					String nome = ControllerMenu.getArrayAluno().get(tabelaAluno.getSelectedRow()).getNome();
+					String nome = cA.getCA().getArrayDisplay().get(tabelaAluno.getSelectedRow()).getNome();
 					editando = true;
 					cA.getFrame().setVisible(true);
-					String cpf = ControllerMenu.getArrayAluno().get(tabelaAluno.getSelectedRow()).getCpf();
-					String matricula = ControllerMenu.getArrayAluno().get(tabelaAluno.getSelectedRow()).getMatricula();
-					String data = ControllerMenu.sdf.format(ControllerMenu.getArrayAluno().get(tabelaAluno.getSelectedRow()).getDataNascimento());
-					String endereço = ControllerMenu.getArrayAluno().get(tabelaAluno.getSelectedRow()).getEndereço();
-					String email = ControllerMenu.getArrayAluno().get(tabelaAluno.getSelectedRow()).geteMail();
-					String telefone = ControllerMenu.getArrayAluno().get(tabelaAluno.getSelectedRow()).getTelefone();
-					char sexo = ControllerMenu.getArrayAluno().get(tabelaAluno.getSelectedRow()).getSexo();
-					String curso = ControllerMenu.getArrayAluno().get(tabelaAluno.getSelectedRow()).getCurso();
+					String cpf = cA.getCA().getArrayDisplay().get(tabelaAluno.getSelectedRow()).getCpf();
+					String matricula = cA.getCA().getArrayDisplay().get(tabelaAluno.getSelectedRow()).getMatricula();
+					
+					String data = ControllerMenu.sdf.format(cA.getCA().getArrayDisplay().get(tabelaAluno.getSelectedRow()).getDataNascimento());
+					
+					String endereço = cA.getCA().getArrayDisplay().get(tabelaAluno.getSelectedRow()).getEndereço();
+					String email = cA.getCA().getArrayDisplay().get(tabelaAluno.getSelectedRow()).geteMail();
+					String telefone = cA.getCA().getArrayDisplay().get(tabelaAluno.getSelectedRow()).getTelefone();
+					char sexo = cA.getCA().getArrayDisplay().get(tabelaAluno.getSelectedRow()).getSexo();
+					String curso = cA.getCA().getArrayDisplay().get(tabelaAluno.getSelectedRow()).getCurso();
 					pessoaEditada = tabelaAluno.getSelectedRow();
 					cA.preencheCampo(nome, cpf, matricula, data, endereço, email, telefone, sexo, curso);
 				} catch (Exception xcp) {
@@ -604,16 +607,16 @@ public class Menu {
 	}
 	public static void setTextAluno(){
 		String texto = "";
-		if (ControllerMenu.getArrayAluno().get(Menu.pessoaEditada).getSexo() == 'M'){
+		if (cA.getCA().getArrayDisplay().get(Menu.pessoaEditada).getSexo() == 'M'){
 			texto = "Masculino";
 		} else {
 			texto = "Feminino";
 		}
-		texto = "Matrícula: " + ControllerMenu.getArrayAluno().get(Menu.pessoaEditada).getMatricula() + ";\nNome: " + ControllerMenu.getArrayAluno().get(Menu.pessoaEditada).getNome() + 
-				";\nCPF: " + ControllerMenu.getArrayAluno().get(Menu.pessoaEditada).getCpf() + ";\nData de Nascimento: " +	
-				ControllerMenu.sdf.format(ControllerMenu.getArrayAluno().get(Menu.pessoaEditada).getDataNascimento()) + 	";\nEndereço: " + ControllerMenu.getArrayAluno().get(Menu.pessoaEditada).getEndereço() +
-				";\nSexo: " + texto + ";\nCurso: " + ControllerMenu.getArrayAluno().get(Menu.pessoaEditada).getCurso() +	";\nTelefone: " + ControllerMenu.getArrayAluno().get(Menu.pessoaEditada).getTelefone() + 
-				";\ne-mail: " + ControllerMenu.getArrayAluno().get(Menu.pessoaEditada).geteMail() + ";";
+		texto = "Matrícula: " + cA.getCA().getArrayDisplay().get(Menu.pessoaEditada).getMatricula() + ";\nNome: " + cA.getCA().getArrayDisplay().get(Menu.pessoaEditada).getNome() + 
+				";\nCPF: " + cA.getCA().getArrayDisplay().get(Menu.pessoaEditada).getCpf() + ";\nData de Nascimento: " +	
+				ControllerMenu.sdf.format(cA.getCA().getArrayDisplay().get(Menu.pessoaEditada).getDataNascimento()) + 	";\nEndereço: " + cA.getCA().getArrayDisplay().get(Menu.pessoaEditada).getEndereço() +
+				";\nSexo: " + texto + ";\nCurso: " + cA.getCA().getArrayDisplay().get(Menu.pessoaEditada).getCurso() +	";\nTelefone: " + cA.getCA().getArrayDisplay().get(Menu.pessoaEditada).getTelefone() + 
+				";\ne-mail: " + cA.getCA().getArrayDisplay().get(Menu.pessoaEditada).geteMail() + ";";
 		textPaneAluno.setText(texto);
 	}
 	

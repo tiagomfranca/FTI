@@ -26,7 +26,7 @@ public class BancoDados {
             MysqlDataSource ds = new MysqlDataSource();
             ds.setServerName("localhost");
             ds.setPortNumber(3306);
-            ds.setDatabaseName("curso_java?zeroDateTimeBehavior=CONVERT_TO_NULL");
+            ds.setDatabaseName("curso_java?zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false");
             ds.setUser("Tiago");
             ds.setPassword("ftiago");
             dataSource = ds;
@@ -94,7 +94,7 @@ public class BancoDados {
 		try {
 
 			stmt = conn.createStatement();
-			stmt.execute("SET time_zone = '-3:00';");
+			stmt.execute("set @@global.time_zone = '-3:00';");
 			stmt.close();
 			
 		} catch (SQLException e) {

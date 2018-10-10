@@ -5,6 +5,11 @@ import java.util.Date;
 public class Aluno extends Pessoa {
 	private String matricula, endereço, curso, telefone, eMail; 
 	
+	
+	public Aluno(){
+		super();
+	}
+	
 	public Aluno(String nome, String cpf, String matricula, Date dataNascimento, String endereço, char sexo, String curso,
 			String telefone, String eMail){
 		super(nome, cpf, dataNascimento, sexo);

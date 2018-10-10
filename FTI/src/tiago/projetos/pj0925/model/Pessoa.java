@@ -7,6 +7,9 @@ public class Pessoa {
 	private Date dataNascimento;
 	private char sexo;
 	
+	public Pessoa(){
+	}
+	
 	public Pessoa(String nome, Date data) {
 		this.nome = nome;
 		this.dataNascimento = data;

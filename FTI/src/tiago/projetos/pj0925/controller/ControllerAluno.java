@@ -1,5 +1,6 @@
 package tiago.projetos.pj0925.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.JOptionPane;
@@ -8,29 +9,47 @@ import javax.swing.table.DefaultTableModel;
 import tiago.projetos.pj0925.model.Aluno;
 import tiago.projetos.pj0925.view.Menu;
 import tiago.projetos.pj0925.controller.ControllerMenu;
+import tiago.projetos.pj0925.dao.AlunoDAO;
 
 public class ControllerAluno {
 	
 	private DefaultTableModel modelTabelaAluno;
+	private AlunoDAO aDAO;
+	private ArrayList<Aluno> arrayDisplay;
 	
 	public ControllerAluno() {
+		aDAO = new AlunoDAO();
 		modelTabelaAluno = new DefaultTableModel(new Object[][] {}, new String[] {"Matrícula", "CPF", "Nome", "Curso"});
-		//geraListaAluno(modelTabelaAluno);
+		arrayDisplay = new ArrayList<Aluno>();
+		iniciaTabela();
+	}
+	
+	public ArrayList<Aluno> getArrayDisplay(){
+		return arrayDisplay;
+	}
+	
+	public void iniciaTabela(){
+		arrayDisplay = aDAO.consultarListaAluno();
+		for (Aluno a : arrayDisplay){
+			String matrícula = a.getMatricula().toString();
+			String cpf = a.getCpf();
+			String nome = a.getNome();
+			String curso = a.getCurso();
+			String email = a.geteMail();
+			Object[] linha = {matrícula, cpf, nome, curso, email};
+			modelTabelaAluno.addRow(linha);
+		}
 	}
 	
 	public void cadastraAluno(Aluno aluno){
-		String matrícula = aluno.getMatricula().toString();
-		String cpf = aluno.getCpf();
-		String nome = aluno.getNome();
-		String curso = aluno.getCurso();
-		String email = aluno.geteMail();
-		Object[] linha = {matrícula, cpf, nome, curso, email};
-		modelTabelaAluno.addRow(linha);
-		ControllerMenu.getArrayAluno().add(aluno);
+		modelTabelaAluno.setRowCount(0);
+		aDAO.cadastrarAluno(aluno);
+		
+		iniciaTabela();
 	}
 	
 	public void removeAluno(int i){
-		ControllerMenu.getArrayAluno().remove(i);
+		aDAO.inativarAluno(i);
 		modelTabelaAluno.removeRow(i);
 	}
 	
@@ -57,6 +76,7 @@ public class ControllerAluno {
 	public void botaoCadastrar(String textNome, String textCpf, String textMatricula, boolean botaoMale, boolean botaoFemale, String textData, String textEndereço,
 			String boxCurso, String textTelefone, String textEMail){
 		ControllerUtil u = new ControllerUtil();
+		String matricula = "";
 		Date data = new Date();
 		char sexo = '0';
 		String erros = "";
@@ -73,12 +93,14 @@ public class ControllerAluno {
 			erros = erros + "CPF inválido;\n";
 		}
 		if(textMatricula.equals("") || textMatricula.equals("ex: 123456789")){
-			erros = erros + "Campo matrícula deve ser preenchido (apenas números);\n";
-			numeros++;
-		} else if (!u.validaApenasNumeros(textMatricula)){
-			erros = erros + "Matrícula deve conter apenas números;\n";
-			numeros++;
-		}
+			matricula = "";
+//			erros = erros + "Campo matrícula deve ser preenchido (apenas números);\n";
+//			numeros++;
+		} 
+//		else if (!u.validaApenasNumeros(textMatricula)){
+//			erros = erros + "Matrícula deve conter apenas números;\n";
+//			numeros++;
+//		}
 		if (textData.equals("") || textData.equals("dd/mm/aaaa")) {
 			erros = erros + "Campo Data de Nascimento deve ser preenchido;\n";
 			numeros++;
@@ -130,7 +152,7 @@ public class ControllerAluno {
 		}
 		if (numeros == 0){
 			data = u.transformaData(textData);
-			Aluno a = new Aluno(textNome, textCpf, textMatricula, data, textEndereço, sexo, boxCurso, textTelefone, textEMail);
+			Aluno a = new Aluno(textNome, textCpf, matricula, data, textEndereço, sexo, boxCurso, textTelefone, textEMail);
 			cadastraAluno(a);
 			JOptionPane.showMessageDialog(null, "Cadastro efetuado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 			Menu.adicionando = false;
@@ -156,13 +178,6 @@ public class ControllerAluno {
 			numeros++;
 		} else if(!u.validaCpf(textCpf)){
 			erros = erros + "CPF inválido;\n";
-		}
-		if(textMatricula.equals("") || textMatricula.equals("ex: 123456789")){
-			erros = erros + "Campo matrícula deve ser preenchido (apenas números);\n";
-			numeros++;
-		} else if (!u.validaApenasNumeros(textMatricula)){
-			erros = erros + "Matrícula deve conter apenas números;\n";
-			numeros++;
 		}
 		if (textData.equals("") || textData.equals("dd/mm/aaaa")) {
 			erros = erros + "Campo Data de Nascimento deve ser preenchido;\n";
@@ -214,7 +229,7 @@ public class ControllerAluno {
 			}
 		}
 		if (numeros == 0){
-			editaAluno(textNome, textCpf, textData, textEndereço, sexo, boxCurso, textTelefone, textEMail);
+			editaAluno(textMatricula, textNome, textCpf, textData, textEndereço, sexo, boxCurso, textTelefone, textEMail);
 			Menu.editando = false;
 			JOptionPane.showMessageDialog(null, "Informações do aluno foram atualizadas com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 			Menu.pessoaEditada = -1;
@@ -224,34 +239,39 @@ public class ControllerAluno {
 		}
 	}
 	
-	public void editaAluno(String nome, String cpf, String data, String endereço, char sexo, String boxCurso, String textTelefone, String textEMail) {
+	public void editaAluno(String matricula, String nome, String cpf, String data, String endereço, char sexo, String boxCurso, String textTelefone, String textEMail) {
 		ControllerUtil u = new ControllerUtil();
 		Date date = new Date();
 		date = u.transformaData(data);
-		ControllerMenu.getArrayAluno().get(Menu.pessoaEditada).setNome(nome);
-		ControllerMenu.getArrayAluno().get(Menu.pessoaEditada).setCpf(cpf);
-		ControllerMenu.getArrayAluno().get(Menu.pessoaEditada).setDataNascimento(date);
-		ControllerMenu.getArrayAluno().get(Menu.pessoaEditada).setEndereço(endereço);
-		ControllerMenu.getArrayAluno().get(Menu.pessoaEditada).setSexo(sexo);
-		ControllerMenu.getArrayAluno().get(Menu.pessoaEditada).setCurso(boxCurso);
-		ControllerMenu.getArrayAluno().get(Menu.pessoaEditada).setTelefone(textTelefone);
-		ControllerMenu.getArrayAluno().get(Menu.pessoaEditada).seteMail(textEMail);
-		refazTabela();
+		
+		Aluno a = new Aluno();
+		a.setMatricula(matricula);
+		a.setNome(nome);
+		a.setCpf(cpf);
+		a.setDataNascimento(date);
+		a.setEndereço(endereço);
+		a.setSexo(sexo);
+		a.setCurso(boxCurso);
+		a.setTelefone(textTelefone);
+		a.seteMail(textEMail);
+		aDAO.alterarAluno(a);
+		arrayDisplay.get(Menu.pessoaEditada).setNome(nome);
+		arrayDisplay.get(Menu.pessoaEditada).setCpf(cpf);
+		arrayDisplay.get(Menu.pessoaEditada).setDataNascimento(date);
+		arrayDisplay.get(Menu.pessoaEditada).setEndereço(endereço);
+		arrayDisplay.get(Menu.pessoaEditada).setSexo(sexo);
+		arrayDisplay.get(Menu.pessoaEditada).setCurso(boxCurso);
+		arrayDisplay.get(Menu.pessoaEditada).setTelefone(textTelefone);
+		arrayDisplay.get(Menu.pessoaEditada).seteMail(textEMail);
+		
+		iniciaTabela();
 		Menu.setTextAluno();
 		Menu.pessoaEditada = -1;
 	}
 	
 	public void refazTabela(){
 		modelTabelaAluno.setRowCount(0);
-		for (Aluno aluno : ControllerMenu.getArrayAluno()) {
-			String matrícula = aluno.getMatricula().toString();
-			String cpf = aluno.getCpf();
-			String nome = aluno.getNome();
-			String curso = aluno.getCurso();
-			String email = aluno.geteMail();
-			Object[] linha = {matrícula, cpf, nome, curso, email};
-			modelTabelaAluno.addRow(linha);
-		}
+		iniciaTabela();
 	}
 
 }

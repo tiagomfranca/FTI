@@ -9,6 +9,7 @@ import tiago.projetos.pj0925.model.Aluno;
 import tiago.projetos.pj0925.model.Funcionário;
 import tiago.projetos.pj0925.model.Pessoa;
 import tiago.projetos.pj0925.model.Professor;
+import tiago.projetos.pj0925.view.CadastroAluno;
 
 public class ControllerMenu {
 	private static ArrayList<Professor> arrayProfessor;
@@ -21,7 +22,7 @@ public class ControllerMenu {
 		arrayProfessor = new ArrayList<Professor>();
 		arrayFuncionário = new ArrayList<Funcionário>();
 		arrayAluno = new ArrayList<Aluno>();
-		sdf = new SimpleDateFormat("dd/mm/yyyy");
+		sdf = new SimpleDateFormat("dd/MM/yyyy");
 		nF = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
 	}
 
@@ -49,17 +50,17 @@ public class ControllerMenu {
 		ControllerMenu.arrayAluno = arrayAluno;
 	}
 	
-	public String setTextPaneAluno(int i){
+	public String setTextPaneAluno(int i, CadastroAluno cA){
 		String sexo = "";
 		try {
-			if (arrayAluno.get(i).getSexo() == 'M'){
+			if (cA.getCA().getArrayDisplay().get(i).getSexo() == 'M'){
 				sexo = "Masculino";
 			} else {
 				sexo = "Feminino";
 			}
-			sexo = "Matrícula: " + arrayAluno.get(i).getMatricula() + ";\nNome: " + arrayAluno.get(i).getNome() + ";\nCPF: " + arrayAluno.get(i).getCpf() + ";\nData de Nascimento: " + 
-					ControllerMenu.sdf.format(arrayAluno.get(i).getDataNascimento()) + ";\nEndereço: " + arrayAluno.get(i).getEndereço() + ";\nSexo: " + sexo + ";\nCurso: " + arrayAluno.get(i).getCurso() + 
-					";\nTelefone: " + arrayAluno.get(i).getTelefone() + ";\ne-mail: " + arrayAluno.get(i).geteMail() + ";";
+			sexo = "Matrícula: " + cA.getCA().getArrayDisplay().get(i).getMatricula() + ";\nNome: " +cA.getCA().getArrayDisplay().get(i).getNome() + ";\nCPF: " + cA.getCA().getArrayDisplay().get(i).getCpf() + ";\nData de Nascimento: " + 
+					ControllerMenu.sdf.format(cA.getCA().getArrayDisplay().get(i).getDataNascimento()) + ";\nEndereço: " + cA.getCA().getArrayDisplay().get(i).getEndereço() + ";\nSexo: " + sexo + ";\nCurso: " + cA.getCA().getArrayDisplay().get(i).getCurso() + 
+					";\nTelefone: " + cA.getCA().getArrayDisplay().get(i).getTelefone() + ";\ne-mail: " + cA.getCA().getArrayDisplay().get(i).geteMail() + ";";
 		} catch (Exception xcp) {
 		}
 		return sexo;
