@@ -31,12 +31,11 @@ public class ControllerAluno {
 	public void iniciaTabela(){
 		arrayDisplay = aDAO.consultarListaAluno();
 		for (Aluno a : arrayDisplay){
-			String matrícula = a.getMatricula().toString();
+			String matrícula = a.getMatricula();
 			String cpf = a.getCpf();
 			String nome = a.getNome();
 			String curso = a.getCurso();
-			String email = a.geteMail();
-			Object[] linha = {matrícula, cpf, nome, curso, email};
+			Object[] linha = {matrícula, cpf, nome, curso};
 			modelTabelaAluno.addRow(linha);
 		}
 	}
@@ -55,22 +54,6 @@ public class ControllerAluno {
 	
 	public DefaultTableModel modelAluno(){
 		return this.modelTabelaAluno;
-	}
-	
-	public void geraListaAluno(DefaultTableModel model) {
-		String nome2 = "Tiago de Morais França";
-		for (int i = 0; i < 40; i++) {
-			ControllerMenu.getArrayAluno().add(new Aluno(nome2 + i, "07378278904", "123456789", new Date(), "Rua", 'M', "Java WEB", "43999565338", "tiagomfr@gmail.com"));
-		}
-		
-		for (Aluno aluno : ControllerMenu.getArrayAluno()) {
-			String matrícula = aluno.getMatricula().toString();
-			String cpf = aluno.getCpf();
-			String nome = aluno.getNome();
-			String curso = aluno.getCurso();
-			Object[] linha = {matrícula, cpf, nome, curso};
-			model.addRow(linha);
-		}
 	}
 	
 	public void botaoCadastrar(String textNome, String textCpf, String textMatricula, boolean botaoMale, boolean botaoFemale, String textData, String textEndereço,
@@ -94,13 +77,7 @@ public class ControllerAluno {
 		}
 		if(textMatricula.equals("") || textMatricula.equals("ex: 123456789")){
 			matricula = "";
-//			erros = erros + "Campo matrícula deve ser preenchido (apenas números);\n";
-//			numeros++;
 		} 
-//		else if (!u.validaApenasNumeros(textMatricula)){
-//			erros = erros + "Matrícula deve conter apenas números;\n";
-//			numeros++;
-//		}
 		if (textData.equals("") || textData.equals("dd/mm/aaaa")) {
 			erros = erros + "Campo Data de Nascimento deve ser preenchido;\n";
 			numeros++;
@@ -229,7 +206,7 @@ public class ControllerAluno {
 			}
 		}
 		if (numeros == 0){
-			editaAluno(textMatricula, textNome, textCpf, textData, textEndereço, sexo, boxCurso, textTelefone, textEMail);
+			editaAluno(textNome, textCpf, textData, textEndereço, sexo, boxCurso, textTelefone, textEMail);
 			Menu.editando = false;
 			JOptionPane.showMessageDialog(null, "Informações do aluno foram atualizadas com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 			Menu.pessoaEditada = -1;
@@ -239,13 +216,12 @@ public class ControllerAluno {
 		}
 	}
 	
-	public void editaAluno(String matricula, String nome, String cpf, String data, String endereço, char sexo, String boxCurso, String textTelefone, String textEMail) {
+	public void editaAluno(String nome, String cpf, String data, String endereço, char sexo, String boxCurso, String textTelefone, String textEMail) {
 		ControllerUtil u = new ControllerUtil();
 		Date date = new Date();
 		date = u.transformaData(data);
 		
 		Aluno a = new Aluno();
-		a.setMatricula(matricula);
 		a.setNome(nome);
 		a.setCpf(cpf);
 		a.setDataNascimento(date);

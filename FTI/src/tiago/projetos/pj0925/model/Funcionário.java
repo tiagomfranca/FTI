@@ -9,6 +9,8 @@ public class Funcionário extends Pessoa {
 	private int filhos;
 	private ArrayList<Pessoa> cadastroFilhos;
 	
+	public Funcionário(){}
+	
 	public Funcionário(String codCadastro, String nome, String cpf, Date dataNascimento, String endereço, char sexo, String cargo, double salario,
 			double valeAlimentação, double valeTransporte, double valeRefeição, int filhos, ArrayList<Pessoa> cadastroFilhos,
 			String telefone, String eMail){

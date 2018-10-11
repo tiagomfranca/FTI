@@ -6,6 +6,8 @@ import java.util.Date;
 public class Professor extends Funcionário {
 	private String disciplina;
 	
+	public Professor(){}
+	
 	public Professor(String codCadastro, String nome, String cpf, Date dataNascimento, String endereço, char sexo, String cargo, String disciplina,
 			double salario, double valeAlimentação, double valeTransporte, double valeRefeição, int filhos, 
 			ArrayList<Pessoa> cadastroFilhos, String telefone, String eMail){

@@ -17,8 +17,11 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 
+import tiago.projetos.pj0925.dao.FuncionarioDAO;
+import tiago.projetos.pj0925.model.Aluno;
 import tiago.projetos.pj0925.model.Funcionário;
 import tiago.projetos.pj0925.model.Pessoa;
+import tiago.projetos.pj0925.model.Professor;
 import tiago.projetos.pj0925.view.Menu;
 
 public class ControllerFuncionário {
@@ -26,39 +29,43 @@ public class ControllerFuncionário {
 	private Border defaultBorder;
 	private Border border;
 	private DefaultTableModel modelTabelaFuncionário;
+	private FuncionarioDAO fDAO;
+	private ArrayList<Funcionário> arrayDisplay;
 	
 	public ControllerFuncionário(){
+		fDAO = new FuncionarioDAO();
 		border = BorderFactory.createLineBorder(Color.GRAY);
 		defaultBorder = new JTextField().getBorder();
 		modelTabelaFuncionário = new DefaultTableModel(new Object[][] {}, new String[] {"Cadastro", "CPF", "Nome", "Cargo"});
-		//geraListaFuncionário(modelTabelaFuncionário);
+		iniciaTabela();
 	}
 	
-	public void geraListaFuncionário(DefaultTableModel model){
-		String nome2 = "Tiago de Morais França";
-		for (int i = 0; i < 17; i++) {
-			ControllerMenu.getArrayFuncionário().add(new Funcionário("123456789", nome2 + i, "07378278904", new Date(), "Rua M",
-					'M', "Analista Mainframe", 4000.21, 800.34, 900.98, 80.22, 0, new ArrayList<Pessoa>(), "43999565338", "tiagomfr@gmail.com"));
-		}
-		
-		for (Funcionário func : ControllerMenu.getArrayFuncionário()) {
-			String codCadastro = func.getCodCadastro();
-			String cpf = func.getCpf();
-			String nome = func.getNome();
-			String cargo = func.getCargo();
-			Object[] linha = {codCadastro, cpf, nome, cargo};
-			model.addRow(linha);
-		}
+	private ArrayList<Funcionário> getArrayDisplay(){
+		return arrayDisplay;
 	}
 	
+	private void iniciaTabela() {
+		arrayDisplay = fDAO.consultarListaFuncinoario();
+		for (Funcionário f : arrayDisplay){
+			String cadastro = f.getCodCadastro();
+			String cpf = f.getCpf();
+			String nome = f.getNome();
+			String cargo = f.getCargo();
+			Object[] linha = {cadastro, cpf, nome, cargo};
+			modelTabelaFuncionário.addRow(linha);
+		}
+	}
+
 	public void cadastraFuncionário(Funcionário f) {
-		String cadastro = f.getCodCadastro();
-		String cpf = f.getCpf();
-		String nome = f.getNome();
-		String cargo = f.getCargo();
-		Object[] linha = {cadastro, cpf, nome, cargo};
-		modelTabelaFuncionário.addRow(linha);
-		ControllerMenu.getArrayFuncionário().add(f);
+		modelTabelaFuncionário.setRowCount(0);
+		fDAO.cadastrarFuncionario(f);
+		
+		iniciaTabela();
+	}
+	
+	public void removeFuncionario(int i){
+		fDAO.inativarFuncionario(i);
+		modelTabelaFuncionário.removeRow(i);
 	}
 	
 	public void botaoCadastrar(String textCadastro, String textNome, String textCpf, boolean botaoMale, boolean botaoFemale, String textData, String textEndereço,
@@ -72,11 +79,7 @@ public class ControllerFuncionário {
 		char sexo = '0';
 		String erros = "";
 		int numeros = 0;
-		
-		if(textCadastro.equals("") || textCadastro.equals("ex: 123456789")){
-			erros = erros + "Campo Código do cadastro deve ser preenchido;\n";
-			numeros++;
-		}			
+				
 		if(textNome.equals("") || textNome.equals("ex: José")) {
 			erros = erros + "Campo Nome precisa estar preenchido;\n";
 			numeros++;
@@ -189,8 +192,14 @@ public class ControllerFuncionário {
 					arrayFilhos.add(filho);
 				}
 			}
-				Funcionário f = new Funcionário(textCadastro, textNome, textCpf, u.transformaData(textData), textEndereço, sexo, boxCargo,
+			Funcionário f;
+			if (boxCargo.equals("Professor")){
+				f = new Professor("", textNome, textCpf, u.transformaData(textData), textEndereço, sexo, boxCargo, boxDisciplina, Double.parseDouble(textSalario), valorVA,
+						valorVT, valorVR, Integer.parseInt(textFilhos), arrayFilhos, textTelefone, textEMail);
+			} else {
+				f = new Funcionário("", textNome, textCpf, u.transformaData(textData), textEndereço, sexo, boxCargo,
 						Double.parseDouble(textSalario), valorVA, valorVT, valorVR, Integer.parseInt(textFilhos), arrayFilhos, textTelefone, textEMail);
+			}
 				cadastraFuncionário(f);
 				Menu.adicionando = false;
 			JOptionPane.showMessageDialog(null, "Cadastro de funcionário efetuado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
@@ -211,11 +220,7 @@ public class ControllerFuncionário {
 		char sexo = '0';
 		String erros = "";
 		int numeros = 0;
-		
-		if(textCadastro.equals("") || textCadastro.equals("ex: 123456789")){
-			erros = erros + "Campo Código do cadastro deve ser preenchido;\n";
-			numeros++;
-		}			
+				
 		if(textNome.equals("") || textNome.equals("ex: José")) {
 			erros = erros + "Campo Nome precisa estar preenchido;\n";
 			numeros++;
@@ -328,7 +333,7 @@ public class ControllerFuncionário {
 					arrayFilhos.add(filho);
 				}
 			}
-			editaFuncionário(textCadastro, textNome, textCpf, textData, textEndereço, sexo, boxCargo, textTelefone, textEMail, Integer.parseInt(textFilhos), 
+			editaFuncionário(textNome, textCpf, textData, textEndereço, sexo, boxCargo, boxDisciplina, textTelefone, textEMail, Integer.parseInt(textFilhos), 
 						Double.parseDouble(textSalario), valorVA, valorVR, valorVT, arrayFilhos);
 			Menu.editando = false;
 			JOptionPane.showMessageDialog(null, "Informações do funcionário foram atualizadas com sucesso..", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
@@ -451,10 +456,6 @@ public class ControllerFuncionário {
 		return this.modelTabelaFuncionário;
 	}
 	
-	public void removeFuncionario(int i){
-		ControllerMenu.getArrayFuncionário().remove(i);
-		modelTabelaFuncionário.removeRow(i);
-	}
 	public void geraFilhosEditar(ArrayList<Pessoa> arrayFilhos, int i, JPanel container, ArrayList<JTextField> arrayTextFilhos, ArrayList<JTextField> arrayTextDatas, ArrayList<JLabel> arrayLabels){
 		String label = "Filho " + i + ": ";
 		
@@ -487,29 +488,57 @@ public class ControllerFuncionário {
 		container.add(texto2);
 	}
 	
-	public void editaFuncionário(String cadastro, String nome, String cpf, String data, String endereço, char sexo, String boxCargo, String telefone, String email, int filhos,
+	public void editaFuncionário(String nome, String cpf, String data, String endereço, char sexo, String boxCargo, String boxDisciplina, String telefone, String email, int filhos,
 			double salario, double vA, double vR, double vT, ArrayList<Pessoa> arrayFilhos){
 		ControllerUtil u = new ControllerUtil();
 		Date date = new Date();
 		date = u.transformaData(data);
+		Funcionário f;
 		
-		//ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).setCodCadastro(cadastro);
-		ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).setNome(nome);
-		ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).setCpf(cpf);
-		ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).setDataNascimento(date);
-		ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).setEndereço(endereço);
-		ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).setSexo(sexo);
-		ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).setCargo(boxCargo);
-		ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).setTelefone(telefone);
-		ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).seteMail(email);
-		ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).setFilhos(filhos);
-		ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).setSalario(salario);
-		ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).setValeAlimentação(vA);
-		ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).setValeRefeição(vR);
-		ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).setValeTransporte(vT);
-		ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).setCadastroFilhos(arrayFilhos);
+		if (boxCargo.equals("Professor")){
+			f = new Professor();
+		} else {
+			f = new Funcionário();
+		}
+		
+		f.setNome(nome);
+		f.setCpf(cpf);
+		f.setDataNascimento(date);
+		f.setEndereço(endereço);
+		f.setSexo(sexo);
+		f.setCargo(boxCargo);
+		if  (f instanceof Professor){
+			((Professor) f).setDisciplina(boxDisciplina);
+			((Professor)arrayDisplay.get(Menu.pessoaEditada)).setDisciplina(boxDisciplina);
+		}
+		f.setTelefone(telefone);
+		f.seteMail(email);
+		f.setFilhos(filhos);
+		f.setSalario(salario);
+		f.setValeAlimentação(vA);
+		f.setValeRefeição(vR);
+		f.setValeTransporte(vT);
+		f.setCadastroFilhos(arrayFilhos);
+		
+		fDAO.alterarFuncionario(f);
+		
+		arrayDisplay.get(Menu.pessoaEditada).setNome(nome);
+		arrayDisplay.get(Menu.pessoaEditada).setCpf(cpf);
+		arrayDisplay.get(Menu.pessoaEditada).setDataNascimento(date);
+		arrayDisplay.get(Menu.pessoaEditada).setEndereço(endereço);
+		arrayDisplay.get(Menu.pessoaEditada).setSexo(sexo);
+		arrayDisplay.get(Menu.pessoaEditada).setCargo(boxCargo);
+		arrayDisplay.get(Menu.pessoaEditada).setTelefone(telefone);
+		arrayDisplay.get(Menu.pessoaEditada).seteMail(email);
+		arrayDisplay.get(Menu.pessoaEditada).setSalario(salario);
+		arrayDisplay.get(Menu.pessoaEditada).setValeAlimentação(vA);
+		arrayDisplay.get(Menu.pessoaEditada).setValeRefeição(vR);
+		arrayDisplay.get(Menu.pessoaEditada).setValeTransporte(vT);
+		arrayDisplay.get(Menu.pessoaEditada).setFilhos(filhos);
+		arrayDisplay.get(Menu.pessoaEditada).setCadastroFilhos(arrayFilhos);
+		
+		iniciaTabela();
 		Menu.setTextFuncionário();
-		refazTabela();
 		Menu.pessoaEditada = -1;
 	}
 	
