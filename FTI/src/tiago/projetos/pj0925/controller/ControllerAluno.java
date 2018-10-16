@@ -18,7 +18,13 @@ public class ControllerAluno {
 	
 	public ControllerAluno() {
 		aDAO = new AlunoDAO();
-		modelTabelaAluno = new DefaultTableModel(new Object[][] {}, new String[] {"Matrícula", "CPF", "Nome", "Curso"});
+		modelTabelaAluno = new DefaultTableModel(new Object[][] {}, new String[] {"Matrícula", "CPF", "Nome", "Curso"}) {
+			
+			@Override
+			public boolean isCellEditable(int row, int column){
+				return false;
+			}
+		};
 		arrayDisplay = new ArrayList<Aluno>();
 		iniciaTabela();
 	}
@@ -139,7 +145,7 @@ public class ControllerAluno {
 		}
 	}
 	
-	public void botaoEditar(String textNome, String textCpf, String textMatricula, boolean botaoMale, boolean botaoFemale, String textData, String textEndereço,
+	public void botaoEditar(String textNome, String textCpf, boolean botaoMale, boolean botaoFemale, String textData, String textEndereço,
 			String boxCurso, String textTelefone, String textEMail){
 		ControllerUtil u = new ControllerUtil();
 		char sexo = '0';

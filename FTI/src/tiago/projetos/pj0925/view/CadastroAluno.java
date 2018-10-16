@@ -218,7 +218,7 @@ public class CadastroAluno {
 						textData.getText(), textEndereço.getText(), boxCurso.getSelectedItem().toString(), textTelefone.getText(), textEMail.getText());
 				} else {
 					botaoCadastrar.setText("Salvar");
-					cA.botaoEditar(textNome.getText(), textCpf.getText(), textMatricula.getText(), botaoMale.isSelected(), botaoFemale.isSelected(), 
+					cA.botaoEditar(textNome.getText(), textCpf.getText(), botaoMale.isSelected(), botaoFemale.isSelected(), 
 							textData.getText(), textEndereço.getText(), boxCurso.getSelectedItem().toString(), textTelefone.getText(), textEMail.getText());
 					if (!Menu.editando) {
 						cA.iniciaTabela();
@@ -294,13 +294,13 @@ public class CadastroAluno {
 		textEndereço.setForeground(Color.black);
 		textCpf.setForeground(Color.black);
 		textTelefone.setForeground(Color.black);
-		textMatricula.setForeground(Color.black);
+		//textMatricula.setForeground(Color.black);
 		textNome.setBorder(simValidou);
 		textEMail.setBorder(simValidou);
 		textTelefone.setBorder(simValidou);
 		textCpf.setBorder(simValidou);
-		textMatricula.setBorder(simValidou);
-		textMatricula.setEditable(false);
+		//textMatricula.setBorder(simValidou);
+		//textMatricula.setEditable(false);
 		textEndereço.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.green), BorderFactory.createEmptyBorder(2, 2, 2, 2)));
 		textData.setBorder(simValidou);
 		textNome.setText(nome);
@@ -309,7 +309,7 @@ public class CadastroAluno {
 		textEMail.setText(email);
 		textTelefone.setText(telefone);
 		textCpf.setText(cpf);
-		textMatricula.setText(matricula);
+		//textMatricula.setText(matricula);
 		if (sexo == 'M') {
 			botaoFemale.setSelected(false);
 			botaoMale.setSelected(true);
@@ -325,7 +325,6 @@ public class CadastroAluno {
 	}
 	
 	public void resetaBotao(){
-		textMatricula.setEditable(true);
 		botaoCadastrar.setText("Cadastrar");
 	}
 }

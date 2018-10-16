@@ -35,7 +35,14 @@ public class ControllerFuncionario {
 		fDAO = new FuncionarioDAO();
 		border = BorderFactory.createLineBorder(Color.GRAY);
 		defaultBorder = new JTextField().getBorder();
-		modelTabelaFuncionario = new DefaultTableModel(new Object[][] {}, new String[] {"Cadastro", "CPF", "Nome", "Cargo"});
+		modelTabelaFuncionario = new DefaultTableModel(new Object[][] {}, new String[] {"Cadastro", "CPF", "Nome", "Cargo"}) {
+			
+			@Override
+			public boolean isCellEditable(int row, int column){
+				return false;
+			}
+		};
+		
 		iniciaTabela();
 	}
 	
@@ -44,27 +51,37 @@ public class ControllerFuncionario {
 	}
 	
 	public void iniciaTabela() {
+		
 		modelTabelaFuncionario.setRowCount(0);
+		
 		arrayDisplay = fDAO.consultarListaFuncinoario();
+		
 		for (Funcionario f : arrayDisplay){
 			String cadastro = f.getCodCadastro();
 			String cpf = f.getCpf();
 			String nome = f.getNome();
 			String cargo = f.getCargo();
 			Object[] linha = {cadastro, cpf, nome, cargo};
+			
 			modelTabelaFuncionario.addRow(linha);
 		}
 	}
 
 	public void cadastraFuncionário(Funcionario f) {
-		modelTabelaFuncionario.setRowCount(0);
 		fDAO.cadastrarFuncionario(f);
 		
-		iniciaTabela();
+		String cadastro = f.getCodCadastro();
+		String cpf = f.getCpf();
+		String nome = f.getNome();
+		String cargo = f.getCargo();
+		Object[] linha = {cadastro, cpf, nome, cargo};
+		
+		modelTabelaFuncionario.addRow(linha);
 	}
 	
 	public void removeFuncionario(int i, int selectedRow){
 		fDAO.inativarFuncionario(i);
+		
 		modelTabelaFuncionario.removeRow(selectedRow);
 	}
 	
@@ -203,7 +220,6 @@ public class ControllerFuncionario {
 			cadastraFuncionário(f);
 			Menu.adicionando = false;
 			JOptionPane.showMessageDialog(null, "Cadastro de funcionário efetuado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-			iniciaTabela();
 		} else {
 			Menu.adicionando = true;
 			JOptionPane.showMessageDialog(null, erros, numeros + " erros encontrados:", JOptionPane.ERROR_MESSAGE);
@@ -339,6 +355,7 @@ public class ControllerFuncionario {
 			Menu.editando = false;
 			JOptionPane.showMessageDialog(null, "Informações do funcionário foram atualizadas com sucesso..", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 			Menu.pessoaEditada = -1;
+			iniciaTabela();
 		} else {
 			Menu.editando = true;
 			JOptionPane.showMessageDialog(null, erros, numeros + " erros encontrados:", JOptionPane.ERROR_MESSAGE);
@@ -537,8 +554,10 @@ public class ControllerFuncionario {
 		arrayDisplay.get(Menu.pessoaEditada).setFilhos(filhos);
 		arrayDisplay.get(Menu.pessoaEditada).setCadastroFilhos(arrayFilhos);
 		
-		iniciaTabela();
 		Menu.setTextFuncionario();
+		
+		//iniciaTabela();
+		
 		Menu.pessoaEditada = -1;
 	}
 	

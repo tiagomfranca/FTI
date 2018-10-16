@@ -8,7 +8,6 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import tiago.projetos.pj0925.dao.ProfessorDAO;
-import tiago.projetos.pj0925.model.Funcionario;
 import tiago.projetos.pj0925.model.Pessoa;
 import tiago.projetos.pj0925.model.Professor;
 import tiago.projetos.pj0925.view.Menu;
@@ -21,7 +20,14 @@ public class ControllerProfessor {
 	
 	public ControllerProfessor(){
 		pDAO = new ProfessorDAO();
-		modelTabelaProfessor = new DefaultTableModel(new Object[][] {}, new String[] {"Cadastro", "CPF", "Nome", "Disciplina"});
+		modelTabelaProfessor = new DefaultTableModel(new Object[][] {}, new String[] {"Cadastro", "CPF", "Nome", "Disciplina"}) {
+			
+			@Override
+			public boolean isCellEditable(int row, int column){
+				return false;
+			}
+		};
+		
 		iniciaTabela();
 	}
 
@@ -43,10 +49,13 @@ public class ControllerProfessor {
 	}
 
 	public void cadastraProfessor(Professor p){
-		modelTabelaProfessor.setRowCount(0);
 		pDAO.cadastrarProfessor(p);
-		
-		iniciaTabela();
+		String cadastro = p.getCodCadastro();
+		String cpf = p.getCpf();
+		String nome = p.getNome();
+		String disciplina = p.getDisciplina();
+		Object[] linha = {cadastro, cpf, nome, disciplina};
+		modelTabelaProfessor.addRow(linha);
 	}
 
 	public void botaoCadastrar(String textNome, String textCpf, boolean botaoMale, boolean botaoFemale, String textData, String textEndereço,
@@ -178,7 +187,6 @@ public class ControllerProfessor {
 			cadastraProfessor(p);
 			Menu.adicionando = false;
 			JOptionPane.showMessageDialog(null, "Cadastro de professor efetuado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-			iniciaTabela();
 		} else {
 			Menu.adicionando = true;
 			JOptionPane.showMessageDialog(null, erros, numeros + " erros encontrados:", JOptionPane.ERROR_MESSAGE);

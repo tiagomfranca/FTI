@@ -199,7 +199,9 @@ public class ProfessorDAO {
 					prof.setTelefone(rs.getString(13));
 					prof.seteMail(rs.getString(14));
 					prof.setFilhos(rs.getInt(15));
+					
 					arrayFilhos = new ArrayList<Pessoa>();
+					
 					if (prof.getFilhos() > 0) {
 						Pessoa filho = new Pessoa();
 						filho.setNome(rs.getString(16));
@@ -218,6 +220,7 @@ public class ProfessorDAO {
 			e.printStackTrace();
 		} finally {
 			db.finalizaObjetos(rs, stmt, conn);
+			codigoAtual = 0;
 		}
 		return listaProf;
 	}

@@ -18,7 +18,6 @@ import tiago.projetos.pj0925.dao.BancoDados;
 public class FuncionarioDAO {
 	
 	private BancoDados db = null;
-	private Funcionario func;
 	private int codigoAtual;
 	
 	public FuncionarioDAO() {
@@ -232,6 +231,7 @@ public class FuncionarioDAO {
 			e.printStackTrace();
 		} finally {
 			db.finalizaObjetos(rs, stmt, conn);
+			codigoAtual = 0;
 		}
 		return listaFunc;
 	}
