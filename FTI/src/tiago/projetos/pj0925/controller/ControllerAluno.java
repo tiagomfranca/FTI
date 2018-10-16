@@ -8,7 +8,6 @@ import javax.swing.table.DefaultTableModel;
 
 import tiago.projetos.pj0925.model.Aluno;
 import tiago.projetos.pj0925.view.Menu;
-import tiago.projetos.pj0925.controller.ControllerMenu;
 import tiago.projetos.pj0925.dao.AlunoDAO;
 
 public class ControllerAluno {
@@ -29,6 +28,7 @@ public class ControllerAluno {
 	}
 	
 	public void iniciaTabela(){
+		modelTabelaAluno.setRowCount(0);
 		arrayDisplay = aDAO.consultarListaAluno();
 		for (Aluno a : arrayDisplay){
 			String matrícula = a.getMatricula();
@@ -47,9 +47,9 @@ public class ControllerAluno {
 		iniciaTabela();
 	}
 	
-	public void removeAluno(int i){
+	public void removeAluno(int i, int selectedRow){
 		aDAO.inativarAluno(i);
-		modelTabelaAluno.removeRow(i);
+		modelTabelaAluno.removeRow(selectedRow);
 	}
 	
 	public DefaultTableModel modelAluno(){
@@ -131,8 +131,8 @@ public class ControllerAluno {
 			data = u.transformaData(textData);
 			Aluno a = new Aluno(textNome, textCpf, matricula, data, textEndereço, sexo, boxCurso, textTelefone, textEMail);
 			cadastraAluno(a);
-			JOptionPane.showMessageDialog(null, "Cadastro efetuado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 			Menu.adicionando = false;
+			JOptionPane.showMessageDialog(null, "Cadastro efetuado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 		} else {
 			Menu.adicionando = true;
 			JOptionPane.showMessageDialog(null, erros, numeros + " erros encontrados:", JOptionPane.ERROR_MESSAGE);
@@ -210,6 +210,7 @@ public class ControllerAluno {
 			Menu.editando = false;
 			JOptionPane.showMessageDialog(null, "Informações do aluno foram atualizadas com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 			Menu.pessoaEditada = -1;
+			iniciaTabela();
 		} else {
 			Menu.editando = true;
 			JOptionPane.showMessageDialog(null, erros, numeros + " erros encontrados:", JOptionPane.ERROR_MESSAGE);
@@ -222,6 +223,8 @@ public class ControllerAluno {
 		date = u.transformaData(data);
 		
 		Aluno a = new Aluno();
+		
+		a.setMatricula(arrayDisplay.get(Menu.pessoaEditada).getMatricula());
 		a.setNome(nome);
 		a.setCpf(cpf);
 		a.setDataNascimento(date);

@@ -26,6 +26,8 @@ import javax.swing.JButton;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -40,11 +42,9 @@ public class Menu {
 	private DefaultTableCellRenderer centerRenderer;
 	private ControllerMenu cM;
 	private static CadastroAluno cA;
+	private static CadastroFuncionario cF;
 	private static JTextPane textPaneAluno, textPaneFuncionario, textPaneProfessor;
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -58,10 +58,6 @@ public class Menu {
 		});
 	}
 
-	/**
-	 * Create the application.
-	 */
-	
 	public Menu() {
 		cM = new ControllerMenu();
 		textPaneAluno = new JTextPane();
@@ -70,15 +66,12 @@ public class Menu {
 		initialize();
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
-	
 	private void initialize() {
 		pessoaEditada = -1;
+		adicionando = false;
 		editando = false;
 		cA = new CadastroAluno();
-		CadastroFuncionário cF = new CadastroFuncionário();
+		cF = new CadastroFuncionario();
 		cA.getFrame().setVisible(false);
 		cF.getFrame().setVisible(false);
 		centerRenderer = new DefaultTableCellRenderer();
@@ -185,9 +178,9 @@ public class Menu {
 							textPaneAluno.setText(cM.setTextPaneAluno(linha, cA));
 						}
 					} else {
-//						if (ControllerMenu.getArrayAluno().size() == 0){
-//							textPaneAluno.setText("Para cadastrar um aluno, clique em Adicionar.");
-//						}
+						if (cA.getCA().getArrayDisplay().size() == 0){
+							textPaneAluno.setText("Para cadastrar um aluno, clique em Adicionar.");
+						}
 					}
 				} catch(Exception xcp){
 					textPaneAluno.setText("Selecione um aluno para ver mais informações");
@@ -208,7 +201,6 @@ public class Menu {
 				adicionando = true;
 				cA.getFrame().setVisible(true);
 				cA.getBtnClear().doClick();
-				
 			}
 		});
 		containerTextAluno.add(botaoAdicionarAluno);
@@ -223,8 +215,8 @@ public class Menu {
 					Object[] escolhas = {"Sim", "Não"};
 					int i = JOptionPane.showOptionDialog(null, "Deseja remover " + cA.getCA().getArrayDisplay().get(tabelaAluno.getSelectedRow()).getNome() + "?", "Confirmar remoção", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, escolhas, escolhas[1]);
 					if (i == 0){
-						cA.getCA().removeAluno(tabelaAluno.getSelectedRow());
-						if (ControllerMenu.getArrayAluno().size() == 0){
+						cA.getCA().removeAluno(Integer.parseInt((String)tabelaFuncionario.getValueAt(tabelaFuncionario.getSelectedRow(), 0)),tabelaAluno.getSelectedRow());
+						if (cA.getCA().getArrayDisplay().size() == 0){
 							textPaneAluno.setText("Para cadastrar um aluno, clique em Adicionar.");
 						}
 					}
@@ -265,6 +257,17 @@ public class Menu {
 		containerTextAluno.add(botaoEditarAluno);
 		JPanel abaFuncionario = new JPanel();
 		abaFuncionario.setLayout(null);
+		abaFuncionario.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				cF.getCF().iniciaTabela();
+			}
+		});
 		tabbedPane.addTab("Lista de Funcionários", null, abaFuncionario, null);
 		
 		JPanel containerTextFuncionario = new JPanel();
@@ -274,7 +277,7 @@ public class Menu {
 		abaFuncionario.add(containerTextFuncionario);
 		
 		textPaneFuncionario.setText("Selecione um funcionário para ver mais informações");
-		if (ControllerMenu.getArrayFuncionário().size() == 0){
+		if (cF.getCF().getArrayDisplay().size() == 0){
 			textPaneFuncionario.setText("Para cadastrar um funcionário, clique em Adicionar.");
 		}
 		textPaneFuncionario.setForeground(Color.black);
@@ -306,9 +309,9 @@ public class Menu {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Object[] escolhas = {"Sim", "Não"};
-					if (JOptionPane.showOptionDialog(null, "Deseja remover " + ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getNome() + "?", 
+					if (JOptionPane.showOptionDialog(null, "Deseja remover " + cF.getCF().getArrayDisplay().get(tabelaFuncionario.getSelectedRow()).getNome() + "?", 
 							"Confirmar remoção", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, escolhas, escolhas[1]) == 0){
-						cF.getCF().removeFuncionario(tabelaFuncionario.getSelectedRow());
+						cF.getCF().removeFuncionario(Integer.parseInt((String)tabelaFuncionario.getValueAt(tabelaFuncionario.getSelectedRow(), 0)), tabelaFuncionario.getSelectedRow());
 					}
 				} catch (Exception xcp) {
 					JOptionPane.showMessageDialog(null, "Nenhum funcionário selecionado.", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -325,26 +328,27 @@ public class Menu {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					cF.getBotaoLimpar().doClick();
-					String cadastro = ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getCodCadastro();
+					String cadastro = cF.getCF().getArrayDisplay().get(tabelaFuncionario.getSelectedRow()).getCodCadastro();
 					editando = true;
 					cF.getFrame().setVisible(true);
-					String nome = ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getNome();
-					String cpf = ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getCpf();
-					String data = ControllerMenu.sdf.format(ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getDataNascimento());
-					String endereço = ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getEndereço();
-					String salario = "" + ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getSalario();
-					String vA = "" + ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getValeAlimentação();
-					String vR = "" + ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getValeRefeição();
-					String vT = "" + ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getValeTransporte();
-					String telefone = ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getTelefone();
-					String email = ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).geteMail();
-					int filhos = ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getFilhos();
-					char sexo = ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getSexo();
-					String cargo = ControllerMenu.getArrayFuncionário().get(tabelaFuncionario.getSelectedRow()).getCargo();
+					String nome = cF.getCF().getArrayDisplay().get(tabelaFuncionario.getSelectedRow()).getNome();
+					String cpf = cF.getCF().getArrayDisplay().get(tabelaFuncionario.getSelectedRow()).getCpf();
+					String data = ControllerMenu.sdf.format(cF.getCF().getArrayDisplay().get(tabelaFuncionario.getSelectedRow()).getDataNascimento());
+					String endereço = cF.getCF().getArrayDisplay().get(tabelaFuncionario.getSelectedRow()).getEndereço();
+					String salario = "" + cF.getCF().getArrayDisplay().get(tabelaFuncionario.getSelectedRow()).getSalario();
+					String vA = "" + cF.getCF().getArrayDisplay().get(tabelaFuncionario.getSelectedRow()).getValeAlimentação();
+					String vR = "" + cF.getCF().getArrayDisplay().get(tabelaFuncionario.getSelectedRow()).getValeRefeição();
+					String vT = "" + cF.getCF().getArrayDisplay().get(tabelaFuncionario.getSelectedRow()).getValeTransporte();
+					String telefone = cF.getCF().getArrayDisplay().get(tabelaFuncionario.getSelectedRow()).getTelefone();
+					String email = cF.getCF().getArrayDisplay().get(tabelaFuncionario.getSelectedRow()).geteMail();
+					int filhos = cF.getCF().getArrayDisplay().get(tabelaFuncionario.getSelectedRow()).getFilhos();
+					char sexo = cF.getCF().getArrayDisplay().get(tabelaFuncionario.getSelectedRow()).getSexo();
+					String cargo = cF.getCF().getArrayDisplay().get(tabelaFuncionario.getSelectedRow()).getCargo();
 					pessoaEditada = tabelaFuncionario.getSelectedRow();
 					cF.preencheCampoFuncionário(cadastro, nome, cpf, data, endereço, salario, vA, vR, vT, telefone, email, filhos, sexo, cargo);
 				} catch (Exception xcp) {
 					JOptionPane.showMessageDialog(null, "Nenhum funcionário selecionado", "Erro", JOptionPane.ERROR_MESSAGE);
+					xcp.printStackTrace();
 				}
 			}
 		});
@@ -365,7 +369,7 @@ public class Menu {
 		tabelaFuncionario.setBorder(new LineBorder(new Color(0, 0, 0)));
 		tabelaFuncionario.setDefaultRenderer(Object.class, centerRenderer);
 		scrollTabelaFuncionario.setViewportView(tabelaFuncionario);
-		tabelaFuncionario.setModel(cF.getCF().modelFuncionário());
+		tabelaFuncionario.setModel(cF.getCF().modelFuncionario());
 		tabelaFuncionario.getColumnModel().getColumn(0).setResizable(false);
 		tabelaFuncionario.getColumnModel().getColumn(0).setPreferredWidth(109);
 		tabelaFuncionario.getColumnModel().getColumn(1).setResizable(false);
@@ -388,9 +392,9 @@ public class Menu {
 			@Override
 			public void mouseExited(MouseEvent e) {
 				if (tabelaFuncionario.getSelectedRow() >= 0){
-					textPaneFuncionario.setText(cM.setTextPaneFuncionario(tabelaFuncionario.getSelectedRow()));
+					textPaneFuncionario.setText(cM.setTextPaneFuncionario(tabelaFuncionario.getSelectedRow(), cF));
 				} else {
-					if (ControllerMenu.getArrayFuncionário().size() == 0){
+					if (cF.getCF().getArrayDisplay().size() == 0){
 						textPaneFuncionario.setText("Para cadastrar um funcionário, clique em Adicionar.");
 					} else {
 						textPaneFuncionario.setText("Selecione um funcionário para ver mais informações");
@@ -400,15 +404,19 @@ public class Menu {
 			
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				try{
-					int linha = tabelaFuncionario.rowAtPoint(e.getPoint());
+				if (tabelaFuncionario.rowAtPoint(e.getPoint()) < cF.getCF().getArrayDisplay().size()) {
+					textPaneFuncionario.setText(cM.setTextPaneFuncionario(tabelaFuncionario.rowAtPoint(e.getPoint()), cF));
+				}
 					tabelaFuncionario.addMouseMotionListener(new MouseMotionListener() {
 						
 						@Override
 						public void mouseMoved(MouseEvent evt) {
-							int linha2 = tabelaFuncionario.rowAtPoint(evt.getPoint());
-							if (linha2 != linha && linha2 >= 0) {
-								textPaneFuncionario.setText(cM.setTextPaneFuncionario(linha2));
+							if (tabelaFuncionario.rowAtPoint(evt.getPoint()) < cF.getCF().getArrayDisplay().size() && tabelaFuncionario.rowAtPoint(evt.getPoint()) > -1) {
+								textPaneFuncionario.setText(cM.setTextPaneFuncionario(tabelaFuncionario.rowAtPoint(evt.getPoint()), cF));
+							} else if (tabelaFuncionario.getSelectedRow() >= 0) {
+								textPaneFuncionario.setText(cM.setTextPaneFuncionario(tabelaFuncionario.getSelectedRow(), cF));
+							} else {
+								textPaneFuncionario.setText("Selecione um funcionário para ver mais informações.");
 							}
 						}
 						
@@ -416,16 +424,7 @@ public class Menu {
 						public void mouseDragged(MouseEvent e) {
 						}
 					});
-					if (tabelaFuncionario.getSelectedRow() >= 0){
-						if (linha != tabelaFuncionario.getSelectedRow() && linha >= 0){
-							textPaneFuncionario.setText(cM.setTextPaneFuncionario(linha));
-						}
-					} else {
-						textPaneFuncionario.setText("Para cadastrar um funcionário, clique em Adicionar.");
-					}
-				} catch(Exception xcp){
-					textPaneFuncionario.setText("Selecione um funcionário para ver mais informações");
-				}
+
 			}
 			
 			@Override
@@ -435,6 +434,17 @@ public class Menu {
 		
 		JPanel abaProfessor = new JPanel();
 		abaProfessor.setLayout(null);
+		abaProfessor.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				cF.getCP().iniciaTabela();
+			}
+		});
 		tabbedPane.addTab("Lista de Professores", null, abaProfessor, null);
 		
 		JPanel containerTextProfessor = new JPanel();
@@ -444,7 +454,7 @@ public class Menu {
 		abaProfessor.add(containerTextProfessor);
 		
 		textPaneProfessor.setText("Selecione um professor para ver mais informações");
-		if (ControllerMenu.getArrayProfessor().size() == 0){
+		if (cF.getCP().getArrayDisplay().size() == 0){
 			textPaneProfessor.setText("Para cadastrar um professor, clique em Adicionar.");
 		}
 		textPaneProfessor.setEnabled(true);
@@ -477,12 +487,14 @@ public class Menu {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Object[] escolhas = {"Sim", "Não"};
-					if (JOptionPane.showOptionDialog(null, "Deseja remover " + ControllerMenu.getArrayProfessor().get(tabelaProfessor.getSelectedRow()).getNome() + "?", 
+					if (JOptionPane.showOptionDialog(null, "Deseja remover " + cF.getCP().getArrayDisplay().get(tabelaProfessor.getSelectedRow()).getNome() + "?", 
 							"Confirmar remoção", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, escolhas, escolhas[1]) == 0){
-						cF.getCP().removeProfessor(tabelaProfessor.getSelectedRow());
+						cF.getCP().removeProfessor(Integer.parseInt((String)tabelaProfessor.getValueAt(tabelaProfessor.getSelectedRow(), 0)));
+						cF.getCF().iniciaTabela();
 					}
 				} catch (Exception xcp) {
 					JOptionPane.showMessageDialog(null, "Nenhum professor selecionado.", "Erro", JOptionPane.ERROR_MESSAGE);
+					xcp.printStackTrace();
 				}
 			}
 		});
@@ -496,27 +508,27 @@ public class Menu {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					cF.getBotaoLimpar().doClick();
-					String cadastro = ControllerMenu.getArrayProfessor().get(tabelaProfessor.getSelectedRow()).getCodCadastro();
+					String cadastro = cF.getCP().getArrayDisplay().get(tabelaProfessor.getSelectedRow()).getCodCadastro();
 					editando = true;
 					cF.getFrame().setVisible(true);
-					String nome = ControllerMenu.getArrayProfessor().get(tabelaProfessor.getSelectedRow()).getNome();
-					String cpf = ControllerMenu.getArrayProfessor().get(tabelaProfessor.getSelectedRow()).getCpf();
-					String data = ControllerMenu.sdf.format(ControllerMenu.getArrayProfessor().get(tabelaProfessor.getSelectedRow()).getDataNascimento());
-					String endereço = ControllerMenu.getArrayProfessor().get(tabelaProfessor.getSelectedRow()).getEndereço();
-					String salario = "" + ControllerMenu.getArrayProfessor().get(tabelaProfessor.getSelectedRow()).getSalario();
-					String vA = "" + ControllerMenu.getArrayProfessor().get(tabelaProfessor.getSelectedRow()).getValeAlimentação();
-					String vR = "" + ControllerMenu.getArrayProfessor().get(tabelaProfessor.getSelectedRow()).getValeRefeição();
-					String vT = "" + ControllerMenu.getArrayProfessor().get(tabelaProfessor.getSelectedRow()).getValeTransporte();
-					String telefone = ControllerMenu.getArrayProfessor().get(tabelaProfessor.getSelectedRow()).getTelefone();
-					String email = ControllerMenu.getArrayProfessor().get(tabelaProfessor.getSelectedRow()).geteMail();
-					int filhos = ControllerMenu.getArrayProfessor().get(tabelaProfessor.getSelectedRow()).getFilhos();
-					char sexo = ControllerMenu.getArrayProfessor().get(tabelaProfessor.getSelectedRow()).getSexo();
-					String cargo = ControllerMenu.getArrayProfessor().get(tabelaProfessor.getSelectedRow()).getCargo();
-					String disciplina = ControllerMenu.getArrayProfessor().get(tabelaProfessor.getSelectedRow()).getDisciplina();
+					String nome = cF.getCP().getArrayDisplay().get(tabelaProfessor.getSelectedRow()).getNome();
+					String cpf = cF.getCP().getArrayDisplay().get(tabelaProfessor.getSelectedRow()).getCpf();
+					String data = ControllerMenu.sdf.format(cF.getCP().getArrayDisplay().get(tabelaProfessor.getSelectedRow()).getDataNascimento());
+					String endereço = cF.getCP().getArrayDisplay().get(tabelaProfessor.getSelectedRow()).getEndereço();
+					String salario = "" + cF.getCP().getArrayDisplay().get(tabelaProfessor.getSelectedRow()).getSalario();
+					String vA = "" + cF.getCP().getArrayDisplay().get(tabelaProfessor.getSelectedRow()).getValeAlimentação();
+					String vR = "" + cF.getCP().getArrayDisplay().get(tabelaProfessor.getSelectedRow()).getValeRefeição();
+					String vT = "" + cF.getCP().getArrayDisplay().get(tabelaProfessor.getSelectedRow()).getValeTransporte();
+					String telefone = cF.getCP().getArrayDisplay().get(tabelaProfessor.getSelectedRow()).getTelefone();
+					String email = cF.getCP().getArrayDisplay().get(tabelaProfessor.getSelectedRow()).geteMail();
+					int filhos = cF.getCP().getArrayDisplay().get(tabelaProfessor.getSelectedRow()).getFilhos();
+					char sexo = cF.getCP().getArrayDisplay().get(tabelaProfessor.getSelectedRow()).getSexo();
+					String cargo = cF.getCP().getArrayDisplay().get(tabelaProfessor.getSelectedRow()).getCargo();
+					String disciplina = cF.getCP().getArrayDisplay().get(tabelaProfessor.getSelectedRow()).getDisciplina();
 					pessoaEditada = tabelaProfessor.getSelectedRow();
 					cF.preencheCampoProfessor(cadastro, nome, cpf, data, endereço, salario, vA, vR, vT, telefone, email, filhos, sexo, cargo, disciplina);
 				} catch (Exception xcp) {
-					JOptionPane.showMessageDialog(null, "Nenhum funcionário selecionado", "Erro", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Nenhum professor selecionado", "Erro", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
@@ -548,7 +560,7 @@ public class Menu {
 		tabelaProfessor.getColumnModel().getColumn(3).setPreferredWidth(121);
 		tabelaProfessor.setToolTipText("Lista de professores cadastrados");
 		tabelaProfessor.addMouseListener(new MouseListener() {
-			
+				
 			@Override
 			public void mouseReleased(MouseEvent e) {
 			}
@@ -560,9 +572,9 @@ public class Menu {
 			@Override
 			public void mouseExited(MouseEvent e) {
 				if (tabelaProfessor.getSelectedRow() >= 0){
-					textPaneProfessor.setText(cM.setTextPaneProfessor(tabelaProfessor.getSelectedRow()));
+					textPaneProfessor.setText(cM.setTextPaneProfessor(tabelaProfessor.getSelectedRow(), cF));
 				} else {
-					if (ControllerMenu.getArrayProfessor().size() == 0){
+					if (cF.getCP().getArrayDisplay().size() == 0){
 						textPaneProfessor.setText("Para cadastrar um professor, clique em Adicionar.");
 					} else {
 						textPaneProfessor.setText("Selecione um professor para ver mais informações");
@@ -572,15 +584,19 @@ public class Menu {
 			
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				try{
-					int linha = tabelaProfessor.rowAtPoint(e.getPoint());
+				if (tabelaProfessor.rowAtPoint(e.getPoint()) < cF.getCP().getArrayDisplay().size()) {
+					textPaneProfessor.setText(cM.setTextPaneProfessor(tabelaProfessor.rowAtPoint(e.getPoint()), cF));
+				}
 					tabelaProfessor.addMouseMotionListener(new MouseMotionListener() {
 						
 						@Override
 						public void mouseMoved(MouseEvent evt) {
-							int linha2 = tabelaProfessor.rowAtPoint(evt.getPoint());
-							if (linha2 != linha && linha2 >= 0) {
-								textPaneProfessor.setText(cM.setTextPaneProfessor(linha2));
+							if (tabelaProfessor.rowAtPoint(evt.getPoint()) < cF.getCP().getArrayDisplay().size() && tabelaProfessor.rowAtPoint(evt.getPoint()) > -1) {
+								textPaneProfessor.setText(cM.setTextPaneProfessor(tabelaProfessor.rowAtPoint(evt.getPoint()), cF));
+							} else if (tabelaProfessor.getSelectedRow() >= 0) {
+								textPaneProfessor.setText(cM.setTextPaneProfessor(tabelaProfessor.getSelectedRow(), cF));
+							} else {
+								textPaneProfessor.setText("Selecione um professor para ver mais informações.");
 							}
 						}
 						
@@ -588,16 +604,7 @@ public class Menu {
 						public void mouseDragged(MouseEvent e) {
 						}
 					});
-					if (tabelaProfessor.getSelectedRow() >= 0){
-						if (linha != tabelaProfessor.getSelectedRow() && linha >= 0){
-							textPaneProfessor.setText(cM.setTextPaneProfessor(linha));
-						}
-					} else {
-						textPaneProfessor.setText("Para cadastrar um professor, clique em Adicionar.");
-					}
-				} catch(Exception xcp){
-					textPaneProfessor.setText("Selecione um professor para ver mais informações");
-				}
+
 			}
 			
 			@Override
@@ -605,6 +612,7 @@ public class Menu {
 			}
 		});
 	}
+	
 	public static void setTextAluno(){
 		String texto = "";
 		if (cA.getCA().getArrayDisplay().get(Menu.pessoaEditada).getSexo() == 'M'){
@@ -620,24 +628,24 @@ public class Menu {
 		textPaneAluno.setText(texto);
 	}
 	
-	public static void setTextFuncionário(){
+	public static void setTextFuncionario(){
 		String texto = "";
-		if (ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).getSexo() == 'M'){
+		if (cF.getCF().getArrayDisplay().get(Menu.pessoaEditada).getSexo() == 'M'){
 			texto = "Masculino";
 		} else {
 			texto = "Feminino";
 		}
-		texto = "Código do cadastro: " + ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).getCodCadastro() + ";\nNome: " + ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).getNome() + 
-				";\nCPF: " + ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).getCpf() + ";\nData de Nascimento: " + ControllerMenu.sdf.format(ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).getDataNascimento()) + 
-				";\nEndereço: " + ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).getEndereço() + ";\nSexo: " + texto + ";\nCargo: " + 
-				ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).getCargo() + ";\nSalário: " + ControllerMenu.nF.format(ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).getSalario()) + 
-				";\nValor do Vale Alimentação: " + 	ControllerMenu.nF.format(ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).getValeAlimentação()) + ";\nValor do Vale Refeição: " + 
-				ControllerMenu.nF.format(ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).getValeRefeição()) + ";\nValor do Vale Transporte: " +	ControllerMenu.nF.format(ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).getValeTransporte()) + 
-				";\nTelefone: " + ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).getTelefone() + ";\ne-mail: " + ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).geteMail() + 
-		";\nNúmero de filhos: " + ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).getFilhos() + ";";
-		if (ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).getFilhos() != 0) {
+		texto = "Código do cadastro: " + cF.getCF().getArrayDisplay().get(Menu.pessoaEditada).getCodCadastro() + ";\nNome: " + cF.getCF().getArrayDisplay().get(Menu.pessoaEditada).getNome() + 
+				";\nCPF: " + cF.getCF().getArrayDisplay().get(Menu.pessoaEditada).getCpf() + ";\nData de Nascimento: " + ControllerMenu.sdf.format(cF.getCF().getArrayDisplay().get(Menu.pessoaEditada).getDataNascimento()) + 
+				";\nEndereço: " + cF.getCF().getArrayDisplay().get(Menu.pessoaEditada).getEndereço() + ";\nSexo: " + texto + ";\nCargo: " + 
+				cF.getCF().getArrayDisplay().get(Menu.pessoaEditada).getCargo() + ";\nSalário: " + ControllerMenu.nF.format(cF.getCF().getArrayDisplay().get(Menu.pessoaEditada).getSalario()) + 
+				";\nValor do Vale Alimentação: " + 	ControllerMenu.nF.format(cF.getCF().getArrayDisplay().get(Menu.pessoaEditada).getValeAlimentação()) + ";\nValor do Vale Refeição: " + 
+				ControllerMenu.nF.format(cF.getCF().getArrayDisplay().get(Menu.pessoaEditada).getValeRefeição()) + ";\nValor do Vale Transporte: " +	ControllerMenu.nF.format(cF.getCF().getArrayDisplay().get(Menu.pessoaEditada).getValeTransporte()) + 
+				";\nTelefone: " + cF.getCF().getArrayDisplay().get(Menu.pessoaEditada).getTelefone() + ";\ne-mail: " + cF.getCF().getArrayDisplay().get(Menu.pessoaEditada).geteMail() + 
+		";\nNúmero de filhos: " + cF.getCF().getArrayDisplay().get(Menu.pessoaEditada).getFilhos() + ";";
+		if (cF.getCF().getArrayDisplay().get(Menu.pessoaEditada).getFilhos() != 0) {
 			texto += "\nFilhos:\n";
-			for (Pessoa p : ControllerMenu.getArrayFuncionário().get(Menu.pessoaEditada).getCadastroFilhos()) {
+			for (Pessoa p : cF.getCF().getArrayDisplay().get(Menu.pessoaEditada).getCadastroFilhos()) {
 				texto += p.getNome() + " - " + ControllerMenu.sdf.format(p.getDataNascimento()) + "\n";
 			}
 		}
@@ -646,22 +654,22 @@ public class Menu {
 	
 	public static void setTextProfessor(){
 		String texto = "";
-		if (ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).getSexo() == 'M'){
+		if (cF.getCP().getArrayDisplay().get(Menu.pessoaEditada).getSexo() == 'M'){
 			texto = "Masculino";
 		} else {
 			texto = "Feminino";
 		}
-		texto = "Código do cadastro: " + ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).getCodCadastro() + ";\nNome: " + ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).getNome() + 
-				";\nCPF: " + ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).getCpf() + ";\nData de Nascimento: " + ControllerMenu.sdf.format(ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).getDataNascimento()) + 
-				";\nEndereço: " + ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).getEndereço() + ";\nSexo: " + texto + ";\nCargo: " + 
-				ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).getCargo() + ";\nSalário: " + ControllerMenu.nF.format(ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).getSalario()) + 
-				";\nValor do Vale Alimentação: " + 	ControllerMenu.nF.format(ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).getValeAlimentação()) + ";\nValor do Vale Refeição: " + 
-				ControllerMenu.nF.format(ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).getValeRefeição()) + ";\nValor do Vale Transporte: " +	ControllerMenu.nF.format(ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).getValeTransporte()) + 
-				";\nTelefone: " + ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).getTelefone() + ";\ne-mail: " + ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).geteMail() + 
-		";\nNúmero de filhos: " + ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).getFilhos() + ";";
-		if (ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).getFilhos() != 0) {
+		texto = "Código do cadastro: " + cF.getCP().getArrayDisplay().get(Menu.pessoaEditada).getCodCadastro() + ";\nNome: " + cF.getCP().getArrayDisplay().get(Menu.pessoaEditada).getNome() + 
+				";\nCPF: " + cF.getCP().getArrayDisplay().get(Menu.pessoaEditada).getCpf() + ";\nData de Nascimento: " + ControllerMenu.sdf.format(cF.getCP().getArrayDisplay().get(Menu.pessoaEditada).getDataNascimento()) + 
+				";\nEndereço: " + cF.getCP().getArrayDisplay().get(Menu.pessoaEditada).getEndereço() + ";\nSexo: " + texto + ";\nCargo: " + 
+				cF.getCP().getArrayDisplay().get(Menu.pessoaEditada).getCargo() + ";\nSalário: " + ControllerMenu.nF.format(cF.getCP().getArrayDisplay().get(Menu.pessoaEditada).getSalario()) + 
+				";\nValor do Vale Alimentação: " + 	ControllerMenu.nF.format(cF.getCP().getArrayDisplay().get(Menu.pessoaEditada).getValeAlimentação()) + ";\nValor do Vale Refeição: " + 
+				ControllerMenu.nF.format(cF.getCP().getArrayDisplay().get(Menu.pessoaEditada).getValeRefeição()) + ";\nValor do Vale Transporte: " +	ControllerMenu.nF.format(cF.getCP().getArrayDisplay().get(Menu.pessoaEditada).getValeTransporte()) + 
+				";\nTelefone: " + cF.getCP().getArrayDisplay().get(Menu.pessoaEditada).getTelefone() + ";\ne-mail: " + cF.getCP().getArrayDisplay().get(Menu.pessoaEditada).geteMail() + 
+		";\nNúmero de filhos: " + cF.getCP().getArrayDisplay().get(Menu.pessoaEditada).getFilhos() + ";";
+		if (cF.getCP().getArrayDisplay().get(Menu.pessoaEditada).getFilhos() != 0) {
 			texto += "\nFilhos:\n";
-			for (Pessoa p : ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).getCadastroFilhos()) {
+			for (Pessoa p : cF.getCP().getArrayDisplay().get(Menu.pessoaEditada).getCadastroFilhos()) {
 				texto += p.getNome() + " - " + ControllerMenu.sdf.format(p.getDataNascimento()) + "\n";
 			}
 		}

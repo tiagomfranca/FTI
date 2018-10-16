@@ -3,25 +3,25 @@ package tiago.projetos.pj0925.model;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Funcionário extends Pessoa {
+public class Funcionario extends Pessoa {
 	private String codCadastro, endereço, cargo, telefone, eMail;
-	private double salario, valeAlimentação, valeTransporte, valeRefeição;
+	private double salario, valeAlimentacao, valeTransporte, valeRefeicao;
 	private int filhos;
 	private ArrayList<Pessoa> cadastroFilhos;
 	
-	public Funcionário(){}
+	public Funcionario(){}
 	
-	public Funcionário(String codCadastro, String nome, String cpf, Date dataNascimento, String endereço, char sexo, String cargo, double salario,
-			double valeAlimentação, double valeTransporte, double valeRefeição, int filhos, ArrayList<Pessoa> cadastroFilhos,
+	public Funcionario(String codCadastro, String nome, String cpf, Date dataNascimento, String endereço, char sexo, String cargo, double salario,
+			double valeAlimentacao, double valeTransporte, double valeRefeicao, int filhos, ArrayList<Pessoa> cadastroFilhos,
 			String telefone, String eMail){
 		super(nome, cpf, dataNascimento, sexo);
 		this.codCadastro = codCadastro;
 		this.endereço = endereço;
 		this.cargo = cargo;
 		this.salario = salario;
-		this.valeAlimentação = valeAlimentação;
+		this.valeAlimentacao = valeAlimentacao;
 		this.valeTransporte = valeTransporte;
-		this.valeRefeição = valeRefeição;
+		this.valeRefeicao = valeRefeicao;
 		this.filhos = filhos;
 		this.cadastroFilhos = cadastroFilhos;
 		this.telefone = telefone;
@@ -61,11 +61,11 @@ public class Funcionário extends Pessoa {
 	}
 
 	public double getValeAlimentação() {
-		return valeAlimentação;
+		return valeAlimentacao;
 	}
 
 	public void setValeAlimentação(double valeAlimentação) {
-		this.valeAlimentação = valeAlimentação;
+		this.valeAlimentacao = valeAlimentação;
 	}
 
 	public double getValeTransporte() {
@@ -77,11 +77,11 @@ public class Funcionário extends Pessoa {
 	}
 
 	public double getValeRefeição() {
-		return valeRefeição;
+		return valeRefeicao;
 	}
 
 	public void setValeRefeição(double valeRefeição) {
-		this.valeRefeição = valeRefeição;
+		this.valeRefeicao = valeRefeição;
 	}
 
 	public int getFilhos() {

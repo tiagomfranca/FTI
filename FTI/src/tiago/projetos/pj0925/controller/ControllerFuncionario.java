@@ -18,57 +18,57 @@ import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 
 import tiago.projetos.pj0925.dao.FuncionarioDAO;
-import tiago.projetos.pj0925.model.Aluno;
-import tiago.projetos.pj0925.model.Funcionário;
+import tiago.projetos.pj0925.model.Funcionario;
 import tiago.projetos.pj0925.model.Pessoa;
 import tiago.projetos.pj0925.model.Professor;
 import tiago.projetos.pj0925.view.Menu;
 
-public class ControllerFuncionário {
+public class ControllerFuncionario {
 	
 	private Border defaultBorder;
 	private Border border;
-	private DefaultTableModel modelTabelaFuncionário;
+	private DefaultTableModel modelTabelaFuncionario;
 	private FuncionarioDAO fDAO;
-	private ArrayList<Funcionário> arrayDisplay;
+	private ArrayList<Funcionario> arrayDisplay;
 	
-	public ControllerFuncionário(){
+	public ControllerFuncionario(){
 		fDAO = new FuncionarioDAO();
 		border = BorderFactory.createLineBorder(Color.GRAY);
 		defaultBorder = new JTextField().getBorder();
-		modelTabelaFuncionário = new DefaultTableModel(new Object[][] {}, new String[] {"Cadastro", "CPF", "Nome", "Cargo"});
+		modelTabelaFuncionario = new DefaultTableModel(new Object[][] {}, new String[] {"Cadastro", "CPF", "Nome", "Cargo"});
 		iniciaTabela();
 	}
 	
-	private ArrayList<Funcionário> getArrayDisplay(){
+	public ArrayList<Funcionario> getArrayDisplay(){
 		return arrayDisplay;
 	}
 	
-	private void iniciaTabela() {
+	public void iniciaTabela() {
+		modelTabelaFuncionario.setRowCount(0);
 		arrayDisplay = fDAO.consultarListaFuncinoario();
-		for (Funcionário f : arrayDisplay){
+		for (Funcionario f : arrayDisplay){
 			String cadastro = f.getCodCadastro();
 			String cpf = f.getCpf();
 			String nome = f.getNome();
 			String cargo = f.getCargo();
 			Object[] linha = {cadastro, cpf, nome, cargo};
-			modelTabelaFuncionário.addRow(linha);
+			modelTabelaFuncionario.addRow(linha);
 		}
 	}
 
-	public void cadastraFuncionário(Funcionário f) {
-		modelTabelaFuncionário.setRowCount(0);
+	public void cadastraFuncionário(Funcionario f) {
+		modelTabelaFuncionario.setRowCount(0);
 		fDAO.cadastrarFuncionario(f);
 		
 		iniciaTabela();
 	}
 	
-	public void removeFuncionario(int i){
+	public void removeFuncionario(int i, int selectedRow){
 		fDAO.inativarFuncionario(i);
-		modelTabelaFuncionário.removeRow(i);
+		modelTabelaFuncionario.removeRow(selectedRow);
 	}
 	
-	public void botaoCadastrar(String textCadastro, String textNome, String textCpf, boolean botaoMale, boolean botaoFemale, String textData, String textEndereço,
+	public void botaoCadastrar(String textNome, String textCpf, boolean botaoMale, boolean botaoFemale, String textData, String textEndereço,
 			String boxCargo, String boxDisciplina, String textSalario, String textVA, String textVR, String textVT, String textTelefone, String textEMail,
 			String textFilhos, ArrayList<JTextField> arrayTextFilhos, ArrayList<JTextField> arrayTextDatas){
 		ControllerUtil u = new ControllerUtil();
@@ -192,24 +192,25 @@ public class ControllerFuncionário {
 					arrayFilhos.add(filho);
 				}
 			}
-			Funcionário f;
+			Funcionario f;
 			if (boxCargo.equals("Professor")){
 				f = new Professor("", textNome, textCpf, u.transformaData(textData), textEndereço, sexo, boxCargo, boxDisciplina, Double.parseDouble(textSalario), valorVA,
 						valorVT, valorVR, Integer.parseInt(textFilhos), arrayFilhos, textTelefone, textEMail);
 			} else {
-				f = new Funcionário("", textNome, textCpf, u.transformaData(textData), textEndereço, sexo, boxCargo,
+				f = new Funcionario("", textNome, textCpf, u.transformaData(textData), textEndereço, sexo, boxCargo,
 						Double.parseDouble(textSalario), valorVA, valorVT, valorVR, Integer.parseInt(textFilhos), arrayFilhos, textTelefone, textEMail);
 			}
-				cadastraFuncionário(f);
-				Menu.adicionando = false;
+			cadastraFuncionário(f);
+			Menu.adicionando = false;
 			JOptionPane.showMessageDialog(null, "Cadastro de funcionário efetuado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+			iniciaTabela();
 		} else {
 			Menu.adicionando = true;
 			JOptionPane.showMessageDialog(null, erros, numeros + " erros encontrados:", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
-	public void botaoEditar(String textCadastro, String textNome, String textCpf, boolean botaoMale, boolean botaoFemale, String textData, String textEndereço,
+	public void botaoEditar(String textNome, String textCpf, boolean botaoMale, boolean botaoFemale, String textData, String textEndereço,
 			String boxCargo, String boxDisciplina, String textSalario, String textVA, String textVR, String textVT, String textTelefone, String textEMail,
 			String textFilhos, ArrayList<JTextField> arrayTextFilhos, ArrayList<JTextField> arrayTextDatas){
 		ControllerUtil u = new ControllerUtil();
@@ -333,7 +334,7 @@ public class ControllerFuncionário {
 					arrayFilhos.add(filho);
 				}
 			}
-			editaFuncionário(textNome, textCpf, textData, textEndereço, sexo, boxCargo, boxDisciplina, textTelefone, textEMail, Integer.parseInt(textFilhos), 
+			editaFuncionario(textNome, textCpf, textData, textEndereço, sexo, boxCargo, boxDisciplina, textTelefone, textEMail, Integer.parseInt(textFilhos), 
 						Double.parseDouble(textSalario), valorVA, valorVR, valorVT, arrayFilhos);
 			Menu.editando = false;
 			JOptionPane.showMessageDialog(null, "Informações do funcionário foram atualizadas com sucesso..", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
@@ -344,10 +345,9 @@ public class ControllerFuncionário {
 		}
 	}
 	
-	public void botaoLimpar(JFrame frame, JPanel container, JTextField textCadastro, JTextField textNome, JTextField textCpf, JTextField textData, JTextArea textEndereço, JTextField textSalario,
+	public void botaoLimpar(JFrame frame, JPanel container, JTextField textNome, JTextField textCpf, JTextField textData, JTextArea textEndereço, JTextField textSalario,
 			JTextField textVA, JTextField textVR, JTextField textVT, JTextField textTelefone, JTextField textEMail, JTextField textFilhos, ArrayList<JTextField> arrayTextFilhos,
 			ArrayList<JTextField> arrayTextDatas, ArrayList<JLabel> arrayLabels, JComboBox<String> boxCargo, JComboBox<String> boxDisciplina, JRadioButton botaoMale, JRadioButton botaoFemale){
-		textCadastro.setForeground(Color.gray);
 		textNome.setForeground(Color.GRAY);
 		textCpf.setForeground(Color.GRAY);
 		textData.setForeground(Color.GRAY);
@@ -359,7 +359,6 @@ public class ControllerFuncionário {
 		textTelefone.setForeground(Color.GRAY);
 		textEMail.setForeground(Color.GRAY);
 		textFilhos.setForeground(Color.GRAY);
-		textCadastro.setBorder(defaultBorder);
 		textNome.setBorder(defaultBorder);
 		textCpf.setBorder(defaultBorder);
 		textData.setBorder(defaultBorder);
@@ -371,7 +370,6 @@ public class ControllerFuncionário {
 		textTelefone.setBorder(defaultBorder);
 		textEMail.setBorder(defaultBorder);
 		textFilhos.setBorder(defaultBorder);
-		textCadastro.setText("ex: 123456789");
 		textNome.setText("ex: José");
 		textCpf.setText("ex: 12345678901");
 		textData.setText("dd/mm/aaaa");
@@ -452,8 +450,8 @@ public class ControllerFuncionário {
 		frame.setSize(785, 451);
 	}
 	
-	public DefaultTableModel modelFuncionário(){
-		return this.modelTabelaFuncionário;
+	public DefaultTableModel modelFuncionario(){
+		return this.modelTabelaFuncionario;
 	}
 	
 	public void geraFilhosEditar(ArrayList<Pessoa> arrayFilhos, int i, JPanel container, ArrayList<JTextField> arrayTextFilhos, ArrayList<JTextField> arrayTextDatas, ArrayList<JLabel> arrayLabels){
@@ -465,10 +463,11 @@ public class ControllerFuncionário {
 		
 		JTextField texto = new JTextField();
 		texto.setBounds(120, (35*i)+345, 250, 20);
-		texto.setForeground(Color.gray);
-		texto.setText(arrayFilhos.get(i).getNome());
+		texto.setText(arrayFilhos.get(i-1).getNome());
 		arrayTextFilhos.add(texto);
 		container.add(texto);
+		texto.setBorder(BorderFactory.createLineBorder(Color.GREEN));
+		texto.setForeground(Color.BLACK);
 		
 		JLabel lbl1 = new JLabel("Data de");
 		lbl1.setBounds(415, (35*i)+337, 100, 14);
@@ -479,8 +478,9 @@ public class ControllerFuncionário {
 		
 		JTextField texto2 = new JTextField();
 		texto2.setBounds(485, (35*i)+345, 250, 20);
-		texto2.setForeground(Color.gray);
-		texto2.setText(ControllerMenu.sdf.format(arrayFilhos.get(i).getDataNascimento()));
+		texto2.setText(ControllerMenu.sdf.format(arrayFilhos.get(i-1).getDataNascimento()));
+		texto2.setBorder(BorderFactory.createLineBorder(Color.GREEN));
+		texto2.setForeground(Color.BLACK);
 		arrayTextDatas.add(texto2);
 		arrayLabels.add(lbl);
 		arrayLabels.add(lbl1);
@@ -488,19 +488,19 @@ public class ControllerFuncionário {
 		container.add(texto2);
 	}
 	
-	public void editaFuncionário(String nome, String cpf, String data, String endereço, char sexo, String boxCargo, String boxDisciplina, String telefone, String email, int filhos,
+	public void editaFuncionario(String nome, String cpf, String data, String endereço, char sexo, String boxCargo, String boxDisciplina, String telefone, String email, int filhos,
 			double salario, double vA, double vR, double vT, ArrayList<Pessoa> arrayFilhos){
 		ControllerUtil u = new ControllerUtil();
 		Date date = new Date();
 		date = u.transformaData(data);
-		Funcionário f;
+		Funcionario f;
 		
 		if (boxCargo.equals("Professor")){
 			f = new Professor();
 		} else {
-			f = new Funcionário();
+			f = new Funcionario();
 		}
-		
+		f.setCodCadastro(arrayDisplay.get(Menu.pessoaEditada).getCodCadastro());
 		f.setNome(nome);
 		f.setCpf(cpf);
 		f.setDataNascimento(date);
@@ -538,19 +538,8 @@ public class ControllerFuncionário {
 		arrayDisplay.get(Menu.pessoaEditada).setCadastroFilhos(arrayFilhos);
 		
 		iniciaTabela();
-		Menu.setTextFuncionário();
+		Menu.setTextFuncionario();
 		Menu.pessoaEditada = -1;
 	}
 	
-	public void refazTabela(){
-		modelTabelaFuncionário.setRowCount(0);
-		for (Funcionário f : ControllerMenu.getArrayFuncionário()) {
-			String cadastro = f.getCodCadastro();
-			String cpf = f.getCpf();
-			String nome = f.getNome();
-			String cargo = f.getCargo();
-			Object[] linha = {cadastro, cpf, nome, cargo};
-			modelTabelaFuncionário.addRow(linha);
-		}
-	}
 }

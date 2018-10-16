@@ -6,21 +6,22 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import tiago.projetos.pj0925.model.Aluno;
-import tiago.projetos.pj0925.model.Funcionário;
+import tiago.projetos.pj0925.model.Funcionario;
 import tiago.projetos.pj0925.model.Pessoa;
 import tiago.projetos.pj0925.model.Professor;
 import tiago.projetos.pj0925.view.CadastroAluno;
+import tiago.projetos.pj0925.view.CadastroFuncionario;
 
 public class ControllerMenu {
 	private static ArrayList<Professor> arrayProfessor;
-	private static ArrayList<Funcionário> arrayFuncionário;
+	private static ArrayList<Funcionario> arrayFuncionário;
 	private static ArrayList<Aluno> arrayAluno;
 	public static SimpleDateFormat sdf; 
 	public static NumberFormat nF;
 	
 	public ControllerMenu() {
 		arrayProfessor = new ArrayList<Professor>();
-		arrayFuncionário = new ArrayList<Funcionário>();
+		arrayFuncionário = new ArrayList<Funcionario>();
 		arrayAluno = new ArrayList<Aluno>();
 		sdf = new SimpleDateFormat("dd/MM/yyyy");
 		nF = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
@@ -34,11 +35,11 @@ public class ControllerMenu {
 		ControllerMenu.arrayProfessor = arrayProfessor;
 	}
 
-	public static ArrayList<Funcionário> getArrayFuncionário() {
+	public static ArrayList<Funcionario> getArrayFuncionário() {
 		return ControllerMenu.arrayFuncionário;
 	}
 
-	public static void setArrayFuncionário(ArrayList<Funcionário> arrayFuncionário) {
+	public static void setArrayFuncionário(ArrayList<Funcionario> arrayFuncionário) {
 		ControllerMenu.arrayFuncionário = arrayFuncionário;
 	}
 
@@ -66,23 +67,23 @@ public class ControllerMenu {
 		return sexo;
 	}
 
-	public String setTextPaneFuncionario(int i) {
+	public String setTextPaneFuncionario(int i, CadastroFuncionario cF) {
 		String sexo = "";
 		try {
-		if (arrayFuncionário.get(i).getSexo() == 'M'){
+		if (cF.getCF().getArrayDisplay().get(i).getSexo() == 'M'){
 			sexo = "Masculino";
-		} else {
+		} else {	
 			sexo = "Feminino";
 		}
-		sexo = "Código do cadastro: " + arrayFuncionário.get(i).getCodCadastro() + ";\nNome: " + arrayFuncionário.get(i).getNome() + ";\nCPF: " + 
-		arrayFuncionário.get(i).getCpf() + ";\nData de Nascimento: " + ControllerMenu.sdf.format(arrayFuncionário.get(i).getDataNascimento()) + ";\nEndereço: " + arrayFuncionário.get(i).getEndereço() +
-		";\nSexo: " + sexo + ";\nCargo: " + arrayFuncionário.get(i).getCargo() + ";\nSalário: " + nF.format(arrayFuncionário.get(i).getSalario()) + ";\nValor do Vale Alimentação: " + 
-		nF.format(arrayFuncionário.get(i).getValeAlimentação()) + ";\nValor do Vale Refeição: " + nF.format(arrayFuncionário.get(i).getValeRefeição()) + ";\nValor do Vale Transporte: " + 
-		nF.format(arrayFuncionário.get(i).getValeTransporte()) + ";\nTelefone: " + arrayFuncionário.get(i).getTelefone() + ";\ne-mail: " + arrayFuncionário.get(i).geteMail() + 
-		";\nNúmero de filhos: " + arrayFuncionário.get(i).getFilhos() + ";";
-		if (arrayFuncionário.get(i).getFilhos() != 0) {
+		sexo = "Código do cadastro: " + cF.getCF().getArrayDisplay().get(i).getCodCadastro() + ";\nNome: " + cF.getCF().getArrayDisplay().get(i).getNome() + ";\nCPF: " + 
+				cF.getCF().getArrayDisplay().get(i).getCpf() + ";\nData de Nascimento: " + ControllerMenu.sdf.format(cF.getCF().getArrayDisplay().get(i).getDataNascimento()) + ";\nEndereço: " + cF.getCF().getArrayDisplay().get(i).getEndereço() +
+		";\nSexo: " + sexo + ";\nCargo: " + cF.getCF().getArrayDisplay().get(i).getCargo() + ";\nSalário: " + nF.format(cF.getCF().getArrayDisplay().get(i).getSalario()) + ";\nValor do Vale Alimentação: " + 
+		nF.format(cF.getCF().getArrayDisplay().get(i).getValeAlimentação()) + ";\nValor do Vale Refeição: " + nF.format(cF.getCF().getArrayDisplay().get(i).getValeRefeição()) + ";\nValor do Vale Transporte: " + 
+		nF.format(cF.getCF().getArrayDisplay().get(i).getValeTransporte()) + ";\nTelefone: " + cF.getCF().getArrayDisplay().get(i).getTelefone() + ";\ne-mail: " + cF.getCF().getArrayDisplay().get(i).geteMail() + 
+		";\nNúmero de filhos: " + cF.getCF().getArrayDisplay().get(i).getFilhos() + ";";
+		if (cF.getCF().getArrayDisplay().get(i).getFilhos() != 0) {
 			sexo += "\nFilhos:\n";
-			for (Pessoa p : arrayFuncionário.get(i).getCadastroFilhos()) {
+			for (Pessoa p : cF.getCF().getArrayDisplay().get(i).getCadastroFilhos()) {
 				sexo += p.getNome() + " - " + ControllerMenu.sdf.format(p.getDataNascimento()) + "\n";
 			}
 		}
@@ -91,26 +92,26 @@ public class ControllerMenu {
 		return sexo;
 	}
 
-	public String setTextPaneProfessor(int i) {
+	public String setTextPaneProfessor(int i, CadastroFuncionario cF) {
 		String sexo = "";
 		try {
-			if (arrayProfessor.get(i).getSexo() == 'M'){
-				sexo = "Masculino";
-			} else {
-				sexo = "Feminino";
+		if (cF.getCP().getArrayDisplay().get(i).getSexo() == 'M'){
+			sexo = "Masculino";
+		} else {
+			sexo = "Feminino";
+		}
+		sexo = "Código do cadastro: " + cF.getCP().getArrayDisplay().get(i).getCodCadastro() + ";\nNome: " + cF.getCP().getArrayDisplay().get(i).getNome() + ";\nCPF: " + 
+				cF.getCP().getArrayDisplay().get(i).getCpf() + ";\nData de Nascimento: " + ControllerMenu.sdf.format(cF.getCP().getArrayDisplay().get(i).getDataNascimento()) + ";\nEndereço: " + cF.getCP().getArrayDisplay().get(i).getEndereço() +
+		";\nSexo: " + sexo + ";\nCargo: " + cF.getCP().getArrayDisplay().get(i).getCargo() + ";\nSalário: " + nF.format(cF.getCP().getArrayDisplay().get(i).getSalario()) + ";\nValor do Vale Alimentação: " + 
+		nF.format(cF.getCP().getArrayDisplay().get(i).getValeAlimentação()) + ";\nValor do Vale Refeição: " + nF.format(cF.getCP().getArrayDisplay().get(i).getValeRefeição()) + ";\nValor do Vale Transporte: " + 
+		nF.format(cF.getCP().getArrayDisplay().get(i).getValeTransporte()) + ";\nTelefone: " + cF.getCP().getArrayDisplay().get(i).getTelefone() + ";\ne-mail: " + cF.getCP().getArrayDisplay().get(i).geteMail() + 
+		";\nNúmero de filhos: " + cF.getCP().getArrayDisplay().get(i).getFilhos() + ";";
+		if (cF.getCP().getArrayDisplay().get(i).getFilhos() != 0) {
+			sexo += "\nFilhos:\n";
+			for (Pessoa p : cF.getCP().getArrayDisplay().get(i).getCadastroFilhos()) {
+				sexo += p.getNome() + " - " + ControllerMenu.sdf.format(p.getDataNascimento()) + "\n";
 			}
-			sexo = "Código do cadastro: " + arrayProfessor.get(i).getCodCadastro() + ";\nNome: " + arrayProfessor.get(i).getNome() + ";\nCPF: " + 
-			arrayProfessor.get(i).getCpf() + ";\nData de Nascimento: " + ControllerMenu.sdf.format(arrayProfessor.get(i).getDataNascimento()) + ";\nEndereço: " + arrayProfessor.get(i).getEndereço() +
-			";\nSexo: " + sexo + ";\nCargo: " + arrayProfessor.get(i).getCargo() + ";\nDisciplina: " + arrayProfessor.get(i).getDisciplina() + ";\nSalário: " + nF.format(arrayProfessor.get(i).getSalario()) + ";\nValor do Vale Alimentação: " + 
-			nF.format(arrayProfessor.get(i).getValeAlimentação()) + ";\nValor do Vale Refeição: " + nF.format(arrayProfessor.get(i).getValeRefeição()) + ";\nValor do Vale Transporte: " + 
-			nF.format(arrayProfessor.get(i).getValeTransporte()) + ";\nTelefone: " + arrayProfessor.get(i).getTelefone() + ";\ne-mail: " + arrayProfessor.get(i).geteMail() + 
-			";\nNúmero de filhos: " + arrayProfessor.get(i).getFilhos() + ";";
-			if (arrayProfessor.get(i).getFilhos() != 0) {
-				sexo += "\nFilhos:\n";
-				for (Pessoa p : arrayProfessor.get(i).getCadastroFilhos()) {
-					sexo += p.getNome() + " - " + ControllerMenu.sdf.format(p.getDataNascimento()) + "\n";
-				}
-			}
+		}
 		} catch (Exception xcp) {
 		}
 		return sexo;

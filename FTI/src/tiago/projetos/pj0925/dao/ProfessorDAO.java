@@ -4,24 +4,21 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
 
 import javax.naming.NamingException;
 
-import tiago.projetos.pj0925.model.Funcionario;
 import tiago.projetos.pj0925.model.Pessoa;
 import tiago.projetos.pj0925.model.Professor;
 import tiago.projetos.pj0925.dao.BancoDados;
 
-public class FuncionarioDAO {
+public class ProfessorDAO {
 	
 	private BancoDados db = null;
-	private Funcionario func;
 	private int codigoAtual;
 	
-	public FuncionarioDAO() {
+	public ProfessorDAO() {
 		try {
 			db = new BancoDados("curso_java");
 			codigoAtual = 0;
@@ -30,7 +27,7 @@ public class FuncionarioDAO {
 		}
 	}
 	
-	public void cadastrarFuncionario(Funcionario funcionario) {
+	public void cadastrarProfessor(Professor prof) {
 		
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -50,30 +47,24 @@ public class FuncionarioDAO {
 
 			String sexo = "";
 			
-			if (funcionario.getSexo() == 'M'){sexo = "Masculino";} else {sexo = "Feminino";}
+			if (prof.getSexo() == 'M'){sexo = "Masculino";} else {sexo = "Feminino";}
 			
-			java.sql.Date d = new java.sql.Date(funcionario.getDataNascimento().getTime());
+			java.sql.Date d = new java.sql.Date(prof.getDataNascimento().getTime());
 			
-			stmt.setString(1, String.valueOf(funcionario.getNome()));
-			stmt.setString(2, String.valueOf(funcionario.getCpf()));
+			stmt.setString(1, String.valueOf(prof.getNome()));
+			stmt.setString(2, String.valueOf(prof.getCpf()));
 			stmt.setString(3, String.valueOf(sexo));
 			stmt.setDate(4, d);
-			stmt.setString(5, String.valueOf(funcionario.getEndereço()));
-			stmt.setString(6, String.valueOf(funcionario.getCargo()));
-			
-			if (funcionario instanceof Professor){
-				stmt.setString(7, String.valueOf(((Professor)funcionario).getDisciplina()));
-			} else {
-				stmt.setNull(7, Types.NULL);
-			}
-			
-			stmt.setDouble(8, Double.valueOf(funcionario.getSalario()));
-			stmt.setDouble(9, Double.valueOf(funcionario.getValeAlimentação()));
-			stmt.setDouble(10, Double.valueOf(funcionario.getValeRefeição()));
-			stmt.setDouble(11, Double.valueOf(funcionario.getValeTransporte()));
-			stmt.setString(12, String.valueOf(funcionario.getTelefone()));
-			stmt.setString(13, String.valueOf(funcionario.geteMail()));
-			stmt.setInt(14, Integer.valueOf(funcionario.getFilhos()));
+			stmt.setString(5, String.valueOf(prof.getEndereço()));
+			stmt.setString(6, String.valueOf(prof.getCargo()));
+			stmt.setString(7, String.valueOf(prof.getDisciplina()));
+			stmt.setDouble(8, Double.valueOf(prof.getSalario()));
+			stmt.setDouble(9, Double.valueOf(prof.getValeAlimentação()));
+			stmt.setDouble(10, Double.valueOf(prof.getValeRefeição()));
+			stmt.setDouble(11, Double.valueOf(prof.getValeTransporte()));
+			stmt.setString(12, String.valueOf(prof.getTelefone()));
+			stmt.setString(13, String.valueOf(prof.geteMail()));
+			stmt.setInt(14, Integer.valueOf(prof.getFilhos()));
 			stmt.setInt(15, 1);
 			
 			stmt.execute();
@@ -88,8 +79,8 @@ public class FuncionarioDAO {
 			rs = stmt.executeQuery();
 
 			if (rs.next()) {
-				funcionario.setCodCadastro(String.valueOf(rs.getInt(1)));
-				registrarFilhos(funcionario);
+				prof.setCodCadastro(String.valueOf(rs.getInt(1)));
+				registrarFilhos(prof);
 				db.finalizaObjetos(null, stmt, null);
 			}
 			
@@ -98,19 +89,19 @@ public class FuncionarioDAO {
 				try {
 					conn.rollback();
 				} catch (SQLException e1) {
-					System.out.println("Erro no método cadastrarFuncionario - rollback");
+					System.out.println("Erro no método cadastrarProfessor - rollback");
 				}
 			}
-			System.out.println("Erro no método cadastrarFuncionario");
+			System.out.println("Erro no método cadastrarProfessor");
 			e.printStackTrace();
 		} finally {
 			db.finalizaObjetos(rs, stmt, conn);
 		}
 		
-		System.out.println("Funcionário " + funcionario.getNome() + " do cargo " + funcionario.getCargo() + " cadastrado com sucesso!");
+		System.out.println("Professor " + prof.getNome() + " do cargo " + prof.getCargo() + " cadastrado com sucesso!");
 	}
 	
-	private void registrarFilhos(Funcionario funcionario) {
+	private void registrarFilhos(Professor prof) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -123,10 +114,10 @@ public class FuncionarioDAO {
 			
 			stmt = conn.prepareStatement(sql);
 			
-			for (Pessoa filho : funcionario.getCadastroFilhos()) {
+			for (Pessoa filho : prof.getCadastroFilhos()) {
 				java.sql.Date d = new java.sql.Date(filho.getDataNascimento().getTime());
 				
-				stmt.setInt(1, Integer.parseInt(funcionario.getCodCadastro()));
+				stmt.setInt(1, Integer.parseInt(prof.getCodCadastro()));
 				stmt.setString(2, String.valueOf(filho.getNome()));
 				stmt.setDate(3, d);
 				
@@ -152,9 +143,9 @@ public class FuncionarioDAO {
 		}
 	}
 
-	public ArrayList<Funcionario> consultarListaFuncinoario() {
+	public ArrayList<Professor> consultarListaProfessor() {
 
-		ArrayList<Funcionario> listaFunc = new ArrayList<Funcionario>();
+		ArrayList<Professor> listaProf = new ArrayList<Professor>();
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -166,55 +157,50 @@ public class FuncionarioDAO {
 			String sql = "SELECT FUNC.codigo, FUNC.nome, FUNC.cpf, FUNC.sexo, FUNC.datanascimento, FUNC.endereço, FUNC.cargo, FUNC.disciplina, FUNC.salario, "
 					+ "FUNC.vale_alimentacao, FUNC.vale_refeicao, FUNC.vale_transporte, FUNC.telefone, FUNC.email, FUNC.numero_filhos, FILHO.nome, FILHO.datanascimento"
 					+ " FROM funcionarios AS FUNC LEFT JOIN filhos AS FILHO ON FUNC.codigo = FILHO.fk_codigo "
-					+ "WHERE FUNC.ativo = 1 ORDER BY codigo ASC";
+					+ "WHERE FUNC.ativo = 1 AND FUNC.cargo = 'Professor' ORDER BY codigo ASC";
 
 			stmt = conn.prepareStatement(sql.toString());
 
 			rs = stmt.executeQuery();
-			Funcionario func = new Funcionario();		
+			Professor prof = new Professor();		
 			char sexo = '0';
 			ArrayList<Pessoa> arrayFilhos = new ArrayList<Pessoa>();
 			
 			while (rs.next()) {
 				if (codigoAtual == rs.getInt(1)) {
-					Pessoa filho = new Pessoa();
-					filho.setNome(rs.getString(16));
-					filho.setDataNascimento(new Date(rs.getTimestamp("FILHO.datanascimento").getTime()));
-					arrayFilhos.add(filho);
+					if (rs.getInt(15) != 0) {
+						Pessoa filho = new Pessoa();
+						filho.setNome(rs.getString(16));
+						filho.setDataNascimento(new Date(rs.getTimestamp("FILHO.datanascimento").getTime()));
+						arrayFilhos.add(filho);
+					}
 				} else {
 					if (rs.getRow() != 1) {
-						func.setCadastroFilhos(arrayFilhos);
-						listaFunc.add(func);
+						prof.setCadastroFilhos(arrayFilhos);
+						listaProf.add(prof);
 					}
 					codigoAtual = rs.getInt(1);
-					
-					if (rs.getString(7).equals("Professor")){func = new Professor();} else {func = new Funcionario();}
+					prof = new Professor();
 					
 					if (rs.getString(4).equals("Masculino")){sexo = 'M';} else {sexo = 'F';}
 					
-					func.setCodCadastro(rs.getString(1));
-					func.setNome(rs.getString(2));
-					func.setCpf(rs.getString(3));
-					func.setSexo(sexo);
-					func.setDataNascimento(new Date(rs.getTimestamp("FUNC.datanascimento").getTime()));
-					func.setEndereço(rs.getString(6));
-					func.setCargo(rs.getString(7));
-					
-					if (func instanceof Professor){
-						((Professor) func).setDisciplina(rs.getString(8));
-					}
-					
-					func.setSalario(rs.getDouble(9));
-					func.setValeAlimentação(rs.getDouble(10));
-					func.setValeRefeição(rs.getDouble(11));
-					func.setValeTransporte(rs.getDouble(12));
-					func.setTelefone(rs.getString(13));
-					func.seteMail(rs.getString(14));
-					func.setFilhos(rs.getInt(15));
-					
+					prof.setCodCadastro(rs.getString(1));
+					prof.setNome(rs.getString(2));
+					prof.setCpf(rs.getString(3));
+					prof.setSexo(sexo);
+					prof.setDataNascimento(new Date(rs.getTimestamp("FUNC.datanascimento").getTime()));
+					prof.setEndereço(rs.getString(6));
+					prof.setCargo(rs.getString(7));
+					prof.setDisciplina(rs.getString(8));
+					prof.setSalario(rs.getDouble(9));
+					prof.setValeAlimentação(rs.getDouble(10));
+					prof.setValeRefeição(rs.getDouble(11));
+					prof.setValeTransporte(rs.getDouble(12));
+					prof.setTelefone(rs.getString(13));
+					prof.seteMail(rs.getString(14));
+					prof.setFilhos(rs.getInt(15));
 					arrayFilhos = new ArrayList<Pessoa>();
-					
-					if (func.getFilhos() > 0) {
+					if (prof.getFilhos() > 0) {
 						Pessoa filho = new Pessoa();
 						filho.setNome(rs.getString(16));
 						filho.setDataNascimento(new Date(rs.getTimestamp("FILHO.datanascimento").getTime()));
@@ -224,19 +210,19 @@ public class FuncionarioDAO {
 			}
 			rs.beforeFirst();
 			if (rs.next()) {
-				func.setCadastroFilhos(arrayFilhos);
-				listaFunc.add(func);
+				prof.setCadastroFilhos(arrayFilhos);
+				listaProf.add(prof);
 			}
 		} catch (SQLException e) {
-			System.out.println("Erro no método consultarFuncionario");
+			System.out.println("Erro no método consultarProf");
 			e.printStackTrace();
 		} finally {
 			db.finalizaObjetos(rs, stmt, conn);
 		}
-		return listaFunc;
+		return listaProf;
 	}
 	
-	public void alterarFuncionario(Funcionario funcionario) {
+	public void alterarProfessor(Professor prof) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -247,58 +233,51 @@ public class FuncionarioDAO {
 
 			StringBuffer sql = new StringBuffer();
 			
-			sql.append("UPDATE funcionarios SET nome = ?, cpf = ?, sexo = ?, datanascimento = ?, endereço = ?, cargo = ?, disciplina = ?, salario = ?, vale_alimentacao = ?, vale_refeicao = ?, "
-					+ "vale_transporte = ?, telefone = ?, email = ?, numero_filhos = ? ");
+			sql.append("UPDATE funcionarios SET nome = ?, cpf = ?, sexo = ?, datanascimento = ?, endereço = ?, cargo = ?, disciplina = ?, "
+					+ "salario = ?, vale_alimentacao = ?, vale_refeicao = ?, vale_transporte = ?, telefone = ?, email = ?, numero_filhos = ? ");
 			sql.append("WHERE codigo = ?;");
 
 			stmt = conn.prepareStatement(sql.toString());
 			
-			String sexo = ""; if (funcionario.getSexo() == 'M'){sexo = "Masculino";} else {sexo = "Feminino";}
-			java.sql.Date d = new java.sql.Date(funcionario.getDataNascimento().getTime());
+			String sexo = ""; if (prof.getSexo() == 'M'){sexo = "Masculino";} else {sexo = "Feminino";}
+			java.sql.Date d = new java.sql.Date(prof.getDataNascimento().getTime());
 			
-			stmt.setString(1, String.valueOf(funcionario.getNome()));
-			stmt.setString(2, String.valueOf(funcionario.getCpf()));
+			stmt.setString(1, String.valueOf(prof.getNome()));
+			stmt.setString(2, String.valueOf(prof.getCpf()));
 			stmt.setString(3, String.valueOf(sexo));
 			stmt.setDate(4, d);
-			stmt.setString(5, String.valueOf(funcionario.getEndereço()));
-			stmt.setString(6, String.valueOf(funcionario.getCargo()));
-			
-			if (funcionario instanceof Professor){
-				stmt.setString(7, String.valueOf(((Professor)funcionario).getDisciplina()));
-			} else {
-				stmt.setNull(7, Types.NULL);
-			}
-			
-			stmt.setDouble(8, Double.valueOf(funcionario.getSalario()));
-			stmt.setDouble(9, Double.valueOf(funcionario.getValeAlimentação()));
-			stmt.setDouble(10, Double.valueOf(funcionario.getValeRefeição()));
-			stmt.setDouble(11, Double.valueOf(funcionario.getValeTransporte()));
-			stmt.setString(12, String.valueOf(funcionario.getTelefone()));
-			stmt.setString(13, String.valueOf(funcionario.geteMail()));
-			stmt.setInt(14, Integer.valueOf(funcionario.getFilhos()));
-			stmt.setInt(15, Integer.valueOf(funcionario.getCodCadastro()));
+			stmt.setString(5, String.valueOf(prof.getEndereço()));
+			stmt.setString(6, String.valueOf(prof.getCargo()));
+			stmt.setString(7, String.valueOf(prof.getDisciplina()));
+			stmt.setDouble(8, Double.valueOf(prof.getSalario()));
+			stmt.setDouble(9, Double.valueOf(prof.getValeAlimentação()));
+			stmt.setDouble(10, Double.valueOf(prof.getValeRefeição()));
+			stmt.setDouble(11, Double.valueOf(prof.getValeTransporte()));
+			stmt.setString(12, String.valueOf(prof.getTelefone()));
+			stmt.setString(13, String.valueOf(prof.geteMail()));
+			stmt.setInt(14, Integer.valueOf(prof.getFilhos()));
+			stmt.setInt(15, Integer.valueOf(Integer.parseInt(prof.getCodCadastro())));
 			
 			stmt.execute();
 			conn.commit();
-
-			editarFilhos(funcionario);
+			alterarFilhos(prof);
 			
 		} catch (SQLException e) {
 			if (conn != null) {
 				try {
 					conn.rollback();
 				} catch (SQLException e1) {
-					System.out.println("Erro no método alterarAluno - rollback");
+					System.out.println("Erro no método alterarProfessor - rollback");
 				}
 			}
-			System.out.println("Erro no método alterarAluno");
+			System.out.println("Erro no método alterarProfessor");
 			e.printStackTrace();
 		} finally {
 			db.finalizaObjetos(rs, stmt, conn);
 		}
 	}	
 	
-	private void editarFilhos(Funcionario funcionario) {
+	private void alterarFilhos(Professor prof) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -309,22 +288,23 @@ public class FuncionarioDAO {
 			
 			String querry = "DELETE FROM filhos\nWHERE fk_codigo = ?;";
 			
-			stmt = conn.prepareStatement(querry.toString());
+			stmt = conn.prepareStatement(querry);
 			
-			stmt.setInt(1,  Integer.parseInt(funcionario.getCodCadastro()));
+			stmt.setInt(1,  Integer.parseInt(prof.getCodCadastro()));
 			
 			stmt.execute();
 			conn.commit();
+			
 			db.finalizaObjetos(null, stmt, null);
 			
 			String sql = "INSERT INTO filhos (fk_codigo, nome, datanascimento) VALUES (?, ?, ?); ";
 			
 			stmt = conn.prepareStatement(sql);
 			
-			for (Pessoa filho : funcionario.getCadastroFilhos()) {
+			for (Pessoa filho : prof.getCadastroFilhos()) {
 				java.sql.Date d = new java.sql.Date(filho.getDataNascimento().getTime());
 				
-				stmt.setInt(1, Integer.parseInt(funcionario.getCodCadastro()));
+				stmt.setInt(1, Integer.parseInt(prof.getCodCadastro()));
 				stmt.setString(2, String.valueOf(filho.getNome()));
 				stmt.setDate(3, d);
 				
@@ -348,9 +328,11 @@ public class FuncionarioDAO {
 		} finally {
 			db.finalizaObjetos(rs, stmt, conn);
 		}
+		
+		
 	}
 
-	public void inativarFuncionario(int codigo) {
+	public void inativarProfessor(int codigo) {
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
@@ -377,10 +359,10 @@ public class FuncionarioDAO {
 				try {
 					conn.rollback();
 				} catch (SQLException e1) {
-					System.out.println("Erro no método inativarFuncionario - rollback");
+					System.out.println("Erro no método inativarProfessor - rollback");
 				}
 			}
-			System.out.println("Erro no método inativarFuncionario");
+			System.out.println("Erro no método inativarProfessor");
 			e.printStackTrace();
 		} finally {
 			db.finalizaObjetos(rs, stmt, conn);

@@ -7,6 +7,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import tiago.projetos.pj0925.dao.ProfessorDAO;
+import tiago.projetos.pj0925.model.Funcionario;
 import tiago.projetos.pj0925.model.Pessoa;
 import tiago.projetos.pj0925.model.Professor;
 import tiago.projetos.pj0925.view.Menu;
@@ -14,39 +16,40 @@ import tiago.projetos.pj0925.view.Menu;
 public class ControllerProfessor {
 	
 	private DefaultTableModel modelTabelaProfessor;
+	private ArrayList<Professor> arrayDisplay;
+	private ProfessorDAO pDAO;
 	
 	public ControllerProfessor(){
+		pDAO = new ProfessorDAO();
 		modelTabelaProfessor = new DefaultTableModel(new Object[][] {}, new String[] {"Cadastro", "CPF", "Nome", "Disciplina"});
-		//geraListaProfessor(modelTabelaProfessor);
+		iniciaTabela();
+	}
+
+	public ArrayList<Professor> getArrayDisplay(){
+		return arrayDisplay;
 	}
 	
-	private void geraListaProfessor(DefaultTableModel model) {
-		String nome2 = "Tiago de Morais França";
-		for (int i = 0; i < 12; i++) {
-			ControllerMenu.getArrayProfessor().add(new Professor("123456789", nome2 + i, "07378278904", new Date(), "Rua M",
-					'M', "Professor", "Banco de Dados", 4000.00, 800.00, 900.00, 80.00, 5, new ArrayList<Pessoa>(), "43999565338", "tiagomfr@gmail.com"));
-		}
-		for (Professor professor : ControllerMenu.getArrayProfessor()) {
-			String codCadastro = professor.getCodCadastro();
-			String cpf = professor.getCpf();
-			String nome = professor.getNome();
-			String disciplina = professor.getDisciplina();
-			Object[] linha = {codCadastro, cpf, nome, disciplina};
-			model.addRow(linha);
+	public void iniciaTabela() {
+		arrayDisplay = pDAO.consultarListaProfessor();
+		modelTabelaProfessor.setRowCount(0);
+		for (Professor p : arrayDisplay){
+			String cadastro = p.getCodCadastro();
+			String cpf = p.getCpf();
+			String nome = p.getNome();
+			String disciplina = p.getDisciplina();
+			Object[] linha = {cadastro, cpf, nome, disciplina};
+			modelTabelaProfessor.addRow(linha);
 		}
 	}
 
 	public void cadastraProfessor(Professor p){
-		String cadastro = p.getCodCadastro();
-		String cpf = p.getCpf();
-		String nome = p.getNome();
-		String disciplina = p.getDisciplina();
-		Object[] linha = {cadastro, cpf, nome, disciplina};
-		modelTabelaProfessor.addRow(linha);
-		ControllerMenu.getArrayProfessor().add(p);
+		modelTabelaProfessor.setRowCount(0);
+		pDAO.cadastrarProfessor(p);
+		
+		iniciaTabela();
 	}
 
-	public void botaoCadastrar(String textCadastro, String textNome, String textCpf, boolean botaoMale, boolean botaoFemale, String textData, String textEndereço,
+	public void botaoCadastrar(String textNome, String textCpf, boolean botaoMale, boolean botaoFemale, String textData, String textEndereço,
 			String boxCargo, String boxDisciplina, String textSalario, String textVA, String textVR, String textVT, String textTelefone, String textEMail,
 			String textFilhos, ArrayList<JTextField> arrayTextFilhos, ArrayList<JTextField> arrayTextDatas) {
 		ControllerUtil u = new ControllerUtil();
@@ -57,11 +60,7 @@ public class ControllerProfessor {
 		char sexo = '0';
 		String erros = "";
 		int numeros = 0;
-		
-		if(textCadastro.equals("") || textCadastro.equals("ex: 123456789")){
-			erros = erros + "Campo Código do cadastro deve ser preenchido;\n";
-			numeros++;
-		}			
+					
 		if(textNome.equals("") || textNome.equals("ex: José")) {
 			erros = erros + "Campo Nome precisa estar preenchido;\n";
 			numeros++;
@@ -174,13 +173,14 @@ public class ControllerProfessor {
 					arrayFilhos.add(filho);
 				}
 			}
-			Professor p = new Professor(textCadastro, textNome, textCpf, u.transformaData(textData), textEndereço, sexo, boxCargo, boxDisciplina,
+			Professor p = new Professor("", textNome, textCpf, u.transformaData(textData), textEndereço, sexo, boxCargo, boxDisciplina,
 					Double.parseDouble(textSalario), valorVA, valorVT, valorVR, Integer.parseInt(textFilhos), arrayFilhos, textTelefone, textEMail);
 			cadastraProfessor(p);
 			Menu.adicionando = false;
 			JOptionPane.showMessageDialog(null, "Cadastro de professor efetuado com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+			iniciaTabela();
 		} else {
-			Menu.adicionando = false;
+			Menu.adicionando = true;
 			JOptionPane.showMessageDialog(null, erros, numeros + " erros encontrados:", JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -190,8 +190,8 @@ public class ControllerProfessor {
 	}
 	
 	public void removeProfessor(int i){
-		ControllerMenu.getArrayProfessor().remove(i);
-		modelTabelaProfessor.removeRow(i);
+		pDAO.inativarProfessor(i);
+		iniciaTabela();
 	}
 	
 	public void botaoEditar(String textCadastro, String textNome, String textCpf, boolean botaoMale, boolean botaoFemale, String textData, String textEndereço,
@@ -327,6 +327,7 @@ public class ControllerProfessor {
 			Menu.editando = false;
 			JOptionPane.showMessageDialog(null, "Informações do professor foram atualizadas com sucesso.", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 			Menu.pessoaEditada = -1;
+			iniciaTabela();
 		} else {
 			Menu.editando = true;
 			JOptionPane.showMessageDialog(null, erros, numeros + " erros encontrados:", JOptionPane.ERROR_MESSAGE);
@@ -339,36 +340,46 @@ public class ControllerProfessor {
 		Date date = new Date();
 		date = u.transformaData(data);
 		
-		ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).setCodCadastro(cadastro);
-		ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).setNome(nome);
-		ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).setCpf(cpf);
-		ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).setDataNascimento(date);
-		ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).setEndereço(endereço);
-		ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).setSexo(sexo);
-		ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).setCargo(boxCargo);
-		ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).setDisciplina(boxDisciplina);
-		ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).setTelefone(telefone);
-		ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).seteMail(email);
-		ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).setFilhos(filhos);
-		ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).setSalario(salario);
-		ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).setValeAlimentação(vA);
-		ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).setValeRefeição(vR);
-		ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).setValeTransporte(vT);
-		ControllerMenu.getArrayProfessor().get(Menu.pessoaEditada).setCadastroFilhos(arrayFilhos);
+		Professor p = new Professor();
+		p.setCodCadastro(arrayDisplay.get(Menu.pessoaEditada).getCodCadastro());
+		p.setNome(nome);
+		p.setCpf(cpf);
+		p.setDataNascimento(date);
+		p.setEndereço(endereço);
+		p.setSexo(sexo);
+		p.setCargo(boxCargo);
+		p.setDisciplina(boxDisciplina);
+		arrayDisplay.get(Menu.pessoaEditada).setDisciplina(boxDisciplina);
+
+		p.setTelefone(telefone);
+		p.seteMail(email);
+		p.setFilhos(filhos);
+		p.setSalario(salario);
+		p.setValeAlimentação(vA);
+		p.setValeRefeição(vR);
+		p.setValeTransporte(vT);
+		p.setCadastroFilhos(arrayFilhos);
+		
+		pDAO.alterarProfessor(p);
+		
+		arrayDisplay.get(Menu.pessoaEditada).setCodCadastro(cadastro);
+		arrayDisplay.get(Menu.pessoaEditada).setNome(nome);
+		arrayDisplay.get(Menu.pessoaEditada).setCpf(cpf);
+		arrayDisplay.get(Menu.pessoaEditada).setDataNascimento(date);
+		arrayDisplay.get(Menu.pessoaEditada).setEndereço(endereço);
+		arrayDisplay.get(Menu.pessoaEditada).setSexo(sexo);
+		arrayDisplay.get(Menu.pessoaEditada).setCargo(boxCargo);
+		arrayDisplay.get(Menu.pessoaEditada).setDisciplina(boxDisciplina);
+		arrayDisplay.get(Menu.pessoaEditada).setTelefone(telefone);
+		arrayDisplay.get(Menu.pessoaEditada).seteMail(email);
+		arrayDisplay.get(Menu.pessoaEditada).setFilhos(filhos);
+		arrayDisplay.get(Menu.pessoaEditada).setSalario(salario);
+		arrayDisplay.get(Menu.pessoaEditada).setValeAlimentação(vA);
+		arrayDisplay.get(Menu.pessoaEditada).setValeRefeição(vR);
+		arrayDisplay.get(Menu.pessoaEditada).setValeTransporte(vT);
+		arrayDisplay.get(Menu.pessoaEditada).setCadastroFilhos(arrayFilhos);
 		Menu.setTextProfessor();
-		refazTabela();
+		iniciaTabela();
 		Menu.pessoaEditada = -1;
-	}
-	
-	public void refazTabela() {
-		modelTabelaProfessor.setRowCount(0);
-		for (Professor p : ControllerMenu.getArrayProfessor()) {
-			String cadastro = p.getCodCadastro();
-			String cpf = p.getCpf();
-			String nome = p.getNome();
-			String disciplina = p.getDisciplina();
-			Object[] linha = {cadastro, cpf, nome, disciplina};
-			modelTabelaProfessor.addRow(linha);
-		}
 	}
 }

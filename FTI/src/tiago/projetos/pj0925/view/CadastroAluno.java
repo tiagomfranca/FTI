@@ -27,6 +27,7 @@ public class CadastroAluno {
 	private JButton botaoClear, botaoCadastrar;
 	private JComboBox<String> boxCurso;
 	private ControllerAluno cA;
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -78,6 +79,8 @@ public class CadastroAluno {
 			
 			@Override
 			public void windowClosed(WindowEvent e) {
+				Menu.editando = false;
+				Menu.adicionando = false;
 			}
 			
 			@Override
@@ -110,15 +113,8 @@ public class CadastroAluno {
 		frame.getContentPane().add(textCpf);
 		textCpf.setColumns(10);
 		
-		JLabel lblMatricula = new JLabel("Matrícula*: ");
-//		lblMatricula.setBounds(55, 99, 80, 14);
-//		frame.getContentPane().add(lblMatricula);
-		textMatricula = new JTextField("ex: 123456789");
-//		textMatricula.setForeground(Color.gray);
-//		textMatricula.addFocusListener(u.focusListenLimiteNumeros(textMatricula, "ex: 123456789", 9));
-//		textMatricula.setBounds(150, 96, 250, 20);
-//		frame.getContentPane().add(textMatricula);
-//		textMatricula.setColumns(10);
+//		lbl setBounds(55, 99, 80, 14);
+//		text setBounds(150, 96, 250, 20);
 		
 		JLabel lblData = new JLabel("Data de");
 		lblData.setBounds(59, 130, 46, 14);
@@ -224,9 +220,11 @@ public class CadastroAluno {
 					botaoCadastrar.setText("Salvar");
 					cA.botaoEditar(textNome.getText(), textCpf.getText(), textMatricula.getText(), botaoMale.isSelected(), botaoFemale.isSelected(), 
 							textData.getText(), textEndereço.getText(), boxCurso.getSelectedItem().toString(), textTelefone.getText(), textEMail.getText());
+					if (!Menu.editando) {
+						cA.iniciaTabela();
+					}
 				}
 				if(!Menu.editando) {
-					frame.setVisible(false);
 					botaoCadastrar.setText("Cadastrar");
 				}
 			}
@@ -243,12 +241,10 @@ public class CadastroAluno {
 				textEndereço.setForeground(Color.GRAY);
 				textCpf.setForeground(Color.GRAY);
 				textTelefone.setForeground(Color.GRAY);
-				textMatricula.setForeground(Color.gray);
 				textNome.setBorder(defaultBorder);
 				textEMail.setBorder(defaultBorder);
 				textTelefone.setBorder(defaultBorder);
 				textCpf.setBorder(defaultBorder);
-				textMatricula.setBorder(defaultBorder);
 				textEndereço.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.gray), BorderFactory.createEmptyBorder(2, 2, 2, 2)));
 				textData.setBorder(defaultBorder);
 				textNome.setText("ex: José");
@@ -257,7 +253,6 @@ public class CadastroAluno {
 				textEMail.setText("ex: nome@site.com");
 				textTelefone.setText("ex: 43999565338");
 				textCpf.setText("ex: 12345678901");
-				textMatricula.setText("ex: 123456789");
 				botaoFemale.setSelected(false);
 				botaoMale.setSelected(false);
 				boxCurso.setSelectedItem("Selecionar...");

@@ -3,7 +3,7 @@ package tiago.projetos.pj0925.model;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Professor extends Funcionário {
+public class Professor extends Funcionario {
 	private String disciplina;
 	
 	public Professor(){}

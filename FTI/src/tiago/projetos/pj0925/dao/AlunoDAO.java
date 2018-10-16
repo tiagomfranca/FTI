@@ -40,19 +40,13 @@ public class AlunoDAO {
 			sql.append("VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 			stmt = conn.prepareStatement(sql.toString());	
-
+			
+			String sexo = ""; if (aluno.getSexo() == 'M'){sexo = "Masculino";} else {sexo = "Feminino";}
+			java.sql.Date d = new java.sql.Date(aluno.getDataNascimento().getTime());
+			
 			stmt.setString(1, String.valueOf(aluno.getNome()));
 			stmt.setString(2, String.valueOf(aluno.getCpf()));
-			
-			String sexo = "";
-			if (aluno.getSexo() == 'M'){
-				sexo = "Masculino";
-			} else {
-				sexo = "Feminino";
-			}
-			
 			stmt.setString(3, String.valueOf(sexo));
-			java.sql.Date d = new java.sql.Date(aluno.getDataNascimento().getTime());
 			stmt.setDate(4, d);
 			stmt.setString(5, String.valueOf(aluno.getEndereço()));
 			stmt.setString(6, String.valueOf(aluno.getCurso()));
@@ -76,8 +70,6 @@ public class AlunoDAO {
 		} finally {
 			db.finalizaObjetos(rs, stmt, conn);
 		}
-		
-		System.out.println("Professor " + aluno.getNome() + " da disciplina " + aluno.getCurso() + " cadastrado com sucesso!");
 	}
 	
 	
@@ -97,18 +89,14 @@ public class AlunoDAO {
 			stmt = conn.prepareStatement(sql.toString());
 
 			rs = stmt.executeQuery();
-
+			
 			while (rs.next()) {
 				Aluno aluno = new Aluno();
+				char sexo = '0'; if (rs.getString(4).equals("Masculino")) {sexo = 'M';} else {sexo = 'F';}
+				
 				aluno.setMatricula(rs.getString(1));
 				aluno.setNome(rs.getString(2));
 				aluno.setCpf(rs.getString(3));
-				char sexo = '0';
-				if (rs.getString(4).equals("Masculino")){
-					sexo = 'M';
-				} else {
-					sexo = 'F';
-				}
 				aluno.setSexo(sexo);
 				aluno.setDataNascimento(new Date(rs.getTimestamp("datanascimento").getTime()));
 				aluno.setEndereço(rs.getString(6));
@@ -144,18 +132,12 @@ public class AlunoDAO {
 
 			stmt = conn.prepareStatement(sql.toString());
 			
+			String sexo = ""; if (aluno.getSexo() == 'M'){ sexo = "Masculino"; } else {	sexo = "Feminino";}
+			java.sql.Date d = new java.sql.Date(aluno.getDataNascimento().getTime());
+			
 			stmt.setString(1, String.valueOf(aluno.getNome()));
 			stmt.setString(2, String.valueOf(aluno.getCpf()));
-			
-			String sexo = "";
-			if (aluno.getSexo() == 'M'){
-				sexo = "Masculino";
-			} else {
-				sexo = "Feminino";
-			}
-			
 			stmt.setString(3, String.valueOf(sexo));
-			java.sql.Date d = new java.sql.Date(aluno.getDataNascimento().getTime());
 			stmt.setDate(4, d);
 			stmt.setString(5, String.valueOf(aluno.getEndereço()));
 			stmt.setString(6, String.valueOf(aluno.getCurso()));
